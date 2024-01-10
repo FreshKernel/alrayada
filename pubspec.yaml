@@ -1,6 +1,7 @@
 name: alrayada
 description: "Work in progress..."
 version: 1.0.0+1
+repository: https://github.com/freshplatform/alrayada
 
 environment:
   sdk: '>=3.2.3 <4.0.0'
