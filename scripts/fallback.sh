@@ -1,0 +1,1 @@
+cp fallback.env .env
