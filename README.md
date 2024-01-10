@@ -1,11 +1,3 @@
 # Alrayada
 
-```markdown
-
-lib/
-|-- presentation/
-|-- data/
-|-- logic/
-|-- main.dart
-
-```
+An ecommerce application developed by Fresh Platform for Alrayada company.
