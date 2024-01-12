@@ -63,7 +63,6 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: PlatformProvider(
-        initialPlatform: TargetPlatform.iOS,
         builder: (context) => BlocBuilder<SettingsCubit, SettingsState>(
           buildWhen: (previous, current) =>
               previous.themeMode != current.themeMode,

@@ -213,12 +213,10 @@ fun Application.configureRouting() {
                 orderRoute.cancelOrder()
                 orderRoute.getStatistics()
 
-                route("/admin") {
-                    val orderAdminRoutes = OrderAdminRoutes(this, orderDataSource, userDataSource, notificationService)
-                    orderAdminRoutes.deleteOrder()
-                    orderAdminRoutes.approveOrder()
-                    orderAdminRoutes.rejectOrder()
-                }
+                val orderAdminRoutes = OrderAdminRoutes(this, orderDataSource, userDataSource, notificationService)
+                orderAdminRoutes.deleteOrder()
+                orderAdminRoutes.approveOrder()
+                orderAdminRoutes.rejectOrder()
 
                 route("/paymentGateways") {
                     val paymentGatewaysRoutes = PaymentGatewaysRoutes(this, orderDataSource)

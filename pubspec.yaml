@@ -36,6 +36,7 @@ dependencies:
   flutter_animate: ^4.3.0
 
   equatable: ^2.0.5
+  logger: ^2.0.2+1
 
   # For code generator
   json_annotation: ^4.8.1
@@ -54,9 +55,8 @@ dependencies:
   firebase_crashlytics: ^3.4.8
   firebase_analytics: ^10.7.4
   firebase_messaging: ^14.6.1
-  # onesignal_flutter: ^5.0.4
-  # google_sign_in: ^6.2.1
-  # sign_in_with_apple: ^5.0.0
+  google_sign_in: ^6.2.1
+  sign_in_with_apple: ^5.0.0
 
 dev_dependencies:
   flutter_test:
@@ -67,6 +67,7 @@ dev_dependencies:
   freezed: ^2.4.6
   json_serializable: ^6.7.1
   flutter_gen_runner: ^5.3.2
+  icons_launcher: ^2.1.7
 
 flutter:
   generate: true
@@ -88,3 +89,19 @@ flutter_gen:
   integrations:
     flutter_svg: true
     lottie: true
+
+icons_launcher:
+  image_path: "dev_assets/icon_launcher.png"
+  platforms:
+    android:
+      enable: true
+    ios:
+      enable: true
+    macos:
+      enable: true
+    windows:
+      enable: true
+    linux:
+      enable: false
+    web:
+      enable: true
