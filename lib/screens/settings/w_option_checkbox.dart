@@ -19,38 +19,25 @@ class OptionCheckbox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final widgetTitle = Text(
-      title,
-      // overflow: TextOverflow.ellipsis,
-    );
-    final widgetSubtitle = Text(
-      description,
-      maxLines: 5,
-    );
-    if (isMaterial(context)) {
-      return SwitchListTile.adaptive(
-        value: value,
-        onChanged: (v) => onChanged(),
-        title: Row(
-          children: [
-            if (leading != null) ...[
-              leading!,
-              const SizedBox(width: 4),
-            ],
-            Expanded(child: widgetTitle),
+    return SwitchListTile.adaptive(
+      value: value,
+      onChanged: (v) => onChanged(),
+      title: Row(
+        children: [
+          if (leading != null) ...[
+            leading!,
+            const SizedBox(width: 4),
           ],
-        ),
-        subtitle: widgetSubtitle,
-      );
-    }
-    return CupertinoListTile(
-      onTap: onChanged,
-      title: widgetTitle,
-      subtitle: widgetSubtitle,
-      leading: leading,
-      trailing: Switch.adaptive(
-        value: value,
-        onChanged: (newValue) => onChanged(),
+          Expanded(
+            child: Text(
+              title,
+            ),
+          ),
+        ],
+      ),
+      subtitle: Text(
+        description,
+        maxLines: 5,
       ),
     );
   }

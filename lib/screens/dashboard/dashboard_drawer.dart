@@ -4,13 +4,13 @@ import 'package:go_router/go_router.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../logic/auth/auth_cubit.dart';
-import '../../account_data/account_data_screen.dart';
-import '../../notifications/notifications_screen.dart';
-import '../../settings/settings_screen.dart';
-import '../../support/support_screen.dart';
+import '../account_data/account_data_screen.dart';
+import '../notifications/notifications_screen.dart';
+import '../settings/settings_screen.dart';
+import '../support/support_screen.dart';
 
-class DashboardMaterialDrawer extends StatelessWidget {
-  const DashboardMaterialDrawer({super.key});
+class DashboardDrawer extends StatelessWidget {
+  const DashboardDrawer({super.key});
 
   Widget _buildItem({
     required BuildContext context,

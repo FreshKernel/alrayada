@@ -1,11 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 import '../../l10n/app_localizations.dart';
 
-import 'cupertino/cupertino_dashboard.dart';
-import 'material/material_dashboard.dart';
+import '../../logic/settings/settings_cubit.dart';
+import 'dashboard_drawer.dart';
 import 'navigation_item.dart';
 import 'pages/cart_page.dart';
 import 'pages/categories_page.dart';
@@ -20,11 +21,6 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  final GlobalKey<MaterialScaffoldDashboardState> _materialScaffoldKey =
-      GlobalKey();
-  final GlobalKey<CupertinoScaffoldDashboardState> _cupertinoScaffoldKey =
-      GlobalKey();
-
   List<NavigationItem> get _items => [
         NavigationItem(
           label: context.loc.home,
@@ -93,23 +89,84 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
       ];
 
-  void navigateToNewItem(int newIndex) {
-    if (isCupertino(context)) {
-      _cupertinoScaffoldKey.currentState!.navigateToItem(newIndex);
-      return;
+  void _navigateToNewItem(int newIndex) {
+    setState(() {
+      _currentIndex = newIndex;
+    });
+  }
+
+  var _currentIndex = 0;
+  final _pageStorageBucket = PageStorageBucket();
+
+  bool _isNavRailBar(Size size, AppLayoutMode layoutMode) {
+    switch (layoutMode) {
+      //  Might want needs to be updated
+      case AppLayoutMode.auto:
+        return size.width >= 480;
+      case AppLayoutMode.small:
+        return false;
+      case AppLayoutMode.large:
+        return true;
     }
-    _materialScaffoldKey.currentState!.navigateToItem(newIndex);
   }
 
   @override
   Widget build(BuildContext context) {
-    if (isCupertino(context)) {
-      return CupertinoScaffoldDashboard(
-        navigationItems: _items,
-      );
-    }
-    return MaterialScaffoldDashboard(
-      navigationItems: _items,
+    return BlocBuilder<SettingsCubit, SettingsState>(
+      buildWhen: (previous, current) =>
+          previous.layoutMode != current.layoutMode,
+      builder: (context, state) => Scaffold(
+        drawer: const DashboardDrawer(),
+        appBar: AppBar(
+          title: Text(_items[_currentIndex].label),
+          actions: _items[_currentIndex].actionsBuilder?.call(context),
+        ),
+        body: SafeArea(
+          child: Builder(
+            builder: (context) {
+              final bodyWidget = PageStorage(
+                bucket: _pageStorageBucket,
+                child: _items[_currentIndex].body,
+              );
+              if (!_isNavRailBar(
+                  MediaQuery.sizeOf(context), state.layoutMode)) {
+                return bodyWidget;
+              }
+              return Row(
+                children: [
+                  NavigationRail(
+                    onDestinationSelected: _navigateToNewItem,
+                    labelType: NavigationRailLabelType.all,
+                    destinations: _items.map((e) {
+                      return e.toNavigationRailDestination();
+                    }).toList(),
+                    selectedIndex: _currentIndex,
+                  ),
+                  Expanded(
+                    child: widget,
+                  )
+                ],
+              );
+            },
+          ),
+        ),
+        bottomNavigationBar: Builder(
+          builder: (context) {
+            if (_isNavRailBar(MediaQuery.sizeOf(context), state.layoutMode)) {
+              return const SizedBox.shrink();
+            }
+            return NavigationBar(
+              selectedIndex: _currentIndex,
+              onDestinationSelected: _navigateToNewItem,
+              destinations: _items.map((e) {
+                return e.toNavigationDestination();
+              }).toList(),
+            );
+          },
+        ),
+        floatingActionButton:
+            _items[_currentIndex].actionButtonBuilder?.call(context),
+      ),
     );
   }
 }

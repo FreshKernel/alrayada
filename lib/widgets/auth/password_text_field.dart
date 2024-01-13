@@ -41,8 +41,7 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
     final translations = context.loc;
     return Semantics(
       label: translations.confirmPassword,
-      child: PlatformTextFormField(
-        hintText: widget.labelText ?? translations.confirmPassword,
+      child: TextFormField(
         textInputAction: widget.textInputAction,
         focusNode: widget.focusNode,
         onEditingComplete: () {
@@ -59,34 +58,19 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
         minLines: 1,
         maxLines: 1,
         controller: widget.controller,
-        cupertino: (_, __) => CupertinoTextFormFieldData(
-          placeholder: widget.labelText ?? translations.confirmPassword,
-          prefix: Row(
-            children: [
-              const Icon(CupertinoIcons.padlock),
-              PlatformIconButton(
-                onPressed: () => setState(
-                  () => _obscureText = !_obscureText,
-                ),
-                icon: Icon(_obscureText
-                    ? CupertinoIcons.eye_slash
-                    : Icons.remove_red_eye),
-              )
-            ],
+        decoration: InputDecoration(
+          hintText: widget.labelText ?? translations.confirmPassword,
+          labelText: widget.labelText ?? translations.confirmPassword,
+          prefixIcon: Icon(
+            isCupertino(context) ? CupertinoIcons.padlock : Icons.lock_outlined,
           ),
-        ),
-        material: (_, __) => MaterialTextFormFieldData(
-          decoration: InputDecoration(
-            labelText: widget.labelText ?? translations.confirmPassword,
-            prefixIcon: const Icon(Icons.lock_outlined),
-            suffixIcon: IconButton(
-              onPressed: () => setState(() {
-                _obscureText = !_obscureText;
-              }),
-              icon: Icon(_obscureText
-                  ? Icons.remove_red_eye_outlined
-                  : Icons.remove_red_eye_rounded),
-            ),
+          suffixIcon: IconButton(
+            onPressed: () => setState(() {
+              _obscureText = !_obscureText;
+            }),
+            icon: Icon(_obscureText
+                ? PlatformIcons(context).eyeSlash
+                : PlatformIcons(context).eyeSolid),
           ),
         ),
         validator: (password) {

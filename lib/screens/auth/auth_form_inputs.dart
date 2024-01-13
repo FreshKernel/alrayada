@@ -230,16 +230,9 @@ class _AuthFormInputsState extends State<AuthFormInputs> {
           return Form(
             key: _formKey,
             autovalidateMode: AutovalidateMode.onUserInteraction,
-            child: isCupertino(context)
-                ? CupertinoFormSection.insetGrouped(
-                    margin: EdgeInsets.zero,
-                    backgroundColor:
-                        CupertinoTheme.of(context).barBackgroundColor,
-                    children: _formInputs,
-                  )
-                : Column(
-                    children: _formInputs,
-                  ),
+            child: Column(
+              children: _formInputs,
+            ),
           );
         },
       ),

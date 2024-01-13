@@ -12,8 +12,8 @@ class AuthScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PlatformScaffold(
-      appBar: PlatformAppBar(
+    return Scaffold(
+      appBar: AppBar(
         title: Text(context.loc.authentication),
       ),
       body: SafeArea(
@@ -30,24 +30,17 @@ class AuthScreen extends StatelessWidget {
             const SizedBox(
               height: 15,
             ),
-            Expanded(
+            const Expanded(
               child: ClipRRect(
-                borderRadius: const BorderRadius.only(
+                borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(15),
                   topRight: Radius.circular(15),
                 ),
-                child: Container(
-                  width: double.infinity,
-                  color: Colors.black,
-                  child: Container(
-                    margin: EdgeInsets.zero,
-                    color: isCupertino(context)
-                        ? CupertinoTheme.of(context).barBackgroundColor
-                        : Theme.of(context).cardColor,
-                    child: const SingleChildScrollView(
-                      padding: EdgeInsets.symmetric(horizontal: 8),
-                      child: AuthenticationForm(),
-                    ),
+                child: Card(
+                  margin: EdgeInsets.zero,
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.symmetric(horizontal: 8),
+                    child: AuthenticationForm(),
                   ),
                 ),
               ),

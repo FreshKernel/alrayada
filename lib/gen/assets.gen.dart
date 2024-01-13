@@ -40,17 +40,9 @@ class $AssetsLottieGen {
   LottieGenImage get blinkerIndicator =>
       const LottieGenImage('assets/lottie/blinker_indicator.json');
 
-  /// File path: assets/lottie/cloud_security_1.json
-  LottieGenImage get cloudSecurity1 =>
-      const LottieGenImage('assets/lottie/cloud_security_1.json');
-
   /// File path: assets/lottie/error_1.json
   LottieGenImage get error1 =>
       const LottieGenImage('assets/lottie/error_1.json');
-
-  /// File path: assets/lottie/fast_delivery_1.json
-  LottieGenImage get fastDelivery1 =>
-      const LottieGenImage('assets/lottie/fast_delivery_1.json');
 
   /// File path: assets/lottie/loading_1.json
   LottieGenImage get loading1 =>
@@ -65,60 +57,30 @@ class $AssetsLottieGen {
 
   $AssetsLottieNoInternetGen get noInternet =>
       const $AssetsLottieNoInternetGen();
+  $AssetsLottieOnboardingGen get onboarding =>
+      const $AssetsLottieOnboardingGen();
 
   /// File path: assets/lottie/online_shopping_1.json
   LottieGenImage get onlineShopping1 =>
       const LottieGenImage('assets/lottie/online_shopping_1.json');
 
-  /// File path: assets/lottie/online_shopping_2.json
-  LottieGenImage get onlineShopping2 =>
-      const LottieGenImage('assets/lottie/online_shopping_2.json');
-
   $AssetsLottiePageNotFoundGen get pageNotFound =>
       const $AssetsLottiePageNotFoundGen();
-
-  /// File path: assets/lottie/programming_1.json
-  LottieGenImage get programming1 =>
-      const LottieGenImage('assets/lottie/programming_1.json');
-
-  /// File path: assets/lottie/search_1.json
-  LottieGenImage get search1 =>
-      const LottieGenImage('assets/lottie/search_1.json');
 
   /// File path: assets/lottie/server_error_1.json
   LottieGenImage get serverError1 =>
       const LottieGenImage('assets/lottie/server_error_1.json');
 
-  /// File path: assets/lottie/social_authentication_1.json
-  LottieGenImage get socialAuthentication1 =>
-      const LottieGenImage('assets/lottie/social_authentication_1.json');
-
-  /// File path: assets/lottie/support_1.json
-  LottieGenImage get support1 =>
-      const LottieGenImage('assets/lottie/support_1.json');
-
-  /// File path: assets/lottie/wishlist_1.json
-  LottieGenImage get wishlist1 =>
-      const LottieGenImage('assets/lottie/wishlist_1.json');
-
   /// List of all assets
   List<LottieGenImage> get values => [
         auth1,
         blinkerIndicator,
-        cloudSecurity1,
         error1,
-        fastDelivery1,
         loading1,
         login,
         noData1,
         onlineShopping1,
-        onlineShopping2,
-        programming1,
-        search1,
-        serverError1,
-        socialAuthentication1,
-        support1,
-        wishlist1
+        serverError1
       ];
 }
 
@@ -178,6 +140,54 @@ class $AssetsLottieNoInternetGen {
 
   /// List of all assets
   List<LottieGenImage> get values => [noInternet1, noInternet2, noInternet3];
+}
+
+class $AssetsLottieOnboardingGen {
+  const $AssetsLottieOnboardingGen();
+
+  /// File path: assets/lottie/onboarding/cloud_security.json
+  LottieGenImage get cloudSecurity =>
+      const LottieGenImage('assets/lottie/onboarding/cloud_security.json');
+
+  /// File path: assets/lottie/onboarding/fast_delivery.json
+  LottieGenImage get fastDelivery =>
+      const LottieGenImage('assets/lottie/onboarding/fast_delivery.json');
+
+  /// File path: assets/lottie/onboarding/online_shopping.json
+  LottieGenImage get onlineShopping =>
+      const LottieGenImage('assets/lottie/onboarding/online_shopping.json');
+
+  /// File path: assets/lottie/onboarding/programming.json
+  LottieGenImage get programming =>
+      const LottieGenImage('assets/lottie/onboarding/programming.json');
+
+  /// File path: assets/lottie/onboarding/search.json
+  LottieGenImage get search =>
+      const LottieGenImage('assets/lottie/onboarding/search.json');
+
+  /// File path: assets/lottie/onboarding/social_authentication.json
+  LottieGenImage get socialAuthentication => const LottieGenImage(
+      'assets/lottie/onboarding/social_authentication.json');
+
+  /// File path: assets/lottie/onboarding/support.json
+  LottieGenImage get support =>
+      const LottieGenImage('assets/lottie/onboarding/support.json');
+
+  /// File path: assets/lottie/onboarding/wishlist.json
+  LottieGenImage get wishlist =>
+      const LottieGenImage('assets/lottie/onboarding/wishlist.json');
+
+  /// List of all assets
+  List<LottieGenImage> get values => [
+        cloudSecurity,
+        fastDelivery,
+        onlineShopping,
+        programming,
+        search,
+        socialAuthentication,
+        support,
+        wishlist
+      ];
 }
 
 class $AssetsLottiePageNotFoundGen {

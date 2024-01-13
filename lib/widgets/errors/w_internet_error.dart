@@ -24,19 +24,12 @@ class InternetError extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final materialTheme = Theme.of(context);
-    final cupertinoTheme = CupertinoTheme.of(context);
     final randomAsset = error[Random().nextInt(error.length)];
     final items = [
       Lottie.asset(randomAsset),
       Text(
         context.loc.pleaseCheckYourInternetConnectionMsg,
-        style: isCupertino(context)
-            ? cupertinoTheme.textTheme.textStyle.copyWith(
-                fontSize: 16.0,
-                fontWeight: FontWeight.w500,
-              )
-            : materialTheme.textTheme.titleLarge,
+        style: Theme.of(context).textTheme.titleLarge,
         textAlign: TextAlign.center,
       ),
       if (onTryAgain != null) ...[
@@ -65,19 +58,12 @@ class InternetErrorDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final translations = context.loc;
-    final materialTheme = Theme.of(context);
-    final cupertinoTheme = CupertinoTheme.of(context);
     final randomAsset = error[Random().nextInt(error.length)];
     final items = [
       Lottie.asset(randomAsset),
       Text(
         context.loc.pleaseCheckYourInternetConnectionMsg,
-        style: isCupertino(context)
-            ? cupertinoTheme.textTheme.textStyle.copyWith(
-                fontSize: 16.0,
-                fontWeight: FontWeight.w500,
-              )
-            : materialTheme.textTheme.titleLarge,
+        style: Theme.of(context).textTheme.titleLarge,
         textAlign: TextAlign.center,
       ),
     ];

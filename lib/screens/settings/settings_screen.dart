@@ -20,10 +20,10 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final translations = context.loc;
-    return PlatformScaffold(
-      appBar: PlatformAppBar(
-        title: Text(translations.settings),
+    final localicazations = context.loc;
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(localicazations.settings),
       ),
       body: SafeArea(
         child: BlocBuilder<SettingsCubit, SettingsState>(
@@ -32,71 +32,71 @@ class SettingsScreen extends StatelessWidget {
             return ListView(
               children: [
                 SettingsSection(
-                  title: translations.general,
+                  title: localicazations.general,
                   tiles: [
                     OptionCheckbox(
-                      title: translations.animations,
+                      title: localicazations.animations,
                       description:
-                          translations.animationsDetailsSettingsDetails,
+                          localicazations.animationsDetailsSettingsDetails,
                       onChanged: settingsBloc.toggleSetAnimationsEnabled,
                       value: state.isAnimationsEnabled,
                       leading: PlatformAdaptiveIcon(
                         iconData: Icons.play_circle_outline,
                         cupertinoIconData: CupertinoIcons.play_arrow,
-                        semanticLabel: translations.animations,
+                        semanticLabel: localicazations.animations,
                       ),
                     ),
-                    PlatformListTile(
+                    ListTile(
                       onTap: () => showPlatformDialog(
                         context: context,
                         builder: (context) => const SelectThemeDialog(),
                       ),
-                      title: Text(translations.themeMode),
-                      subtitle: Text(translations.themeModeSettingsDetails),
+                      title: Text(localicazations.themeMode),
+                      subtitle: Text(localicazations.themeModeSettingsDetails),
                       leading: PlatformAdaptiveIcon(
                         iconData: Icons.wb_sunny_outlined,
                         cupertinoIconData: CupertinoIcons.sun_max,
-                        semanticLabel: translations.themeMode,
+                        semanticLabel: localicazations.themeMode,
                       ),
                     ),
                   ],
                 ),
                 SettingsSection(
-                  title: translations.shoppingCart,
+                  title: localicazations.shoppingCart,
                   tiles: [
                     OptionCheckbox(
-                      title: translations.confirmDeleteCartItem,
+                      title: localicazations.confirmDeleteCartItem,
                       description:
-                          translations.confirmDeleteCartItemSettingsDetails,
+                          localicazations.confirmDeleteCartItemSettingsDetails,
                       onChanged: settingsBloc.toggleConfirmDeleteCartItem,
                       value: state.confirmDeleteCartItem,
                       leading: PlatformAdaptiveIcon(
                         iconData: Icons.delete_outline,
                         cupertinoIconData: CupertinoIcons.delete,
-                        semanticLabel: translations.confirmDeleteCartItem,
+                        semanticLabel: localicazations.confirmDeleteCartItem,
                       ),
                     ),
                     OptionCheckbox(
-                      title: translations.clearCartAfterCheckout,
+                      title: localicazations.clearCartAfterCheckout,
                       description:
-                          translations.clearCartAfterCheckoutSettingsDetails,
+                          localicazations.clearCartAfterCheckoutSettingsDetails,
                       onChanged: settingsBloc.toggleClearCartAfterCheckout,
                       value: state.clearCartAfterCheckout,
                       leading: PlatformAdaptiveIcon(
                         iconData: Icons.clear,
                         cupertinoIconData: CupertinoIcons.clear,
-                        semanticLabel: translations.clearCartAfterCheckout,
+                        semanticLabel: localicazations.clearCartAfterCheckout,
                       ),
                     ),
                   ],
                 ),
                 SettingsSection(
-                  title: translations.statistics,
+                  title: localicazations.statistics,
                   tiles: [
                     OptionCheckbox(
-                      title: translations.forceUseScrollableChart,
-                      description:
-                          translations.forceUseScrollableChartSettingsDetails,
+                      title: localicazations.forceUseScrollableChart,
+                      description: localicazations
+                          .forceUseScrollableChartSettingsDetails,
                       onChanged: settingsBloc.toggleForceUseScrollableChart,
                       value: state.forceUseScrollableChart,
                       leading: const Icon(
@@ -104,67 +104,68 @@ class SettingsScreen extends StatelessWidget {
                       ),
                     ),
                     OptionCheckbox(
-                      title: translations.preferNumbersInChartMonths,
-                      description: translations
+                      title: localicazations.preferNumbersInChartMonths,
+                      description: localicazations
                           .preferNumbersInChartMonthsSettingsDetails,
                       onChanged: settingsBloc.toggleUseMonthNumberInChart,
                       value: state.useMonthNumberInChart,
                       leading: PlatformAdaptiveIcon(
                         iconData: Icons.insert_chart_outlined,
                         cupertinoIconData: CupertinoIcons.chart_bar,
-                        semanticLabel: translations.preferNumbersInChartMonths,
+                        semanticLabel:
+                            localicazations.preferNumbersInChartMonths,
                       ),
                     ),
                   ],
                 ),
                 SettingsSection(
-                  title: translations.support,
+                  title: localicazations.support,
                   tiles: [
                     OptionCheckbox(
-                      title: translations.unFocusAfterSendMessage,
-                      description:
-                          translations.unFocusAfterSendMessageSettingsDetails,
+                      title: localicazations.unFocusAfterSendMessage,
+                      description: localicazations
+                          .unFocusAfterSendMessageSettingsDetails,
                       onChanged: settingsBloc.toggleUnFocusAfterSendMsg,
                       value: state.unFocusAfterSendMsg,
                       leading: PlatformAdaptiveIcon(
                         iconData: Icons.send,
                         cupertinoIconData: CupertinoIcons.paperplane,
-                        semanticLabel: translations.unFocusAfterSendMessage,
+                        semanticLabel: localicazations.unFocusAfterSendMessage,
                       ),
                     ),
                     OptionCheckbox(
-                      title: translations.useClassicMessageBubble,
-                      description:
-                          translations.useClassicMessageBubbleSettingsDetails,
+                      title: localicazations.useClassicMessageBubble,
+                      description: localicazations
+                          .useClassicMessageBubbleSettingsDetails,
                       onChanged: settingsBloc.toggleUseClassicMsgBubble,
                       value: state.useClassicMsgBubble,
                       leading: PlatformAdaptiveIcon(
                         iconData: Icons.chat_bubble,
                         cupertinoIconData: CupertinoIcons.chat_bubble,
-                        semanticLabel: translations.useClassicMessageBubble,
+                        semanticLabel: localicazations.useClassicMessageBubble,
                       ),
                     ),
                   ],
                 ),
                 SettingsSection(
-                  title: translations.orders,
+                  title: localicazations.orders,
                   tiles: [
                     OptionCheckbox(
-                      title: translations.showOrderItemNotes,
+                      title: localicazations.showOrderItemNotes,
                       description:
-                          translations.showOrderItemNotesSettingsDetails,
+                          localicazations.showOrderItemNotesSettingsDetails,
                       onChanged: settingsBloc.toggleShowOrderItemNotes,
                       value: state.showOrderItemNotes,
                       leading: PlatformAdaptiveIcon(
                         iconData: Icons.description,
                         cupertinoIconData: CupertinoIcons.doc_text,
-                        semanticLabel: translations.showOrderItemNotes,
+                        semanticLabel: localicazations.showOrderItemNotes,
                       ),
                     ),
                   ],
                 ),
                 SettingsSection(
-                  title: translations.data,
+                  title: localicazations.data,
                   tiles: [
                     Padding(
                       padding: const EdgeInsets.all(2.0),
@@ -185,7 +186,7 @@ class SettingsScreen extends StatelessWidget {
                               settingsBloc.clearAllPrefs();
                               Navigator.of(context).pop();
                             },
-                            child: Text(translations.clearPreferences),
+                            child: Text(localicazations.clearPreferences),
                             cupertino: (context, platform) =>
                                 CupertinoElevatedButtonData(
                               padding: const EdgeInsets.all(8),
@@ -197,14 +198,15 @@ class SettingsScreen extends StatelessWidget {
                   ],
                 ),
                 SettingsSection(
-                  title: translations.aboutApp,
+                  title: localicazations.aboutApp,
                   tiles: [
                     const AboutAppListTile(),
                     Align(
                       alignment: Alignment.center,
                       child: PlatformTextButton(
-                        child: Text(translations.developedByWithDeveloperName(
-                            Constants.developerName)),
+                        child: Text(
+                            localicazations.developedByWithDeveloperName(
+                                Constants.developerName)),
                         onPressed: () => launchUrlString(
                           Constants.developerUrl,
                         ),

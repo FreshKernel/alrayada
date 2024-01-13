@@ -35,7 +35,7 @@ class UserDataTextInputs extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: PlatformTextFormField(
+              child: TextFormField(
                 textInputAction: TextInputAction.next,
                 maxLength: 11,
                 autocorrect: false,
@@ -44,16 +44,10 @@ class UserDataTextInputs extends StatelessWidget {
                 controller: labOwnerPhoneNumberInputHandler.controller,
                 focusNode: labOwnerPhoneNumberInputHandler.focusNode,
                 autofillHints: const [AutofillHints.telephoneNumberLocal],
-                hintText: context.loc.labOwnerPhoneNumber,
-                cupertino: (_, __) => CupertinoTextFormFieldData(
-                  prefix: const Icon(CupertinoIcons.phone_fill),
-                  placeholder: context.loc.labOwnerPhoneNumber,
-                ),
-                material: (_, __) => MaterialTextFormFieldData(
-                  decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.phone),
-                    labelText: context.loc.labOwnerPhoneNumber,
-                  ),
+                decoration: InputDecoration(
+                  hintText: context.loc.labOwnerPhoneNumber,
+                  prefixIcon: Icon(PlatformIcons(context).phone),
+                  labelText: context.loc.labOwnerPhoneNumber,
                 ),
                 minLines: 1,
                 maxLines: 1,
@@ -66,25 +60,23 @@ class UserDataTextInputs extends StatelessWidget {
             ),
             const SizedBox(width: 12),
             Expanded(
-              child: PlatformTextFormField(
+              child: TextFormField(
                 textInputAction: TextInputAction.next,
                 maxLength: 11,
                 autocorrect: false,
                 textCapitalization: TextCapitalization.none,
                 keyboardType: TextInputType.number,
                 enableSuggestions: true,
-                hintText: context.loc.labPhoneNumber,
                 controller: labPhoneNumberController,
                 autofillHints: const [AutofillHints.telephoneNumberLocal],
-                cupertino: (_, __) => CupertinoTextFormFieldData(
-                  prefix: const Icon(CupertinoIcons.phone),
-                  placeholder: context.loc.labPhoneNumber,
-                ),
-                material: (_, __) => MaterialTextFormFieldData(
-                  decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.phone_outlined),
-                    labelText: context.loc.labPhoneNumber,
+                decoration: InputDecoration(
+                  hintText: context.loc.labPhoneNumber,
+                  prefixIcon: Icon(
+                    isCupertino(context)
+                        ? CupertinoIcons.phone
+                        : Icons.phone_outlined,
                   ),
+                  labelText: context.loc.labPhoneNumber,
                 ),
                 minLines: 1,
                 maxLines: 1,
@@ -96,21 +88,17 @@ class UserDataTextInputs extends StatelessWidget {
             ),
           ],
         ),
-        PlatformTextFormField(
+        TextFormField(
           textInputAction: TextInputAction.next,
           textCapitalization: TextCapitalization.words,
-          hintText: context.loc.labName,
           autofillHints: const [AutofillHints.location],
           controller: labNameController,
-          cupertino: (_, __) => CupertinoTextFormFieldData(
-            prefix: const Icon(CupertinoIcons.person_2_square_stack),
-            placeholder: context.loc.labName,
-          ),
-          material: (_, __) => MaterialTextFormFieldData(
-            decoration: InputDecoration(
-              prefixIcon: const Icon(Icons.location_history_rounded),
-              labelText: context.loc.labName,
-            ),
+          decoration: InputDecoration(
+            hintText: context.loc.labName,
+            prefixIcon: Icon(isCupertino(context)
+                ? CupertinoIcons.person_2_square_stack
+                : Icons.location_history_rounded),
+            labelText: context.loc.labName,
           ),
           minLines: 1,
           maxLines: 1,
@@ -119,20 +107,16 @@ class UserDataTextInputs extends StatelessWidget {
             errorMessage: context.loc.pleaseEnterTheLabName,
           ),
         ),
-        PlatformTextFormField(
+        TextFormField(
           textInputAction: TextInputAction.done,
           textCapitalization: TextCapitalization.words,
-          hintText: context.loc.labOwnerName,
           autofillHints: const [AutofillHints.name],
-          cupertino: (_, __) => CupertinoTextFormFieldData(
-            prefix: const Icon(CupertinoIcons.person),
-            placeholder: context.loc.labOwnerName,
-          ),
-          material: (_, __) => MaterialTextFormFieldData(
-            decoration: InputDecoration(
-              prefixIcon: const Icon(Icons.location_history),
-              labelText: context.loc.labOwnerName,
-            ),
+          decoration: InputDecoration(
+            hintText: context.loc.labOwnerName,
+            prefixIcon: Icon(isCupertino(context)
+                ? CupertinoIcons.person
+                : Icons.location_history),
+            labelText: context.loc.labOwnerName,
           ),
           minLines: 1,
           controller: labOwnerNameController,
