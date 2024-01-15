@@ -66,29 +66,29 @@ fun Application.configureRouting() {
             cause.printStackTrace()
             throw ErrorResponseException(HttpStatusCode.InternalServerError, "500: $cause", "SERVER_ERROR")
         }
-        exception<SerializationException> { call, cause ->
-            throw ErrorResponseException( HttpStatusCode.BadRequest, "Invalid json: $cause", "INVALID_JSON")
+        exception<SerializationException> { _, cause ->
+            throw ErrorResponseException(HttpStatusCode.BadRequest, "Invalid json: $cause", "INVALID_JSON")
         }
-        exception<IllegalArgumentException> { call, cause ->
-            call.respondJsonText(text = "Invalid: $cause", status = HttpStatusCode.BadRequest)
+        exception<IllegalArgumentException> { _, cause ->
+            throw ErrorResponseException(HttpStatusCode.BadRequest, "Invalid: $cause", "INVALID_ARGUMENT")
         }
-        exception<ContentTransformationException> { call, cause ->
-            call.respondJsonText(HttpStatusCode.BadRequest, "Invalid request format: ${cause.message}")
+        exception<ContentTransformationException> { _, cause ->
+            throw ErrorResponseException(HttpStatusCode.BadRequest, "Invalid request format: ${cause.message}", "CONTENT")
         }
-        exception<BadRequestException> { call, cause ->
-            call.respondJsonText(HttpStatusCode.BadRequest, "Bad request: ${cause.message}")
+        exception<BadRequestException> { _, cause ->
+            throw ErrorResponseException(HttpStatusCode.BadRequest, "Bad request: ${cause.message}", "INVALID_BODY")
         }
-        exception<RouteProtectedException> { call, _ ->
-            call.respondJsonText(HttpStatusCode.Unauthorized, "You don't have access to this api")
+        exception<RouteProtectedException> { _, _ ->
+            throw ErrorResponseException(HttpStatusCode.Unauthorized, "You don't have access to this api", "ROUTE_PROTECTED")
         }
-        exception<JsonConvertException> { call, cause ->
-            call.respondJsonText(HttpStatusCode.InternalServerError, "Error while convert json = ${cause.message}")
+        exception<JsonConvertException> { _, cause ->
+            throw ErrorResponseException(HttpStatusCode.InternalServerError, "Error while convert json = ${cause.message}", "JSON_CONVERT_ERROR")
         }
-        exception<UserShouldAuthenticatedException> { call, cause ->
-            call.respondJsonText(HttpStatusCode.BadRequest, cause.message.toString())
+        exception<UserShouldAuthenticatedException> { _, cause ->
+            throw ErrorResponseException(HttpStatusCode.BadRequest, cause.message.toString(), "AUTHENTICATION_REQUIRED")
         }
-        exception<RequestBodyMustValidException> { call, cause ->
-            call.respondJsonText(HttpStatusCode.BadRequest, cause.message.toString())
+        exception<RequestBodyMustValidException> { _, cause ->
+            throw ErrorResponseException(HttpStatusCode.BadRequest, cause.message.toString(), "INVALID_BODY")
         }
         exception<ErrorResponseException> { call, cause ->
             call.respond(

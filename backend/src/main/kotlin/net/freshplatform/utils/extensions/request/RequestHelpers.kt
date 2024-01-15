@@ -50,7 +50,9 @@ suspend inline fun <reified T : Any> ApplicationCall.receiveBodyNullableAs(): T?
 }
 
 class RequestBodyMustValidException(errorMessage: String = "Request body must valid.") : Exception(errorMessage)
+
 class MissingParameterException(missingParameterName: String) : Exception(missingParameterName)
+
 open class ParameterInvalidException(error: String) : Exception(error)
 class ParameterMustBeIntException(parameterName: String = "\${}") :
     ParameterInvalidException("Parameter $parameterName must be int")

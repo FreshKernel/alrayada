@@ -10,7 +10,7 @@ import '../../services/dio_service.dart';
 import '../../services/notifications/s_notifications.dart';
 import '../../utils/constants/routes_constants.dart';
 import '../../utils/server.dart';
-import '../social_authentication/social_authentication.dart';
+import 'auth_custom_provider.dart';
 import 'auth_exceptions.dart';
 import 'auth_repository.dart';
 import 'models/auth_credential.dart';
@@ -49,10 +49,61 @@ class AuthRepositoryImpl extends AuthRepository {
       saveUser(userResponse);
       DioService.instance.setJwtToken(
         userResponse.token,
-        logout,
+        onInvalidToken: logout,
       );
       autoLogout(userResponse);
       return userResponse;
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 429) {
+        throw TooManyRequestsAuthException(message: e.message.toString());
+      }
+      final code = e.response?.data['code'].toString() ?? '';
+      final exception = switch (code) {
+        'EMAIL_USED' =>
+          EmailAlreadyUsedAuthException(message: e.message.toString()),
+        'USER_NOT_FOUND' =>
+          UserNotFoundAuthException(message: e.message.toString()),
+        'INVALID_CREDENTIALS' =>
+          InvalidCredentialsAuthException(message: e.message.toString()),
+        'VERIFICATION_LINK_ALREADY_SENT' =>
+          VerificationLinkAlreadySentAuthException(
+            message: e.message.toString(),
+            minutesToExpire: int.parse(
+                e.response?.data['data']['minutesToExpire'] as String),
+          ),
+        'UNKNOWN_ERROR' => UnknownAuthException(message: e.message.toString()),
+        'EMAIL_VERIFICATION' =>
+          EmailNeedsVerificationAuthException(message: e.message.toString()),
+        String() => UnknownAuthException(message: e.message.toString()),
+      };
+      throw exception;
+    } catch (e) {
+      throw UnknownAuthException(
+        message: e.toString(),
+      );
+    }
+  }
+
+  @override
+  Future<UserCredential> signUpWithEmailAndPassword({
+    required String email,
+    required String password,
+    required UserData userData,
+  }) async {
+    try {
+      await _dio.post(
+        await ServerConfigurations.getRequestUrl(
+            RoutesConstants.authRoutes.signUp),
+        data: {
+          'email': email,
+          'password': password,
+          'userData': userData.toJson(),
+          'deviceToken':
+              (await NotificationsService.instanse.getUserDeviceToken())
+                  .toJson(),
+        },
+      );
+      throw UnimplementedError();
     } on DioException catch (e) {
       if (e.response?.statusCode == 429) {
         throw TooManyRequestsAuthException(message: e.message.toString());
@@ -79,25 +130,6 @@ class AuthRepositoryImpl extends AuthRepository {
         message: e.toString(),
       );
     }
-  }
-
-  @override
-  Future<void> signUpWithEmailAndPassword({
-    required String email,
-    required String password,
-    required UserData userData,
-  }) async {
-    await _dio.post(
-      await ServerConfigurations.getRequestUrl(
-          RoutesConstants.authRoutes.signUp),
-      data: {
-        'email': email,
-        'password': password,
-        'userData': userData.toJson(),
-        'deviceToken':
-            (await NotificationsService.instanse.getUserDeviceToken()).toJson(),
-      },
-    );
   }
 
   void autoLogout(UserCredential userAuthenticatedResponse) {
@@ -164,7 +196,7 @@ class AuthRepositoryImpl extends AuthRepository {
       token: jwt,
     );
     autoLogout(userCredential);
-    DioService.instance.setJwtToken(jwt, logout);
+    DioService.instance.setJwtToken(jwt, onInvalidToken: logout);
     return userCredential;
   }
 
@@ -180,32 +212,10 @@ class AuthRepositoryImpl extends AuthRepository {
   }
 
   @override
-  Future<UserCredential> authenticateWithSocialLogin(
-      SocialAuthentication socialAuthentication) async {
-    try {
-      final response = await _dio.post(
-        await ServerConfigurations.getRequestUrl(
-            RoutesConstants.authRoutes.socialLogin),
-        data: socialAuthentication.toJson(),
-        queryParameters: {
-          'provider': socialAuthentication.provider,
-        },
-      );
-      if (response.data == null) {
-        throw 'Response data when authenticate the user is null';
-      }
-      final userCredential = UserCredential.fromJson(jsonDecode(response.data));
-      await saveUser(userCredential);
-      DioService.instance.setJwtToken(
-        userCredential.token,
-        logout,
-      );
-      autoLogout(userCredential);
-      return userCredential;
-    } on DioException catch (e) {
-      /// if server returns "There is no matching email account, so please provider sign up data to create the account"
-      return e.response?.data;
-    }
+  Future<UserCredential> authenticateWithCustomProvider(
+    AuthCustomProvider authCustomProvider,
+  ) async {
+    throw UnimplementedError();
   }
 
   @override
@@ -275,5 +285,10 @@ class AuthRepositoryImpl extends AuthRepository {
         'newPassword': newPassword,
       },
     );
+  }
+
+  @override
+  Future<void> sendEmailVerification() {
+    throw UnimplementedError();
   }
 }

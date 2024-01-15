@@ -78,13 +78,11 @@ class UserAdminRoutes(
                 call.respondJsonText(HttpStatusCode.Conflict, "There is no user by this email.")
                 return@delete
             }
-            println(user.email)
-            println(currentUser.email)
             if (user.email == currentUser.email) {
                 call.respondJsonText(HttpStatusCode.BadRequest, "We can't let you delete yourself!")
                 return@delete
             }
-            val deleteSuccess = userDataSource.deleteUserByUUID(user.uuid)
+            val deleteSuccess = userDataSource.deleteUserById(user.uuid)
             if (!deleteSuccess) {
                 call.respondJsonText("Error while delete the user.")
                 return@delete
@@ -111,7 +109,7 @@ class UserAdminRoutes(
                 call.respondJsonText(HttpStatusCode.Conflict, "Account is already not activated.")
                 return@patch
             }
-            val updateSuccess = userDataSource.deactivateUserAccountByUUID(user.uuid)
+            val updateSuccess = userDataSource.deactivateUserAccountById(user.uuid)
             if (!updateSuccess) {
                 call.respondJsonText(
                     HttpStatusCode.InternalServerError, "Error while deactivate " +
@@ -141,7 +139,7 @@ class UserAdminRoutes(
                 call.respondJsonText(HttpStatusCode.Conflict, "Account is already activated.")
                 return@patch
             }
-            val updateSuccess = userDataSource.activateUserAccountByUUID(user.uuid)
+            val updateSuccess = userDataSource.activateUserAccountById(user.uuid)
             if (!updateSuccess) {
                 call.respondJsonText(
                     HttpStatusCode.InternalServerError, "Error while activate " +
@@ -159,7 +157,6 @@ class UserAdminRoutes(
             catch (_: NotificationServiceException) {
 //                call.respondJsonText(HttpStatusCode.InternalServerError, "Error while send notification")
             }
-            println("Hello hello hello 2")
             call.respondJsonText(HttpStatusCode.OK, "User account has been successfully activated.")
         }
     }

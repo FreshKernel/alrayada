@@ -32,7 +32,7 @@ class ProductRoutes(
 
         val limit = call.requestLimitParameter(50)
         val page = call.requestPageParameter(1)
-//        val ids = call.parameters["ids"]?.split(",") ?: emptyList()
+
         val ids = call.receiveBodyNullableAs<List<String>>() ?: emptyList()
         if (ids.isNotEmpty()) {
             val response = productDataSource.getAllByIds(ids).map { it.toResponse(call) }

@@ -14,6 +14,7 @@ class SettingsState with _$SettingsState {
     @Default(true) bool showOnBoardingScreen,
     @Default(true) bool showOrderItemNotes,
     @Default(AppLayoutMode.auto) AppLayoutMode layoutMode,
+    @Default(AppLanguague.system) AppLanguague languague,
   }) = _SettingsState;
   factory SettingsState.fromJson(Map<String, Object?> json) =>
       _$SettingsStateFromJson(json);
@@ -23,4 +24,14 @@ enum AppLayoutMode {
   auto,
   small,
   large,
+}
+
+enum AppLanguague {
+  system(valueName: 'System'),
+  en(valueName: 'English'),
+  ar(valueName: 'العربية');
+
+  const AppLanguague({required this.valueName});
+
+  final String valueName;
 }

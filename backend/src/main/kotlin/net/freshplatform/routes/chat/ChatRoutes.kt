@@ -46,7 +46,6 @@ class ChatRoutes(
                     )
                 }
             } catch (e: Exception) {
-                println(e.localizedMessage)
                 e.printStackTrace()
             } finally {
                 chatRoomController.tryDisconnect(

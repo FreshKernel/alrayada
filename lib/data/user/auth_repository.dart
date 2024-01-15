@@ -1,4 +1,4 @@
-import '../social_authentication/social_authentication.dart';
+import 'auth_custom_provider.dart';
 import 'models/auth_credential.dart';
 import 'models/user.dart';
 
@@ -19,15 +19,16 @@ abstract class AuthRepository {
     required String email,
     required String password,
   });
-  Future<void> signUpWithEmailAndPassword({
+  Future<UserCredential> signUpWithEmailAndPassword({
     required String email,
     required String password,
     required UserData userData,
   });
-  Future<UserCredential> authenticateWithSocialLogin(
-    SocialAuthentication socialAuthentication,
+  Future<UserCredential> authenticateWithCustomProvider(
+    AuthCustomProvider authCustomProvider,
   );
   Future<void> deleteAccount();
   Future<UserCredential?> fetchSavedUser();
+  Future<void> sendEmailVerification();
   Future<User?> fetchUser();
 }

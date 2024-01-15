@@ -38,7 +38,6 @@ data class User(
             false
         } catch (e: Exception) {
             e.printStackTrace()
-            println("Unhandled exception: ${e.message}")
             false
         }
     }

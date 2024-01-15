@@ -6,6 +6,7 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import '../../l10n/app_localizations.dart';
 
 import '../../logic/settings/settings_cubit.dart';
+import '../onboarding/onboarding_screen.dart';
 import 'dashboard_drawer.dart';
 import 'navigation_item.dart';
 import 'pages/cart_page.dart';
@@ -114,59 +115,87 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     return BlocBuilder<SettingsCubit, SettingsState>(
       buildWhen: (previous, current) =>
-          previous.layoutMode != current.layoutMode,
-      builder: (context, state) => Scaffold(
-        drawer: const DashboardDrawer(),
-        appBar: AppBar(
-          title: Text(_items[_currentIndex].label),
-          actions: _items[_currentIndex].actionsBuilder?.call(context),
-        ),
-        body: SafeArea(
-          child: Builder(
-            builder: (context) {
-              final bodyWidget = PageStorage(
-                bucket: _pageStorageBucket,
-                child: _items[_currentIndex].body,
-              );
-              if (!_isNavRailBar(
-                  MediaQuery.sizeOf(context), state.layoutMode)) {
-                return bodyWidget;
-              }
-              return Row(
-                children: [
-                  NavigationRail(
-                    onDestinationSelected: _navigateToNewItem,
-                    labelType: NavigationRailLabelType.all,
-                    destinations: _items.map((e) {
-                      return e.toNavigationRailDestination();
-                    }).toList(),
-                    selectedIndex: _currentIndex,
-                  ),
-                  Expanded(
-                    child: widget,
-                  )
-                ],
-              );
-            },
-          ),
-        ),
-        bottomNavigationBar: Builder(
-          builder: (context) {
-            if (_isNavRailBar(MediaQuery.sizeOf(context), state.layoutMode)) {
-              return const SizedBox.shrink();
-            }
-            return NavigationBar(
-              selectedIndex: _currentIndex,
-              onDestinationSelected: _navigateToNewItem,
-              destinations: _items.map((e) {
-                return e.toNavigationDestination();
-              }).toList(),
+          previous.layoutMode != current.layoutMode ||
+          previous.showOnBoardingScreen != current.showOnBoardingScreen,
+      builder: (context, state) {
+        return AnimatedSwitcher(
+          duration: const Duration(milliseconds: 330),
+          transitionBuilder: (child, animation) {
+            // This animation is from flutter.dev example
+            const begin = Offset(0.0, 1.0);
+            const end = Offset.zero;
+            const curve = Curves.ease;
+
+            final tween = Tween(
+              begin: begin,
+              end: end,
+            ).chain(
+              CurveTween(curve: curve),
+            );
+
+            return SlideTransition(
+              position: animation.drive(tween),
+              child: child,
             );
           },
-        ),
-        floatingActionButton:
-            _items[_currentIndex].actionButtonBuilder?.call(context),
-      ),
+          child: state.showOnBoardingScreen
+              ? const OnBoardingScreen()
+              : Scaffold(
+                  drawer: const DashboardDrawer(),
+                  appBar: AppBar(
+                    title: Text(_items[_currentIndex].label),
+                    actions:
+                        _items[_currentIndex].actionsBuilder?.call(context),
+                  ),
+                  body: SafeArea(
+                    child: Builder(
+                      builder: (context) {
+                        final bodyWidget = PageStorage(
+                          bucket: _pageStorageBucket,
+                          child: _items[_currentIndex].body,
+                        );
+                        if (!_isNavRailBar(
+                            MediaQuery.sizeOf(context), state.layoutMode)) {
+                          return bodyWidget;
+                        }
+                        return Row(
+                          children: [
+                            NavigationRail(
+                              onDestinationSelected: _navigateToNewItem,
+                              labelType: NavigationRailLabelType.all,
+                              destinations: _items.map((e) {
+                                return e.toNavigationRailDestination();
+                              }).toList(),
+                              selectedIndex: _currentIndex,
+                            ),
+                            Expanded(
+                              child: widget,
+                            )
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                  bottomNavigationBar: Builder(
+                    builder: (context) {
+                      if (_isNavRailBar(
+                          MediaQuery.sizeOf(context), state.layoutMode)) {
+                        return const SizedBox.shrink();
+                      }
+                      return NavigationBar(
+                        selectedIndex: _currentIndex,
+                        onDestinationSelected: _navigateToNewItem,
+                        destinations: _items.map((e) {
+                          return e.toNavigationDestination();
+                        }).toList(),
+                      );
+                    },
+                  ),
+                  floatingActionButton:
+                      _items[_currentIndex].actionButtonBuilder?.call(context),
+                ),
+        );
+      },
     );
   }
 }

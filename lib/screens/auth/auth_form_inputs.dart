@@ -1,14 +1,18 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart' show TapGestureRecognizer;
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
+import '../../data/user/auth_exceptions.dart';
 import '../../data/user/models/user.dart';
 import '../../l10n/app_localizations.dart';
 import '../../logic/auth/auth_cubit.dart';
 import '../../logic/settings/settings_cubit.dart';
+import '../../utils/constants/constants.dart';
+import '../../utils/extensions/scaffold_messenger.dart';
 import '../../utils/text_input_handler.dart';
 import '../../widgets/auth/email_text_field.dart';
 import '../../widgets/auth/password_text_field.dart';
@@ -46,6 +50,7 @@ class _AuthFormInputsState extends State<AuthFormInputs> {
   final _labNameController = TextEditingController();
   final _labOwnerNameController = TextEditingController();
   var _labCity = IraqGovernorate.defaultCity;
+  var _isPrivacyPolicyAgreed = false;
 
   String? _emailError;
   String? _passwordError;
@@ -73,23 +78,23 @@ class _AuthFormInputsState extends State<AuthFormInputs> {
   Future<void> _submit() async {
     _emailError = null;
     _passwordError = null;
+
     final isValid = _formKey.currentState?.validate() ?? false;
+    final authBloc = context.read<AuthCubit>();
     if (!isValid) {
       return;
     }
-    _formKey.currentState?.save();
 
-    final authBloc = context.read<AuthCubit>();
-    setState(() => _isLoading = true);
-    if (_isLogin) {
-      await context.read<AuthCubit>().signInWithEmailAndPassword(
-            email: _emailController.text,
-            password: _passwordInputHandler.controller.text,
-          );
-    } else {
+    if (!_isLogin) {
+      if (!_isPrivacyPolicyAgreed) {
+        ScaffoldMessenger.of(context).showSnackBarText(
+          context.loc.pleaseAgreeToPrivacyPolicyFirst,
+        );
+        return;
+      }
       final isConfirmCreateAccount = await showAdaptiveDialog<bool>(
             context: context,
-            builder: (context) => PlatformAlertDialog(
+            builder: (context) => AlertDialog.adaptive(
               title: Text(context.loc.createNewAccount),
               content:
                   Text(context.loc.authAreYouSureWantToContinueCreateAccount),
@@ -109,6 +114,16 @@ class _AuthFormInputsState extends State<AuthFormInputs> {
       if (!isConfirmCreateAccount) {
         return;
       }
+    }
+    _formKey.currentState?.save();
+
+    setState(() => _isLoading = true);
+    if (_isLogin) {
+      await authBloc.signInWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordInputHandler.controller.text,
+      );
+    } else {
       await authBloc.signUpWithEmailAndPassword(
         email: _emailController.text,
         password: _passwordInputHandler.controller.text,
@@ -147,6 +162,36 @@ class _AuthFormInputsState extends State<AuthFormInputs> {
           },
         ),
       ),
+      const SizedBox(height: 8),
+      Row(
+        children: [
+          Checkbox.adaptive(
+            value: _isPrivacyPolicyAgreed,
+            onChanged: (value) =>
+                setState(() => _isPrivacyPolicyAgreed = value ?? false),
+          ),
+          Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(
+                  text: '${context.loc.iAgreeTo} ',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+                TextSpan(
+                  text: context.loc.privacyPolicy,
+                  style: Theme.of(context).textTheme.bodyMedium?.apply(
+                        decoration: TextDecoration.underline,
+                        color: Colors.blue,
+                        decorationColor: Colors.blue,
+                      ),
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () => launchUrlString(Constants.privacyPolicy),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     ];
   }
 
@@ -176,11 +221,8 @@ class _AuthFormInputsState extends State<AuthFormInputs> {
         child: Align(
           alignment: Alignment.centerRight,
           child: PlatformTextButton(
-            onPressed: () => showPlatformDialog(
-              context: context,
-              builder: (context) => const AuthForgotPasswordDialog(),
-            ),
-            child: Text(context.loc.forgotPassword),
+            onPressed: () => context.push(AuthForgotPassword.routeName),
+            child: Text(context.loc.forgotPasswordWithQuestionMark),
           ),
         ),
       ),
@@ -216,6 +258,41 @@ class _AuthFormInputsState extends State<AuthFormInputs> {
   Widget build(BuildContext context) {
     return BlocListener<AuthCubit, AuthState>(
       listener: (context, state) {
+        final authException = state.exception;
+        if (authException != null) {
+          switch (authException) {
+            case UserNotFoundAuthException():
+              ScaffoldMessenger.of(context).showSnackBarText(
+                context.loc.authEmailNotFound,
+              );
+            case InvalidCredentialsAuthException():
+              ScaffoldMessenger.of(context).showSnackBarText(
+                context.loc.incorrectPassword,
+              );
+            case VerificationLinkAlreadySentAuthException():
+              ScaffoldMessenger.of(context).showSnackBarText(
+                context.loc.verificationLinkIsAlreadySentWithMinutesToExpire(
+                    authException.minutesToExpire.toString()),
+              );
+            case UnknownAuthException():
+              ScaffoldMessenger.of(context).showSnackBarText(
+                context.loc.unknownErrorWithMsg(authException.message),
+              );
+            case EmailAlreadyUsedAuthException():
+              ScaffoldMessenger.of(context).showSnackBarText(
+                context.loc.authEmailAlreadyInUse,
+              );
+            case TooManyRequestsAuthException():
+              ScaffoldMessenger.of(context).showSnackBarText(
+                context.loc.authTooManyFailedAttempts,
+              );
+              return;
+            case EmailNeedsVerificationAuthException():
+              ScaffoldMessenger.of(context).showSnackBarText(
+                context.loc.yourAccountNeedToBeActivated,
+              );
+          }
+        }
         if (state.userCredential != null) {
           context.pop();
         }

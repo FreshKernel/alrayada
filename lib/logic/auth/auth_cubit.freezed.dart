@@ -17,7 +17,7 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$AuthState {
   UserCredential? get userCredential => throw _privateConstructorUsedError;
-  Exception? get exception => throw _privateConstructorUsedError;
+  AuthException? get exception => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $AuthStateCopyWith<AuthState> get copyWith =>
@@ -29,7 +29,7 @@ abstract class $AuthStateCopyWith<$Res> {
   factory $AuthStateCopyWith(AuthState value, $Res Function(AuthState) then) =
       _$AuthStateCopyWithImpl<$Res, AuthState>;
   @useResult
-  $Res call({UserCredential? userCredential, Exception? exception});
+  $Res call({UserCredential? userCredential, AuthException? exception});
 
   $UserCredentialCopyWith<$Res>? get userCredential;
 }
@@ -58,7 +58,7 @@ class _$AuthStateCopyWithImpl<$Res, $Val extends AuthState>
       exception: freezed == exception
           ? _value.exception
           : exception // ignore: cast_nullable_to_non_nullable
-              as Exception?,
+              as AuthException?,
     ) as $Val);
   }
 
@@ -83,7 +83,7 @@ abstract class _$$UserStateImplCopyWith<$Res>
       __$$UserStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({UserCredential? userCredential, Exception? exception});
+  $Res call({UserCredential? userCredential, AuthException? exception});
 
   @override
   $UserCredentialCopyWith<$Res>? get userCredential;
@@ -111,7 +111,7 @@ class __$$UserStateImplCopyWithImpl<$Res>
       exception: freezed == exception
           ? _value.exception
           : exception // ignore: cast_nullable_to_non_nullable
-              as Exception?,
+              as AuthException?,
     ));
   }
 }
@@ -125,7 +125,7 @@ class _$UserStateImpl implements _UserState {
   final UserCredential? userCredential;
   @override
   @JsonKey()
-  final Exception? exception;
+  final AuthException? exception;
 
   @override
   String toString() {
@@ -156,12 +156,12 @@ class _$UserStateImpl implements _UserState {
 abstract class _UserState implements AuthState {
   const factory _UserState(
       {required final UserCredential? userCredential,
-      final Exception? exception}) = _$UserStateImpl;
+      final AuthException? exception}) = _$UserStateImpl;
 
   @override
   UserCredential? get userCredential;
   @override
-  Exception? get exception;
+  AuthException? get exception;
   @override
   @JsonKey(ignore: true)
   _$$UserStateImplCopyWith<_$UserStateImpl> get copyWith =>

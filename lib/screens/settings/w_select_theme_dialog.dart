@@ -12,7 +12,7 @@ class SelectThemeDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final translations = context.loc;
-    return PlatformAlertDialog(
+    return AlertDialog.adaptive(
       title: Text(translations.themeMode),
       content: const SelectThemeDialogContent(),
       actions: [
@@ -61,7 +61,7 @@ class SelectThemeDialogContent extends StatelessWidget {
             break;
         }
       },
-      borderRadius: BorderRadius.circular(30),
+      borderRadius: BorderRadius.circular(16),
       children: children.values
           .map((e) => Padding(
                 padding: const EdgeInsets.all(16.0),

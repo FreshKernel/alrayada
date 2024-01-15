@@ -36,6 +36,10 @@ class EmailAlreadyUsedAuthException extends AuthException {
   const EmailAlreadyUsedAuthException({required super.message});
 }
 
+class EmailNeedsVerificationAuthException extends AuthException {
+  const EmailNeedsVerificationAuthException({required super.message});
+}
+
 class TooManyRequestsAuthException extends AuthException {
   const TooManyRequestsAuthException({required super.message});
 }

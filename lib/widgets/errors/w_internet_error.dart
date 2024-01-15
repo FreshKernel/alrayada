@@ -67,7 +67,7 @@ class InternetErrorDialog extends StatelessWidget {
         textAlign: TextAlign.center,
       ),
     ];
-    return PlatformAlertDialog(
+    return AlertDialog.adaptive(
       content: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,

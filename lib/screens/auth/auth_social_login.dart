@@ -56,7 +56,7 @@ class AuthSocialLogin extends StatelessWidget {
         _buildButton(
           label: context.loc.loginWithGoogle,
           icon: SvgPicture.asset(
-            Assets.svg.icGoogle.path,
+            Assets.svg.icons.google.path,
             height: 25,
             width: 25,
           ),

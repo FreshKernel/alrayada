@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -43,42 +42,42 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
         OnBoardingPage(
           imagePath: Assets.lottie.onboarding.onlineShopping.path,
           title: context.loc.secureShoppingExperienceFeature,
-          subTitle: context.loc.secureShoppingExperienceFeatureDetails,
+          subTitle: context.loc.secureShoppingExperienceFeatureDesc,
         ),
         OnBoardingPage(
           imagePath: Assets.lottie.onboarding.cloudSecurity.path,
           title: context.loc.secureShoppingExperienceFeature,
-          subTitle: context.loc.secureShoppingExperienceFeatureDetails,
+          subTitle: context.loc.secureShoppingExperienceFeatureDesc,
         ),
         OnBoardingPage(
           imagePath: Assets.lottie.onboarding.wishlist.path,
           title: context.loc.favoritesWishlistFeature,
-          subTitle: context.loc.favoritesWishlistFeatureDetails,
+          subTitle: context.loc.favoritesWishlistFeatureDesc,
         ),
         OnBoardingPage(
           imagePath: Assets.lottie.onboarding.search.path,
           title: context.loc.easyFilteringAndSearchingFeature,
-          subTitle: context.loc.secureShoppingExperienceFeatureDetails,
+          subTitle: context.loc.secureShoppingExperienceFeatureDesc,
         ),
         OnBoardingPage(
           imagePath: Assets.lottie.onboarding.socialAuthentication.path,
           title: context.loc.socialAuthenticationFeature,
-          subTitle: context.loc.socialAuthenticationFeatureDetails,
+          subTitle: context.loc.socialAuthenticationFeatureDesc,
         ),
         OnBoardingPage(
           imagePath: Assets.lottie.onboarding.fastDelivery.path,
-          title: context.loc.fastShippingFeatureDetails,
-          subTitle: context.loc.favoritesWishlistFeatureDetails,
+          title: context.loc.fastShippingFeatureDesc,
+          subTitle: context.loc.favoritesWishlistFeatureDesc,
         ),
         OnBoardingPage(
           imagePath: Assets.lottie.onboarding.support.path,
           title: context.loc.inAppSupportChatFeature,
-          subTitle: context.loc.inAppSupportChatFeatureDetails,
+          subTitle: context.loc.inAppSupportChatFeatureDesc,
         ),
         OnBoardingPage(
           imagePath: Assets.lottie.onboarding.programming.path,
           title: context.loc.underDevelopment,
-          subTitle: context.loc.underDevelopmentFeatureDetails,
+          subTitle: context.loc.underDevelopmentFeatureDesc,
         ),
       ];
 
@@ -127,7 +126,6 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                   if ((newPageIndex + 1) > _pages.length) {
                     // Reached last page
                     context.read<SettingsCubit>().dontShowOnBoardingScreen();
-                    context.replace('/');
                     return;
                   }
                   _navigateToPage(

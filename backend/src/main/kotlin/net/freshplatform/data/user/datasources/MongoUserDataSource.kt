@@ -36,9 +36,9 @@ class MongoUserDataSource(
         return users.insertOne(user).wasAcknowledged()
     }
 
-    override suspend fun deleteUserByUUID(userUUID: String): Boolean {
+    override suspend fun deleteUserById(userId: String): Boolean {
         return try {
-            users.deleteOne(User::uuid eq userUUID).wasAcknowledged()
+            users.deleteOne(User::uuid eq userId).wasAcknowledged()
         } catch (e: Exception) {
             // probably IllegalArgumentException if MongodbId used
             false
@@ -86,7 +86,7 @@ class MongoUserDataSource(
         return updateOne && updateTwo
     }
 
-    override suspend fun updateUserDataByUUID(userData: UserData, userUUID: String): Boolean {
+    override suspend fun updateUserDataById(userData: UserData, userUUID: String): Boolean {
         return try {
             users.updateOne(
                 User::uuid eq userUUID,
@@ -97,10 +97,10 @@ class MongoUserDataSource(
         }
     }
 
-    override suspend fun updateUserPasswordByUUID(newPassword: String, salt: String, userUUID: String): Boolean {
+    override suspend fun updateUserPasswordById(newPassword: String, salt: String, userId: String): Boolean {
         return try {
             users.updateOne(
-                User::uuid eq userUUID,
+                User::uuid eq userId,
                 combine(
                     setValue(User::password, newPassword),
                     setValue(User::salt, salt),
@@ -115,10 +115,10 @@ class MongoUserDataSource(
         }
     }
 
-    override suspend fun activateUserAccountByUUID(uuid: String): Boolean {
+    override suspend fun activateUserAccountById(userId: String): Boolean {
         return try {
             users.updateOne(
-                User::uuid eq uuid,
+                User::uuid eq userId,
                 combine(
                     setValue(User::emailVerified, true),
                     setValue(User::accountActivated, true),
@@ -133,10 +133,10 @@ class MongoUserDataSource(
         }
     }
 
-    override suspend fun deactivateUserAccountByUUID(uuid: String): Boolean {
+    override suspend fun deactivateUserAccountById(userId: String): Boolean {
         return try {
             users.updateOne(
-                User::uuid eq uuid,
+                User::uuid eq userId,
                 setValue(User::accountActivated, false)
             ).wasAcknowledged()
         } catch (e: Exception) {
@@ -144,10 +144,10 @@ class MongoUserDataSource(
         }
     }
 
-    override suspend fun updateDeviceTokenByUUID(newDeviceToken: UserDeviceNotificationsToken, userUUID: String): Boolean {
+    override suspend fun updateDeviceTokenById(newDeviceToken: UserDeviceNotificationsToken, userId: String): Boolean {
         return try {
             users.updateOne(
-                User::uuid eq userUUID,
+                User::uuid eq userId,
                 setValue(User::deviceNotificationsToken, newDeviceToken)
             ).wasAcknowledged()
         } catch (e: Exception) {

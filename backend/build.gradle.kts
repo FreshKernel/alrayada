@@ -55,6 +55,7 @@ dependencies {
     implementation("io.ktor:ktor-server-rate-limit")
     implementation("io.ktor:ktor-server-resources")
     implementation("io.ktor:ktor-server-html-builder")
+    implementation("ch.qos.logback:logback-classic:${libs.versions.logback.get()}")
 
     testImplementation("io.ktor:ktor-server-tests-jvm")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")

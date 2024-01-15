@@ -17,7 +17,7 @@ class NotAuthenticatedError extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Lottie.asset(
-            Assets.lottie.login.path,
+            Assets.lottie.auth.login.path,
           ),
           const SizedBox(height: 20),
           PlatformElevatedButton(

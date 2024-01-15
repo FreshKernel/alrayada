@@ -4,6 +4,6 @@ part of 'auth_cubit.dart';
 sealed class AuthState with _$AuthState {
   const factory AuthState({
     required UserCredential? userCredential,
-    @Default(null) Exception? exception,
+    @Default(null) AuthException? exception,
   }) = _UserState;
 }

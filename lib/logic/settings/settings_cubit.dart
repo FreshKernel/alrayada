@@ -9,6 +9,10 @@ part 'settings_state.dart';
 class SettingsCubit extends HydratedCubit<SettingsState> {
   SettingsCubit() : super(const SettingsState());
 
+  void updateSettings(SettingsState newSettigsState) {
+    emit(newSettigsState);
+  }
+
   void setThemeMode(ThemeMode newThemeMode) {
     emit(state.copyWith(themeMode: newThemeMode));
   }

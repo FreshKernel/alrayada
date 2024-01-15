@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 
 import 'account_data/account_data_screen.dart';
+import 'auth/auth_forgot_password.dart';
 import 'auth/auth_screen.dart';
 import 'dashboard/dashboard_screen.dart';
 import 'notifications/notifications_screen.dart';
@@ -35,7 +36,11 @@ class AppRouter {
       GoRoute(
         path: AuthScreen.routeName,
         builder: (context, state) => const AuthScreen(),
-      )
+      ),
+      GoRoute(
+        path: AuthForgotPassword.routeName,
+        builder: (context, state) => const AuthForgotPassword(),
+      ),
     ],
   );
 }

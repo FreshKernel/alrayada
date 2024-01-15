@@ -23,6 +23,7 @@ Future<void> main() async {
           : await getApplicationDocumentsDirectory(),
     );
     await dotenv.load(fileName: '.env');
+
     runApp(const MyApp());
   } catch (e) {
     runApp(
@@ -63,7 +64,8 @@ class MyApp extends StatelessWidget {
       ],
       child: BlocBuilder<SettingsCubit, SettingsState>(
         buildWhen: (previous, current) =>
-            previous.themeMode != current.themeMode,
+            previous.themeMode != current.themeMode ||
+            previous.languague != current.languague,
         builder: (context, state) {
           AppLogger.info('Building the app widget...');
           return MaterialApp.router(
@@ -83,6 +85,9 @@ class MyApp extends StatelessWidget {
               visualDensity: VisualDensity.adaptivePlatformDensity,
             ),
             themeMode: state.themeMode,
+            locale: state.languague == AppLanguague.system
+                ? null
+                : Locale(state.languague.name),
           );
         },
       ),

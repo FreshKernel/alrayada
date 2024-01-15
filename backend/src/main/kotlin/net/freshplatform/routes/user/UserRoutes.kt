@@ -48,7 +48,6 @@ class UserRoutes(
         const val SIGN_UP_ROUTE_NAME = "signUp"
     }
 
-
     private suspend fun notifyTelegramChatAboutRegister(user: User) {
         val msg = buildString {
             append("A new user has inserted in the database\n")
@@ -153,9 +152,9 @@ class UserRoutes(
             user
         }
         if (isSignIn) {
-            userDataSource.updateDeviceTokenByUUID(
+            userDataSource.updateDeviceTokenById(
                 newDeviceToken = socialAuthRequest.deviceToken,
-                userUUID = user.uuid
+                userId = user.uuid
             )
         }
         val jwtValue = jwtService.generateUserToken(user.stringId())
@@ -408,7 +407,7 @@ class UserRoutes(
                 )
             }
             request.deviceToken?.let { deviceToken ->
-                userDataSource.updateDeviceTokenByUUID(deviceToken, user.stringId())
+                userDataSource.updateDeviceTokenById(deviceToken, user.stringId())
             }
             val jwtValue = jwtService.generateUserToken(user.stringId())
             call.respond(
@@ -566,10 +565,10 @@ class UserRoutes(
             )
         }
         val newPassword = hashingService.generateSaltedHash(newPasswordPlainText)
-        val updateProcessSuccess = userDataSource.updateUserPasswordByUUID(
+        val updateProcessSuccess = userDataSource.updateUserPasswordById(
             newPassword = newPassword.hash,
             salt = newPassword.salt,
-            userUUID = user.uuid
+            userId = user.uuid
         )
         if (!updateProcessSuccess) {
             throw ErrorResponseException(
@@ -593,7 +592,7 @@ class UserRoutes(
                 throw ErrorResponseException(HttpStatusCode.BadRequest, error.first, error.second)
             }
             val user = call.requireAuthenticatedUser()
-            val updateSuccess = userDataSource.updateUserDataByUUID(
+            val updateSuccess = userDataSource.updateUserDataById(
                 userData = userData,
                 userUUID = user.uuid
             )
@@ -620,7 +619,7 @@ class UserRoutes(
                 return@patch
             }
             val currentUser = call.requireAuthenticatedUser()
-            val updateSuccess = userDataSource.updateDeviceTokenByUUID(
+            val updateSuccess = userDataSource.updateDeviceTokenById(
                 deviceToken,
                 currentUser.uuid
             )
@@ -666,10 +665,10 @@ class UserRoutes(
                 )
             }
             val password = hashingService.generateSaltedHash(newPassword)
-            val updateSuccess = userDataSource.updateUserPasswordByUUID(
+            val updateSuccess = userDataSource.updateUserPasswordById(
                 newPassword = password.hash,
                 salt = password.salt,
-                userUUID = user.uuid
+                userId = user.uuid
             )
             if (!updateSuccess) {
                 throw ErrorResponseException(
@@ -685,7 +684,7 @@ class UserRoutes(
     fun deleteSelfAccount() = router.authenticate {
         delete("/deleteAccount") {
             val user = call.requireAuthenticatedUser()
-            val deleteSuccess = userDataSource.deleteUserByUUID(user.stringId())
+            val deleteSuccess = userDataSource.deleteUserById(user.stringId())
             if (!deleteSuccess) {
                 throw ErrorResponseException(
                     HttpStatusCode.InternalServerError, "Error while delete the user", "DELETE_ERROR"

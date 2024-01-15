@@ -1,6 +1,5 @@
 package net.freshplatform
 
-import io.github.cdimascio.dotenv.dotenv
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
@@ -12,11 +11,6 @@ import net.freshplatform.utils.constants.Constants
 import net.freshplatform.utils.extensions.getUserWorkingDirectory
 import net.freshplatform.utils.extensions.isProductionMode
 import net.freshplatform.utils.extensions.isProductionServer
-
-val appDotenv = dotenv {
-    ignoreIfMissing = true
-    systemProperties = false
-}
 
 fun main() {
     val server = embeddedServer(

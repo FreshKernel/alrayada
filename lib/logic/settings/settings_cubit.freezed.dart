@@ -31,6 +31,7 @@ mixin _$SettingsState {
   bool get showOnBoardingScreen => throw _privateConstructorUsedError;
   bool get showOrderItemNotes => throw _privateConstructorUsedError;
   AppLayoutMode get layoutMode => throw _privateConstructorUsedError;
+  AppLanguague get languague => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -55,7 +56,8 @@ abstract class $SettingsStateCopyWith<$Res> {
       bool useClassicMsgBubble,
       bool showOnBoardingScreen,
       bool showOrderItemNotes,
-      AppLayoutMode layoutMode});
+      AppLayoutMode layoutMode,
+      AppLanguague languague});
 }
 
 /// @nodoc
@@ -82,6 +84,7 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
     Object? showOnBoardingScreen = null,
     Object? showOrderItemNotes = null,
     Object? layoutMode = null,
+    Object? languague = null,
   }) {
     return _then(_value.copyWith(
       themeMode: null == themeMode
@@ -128,6 +131,10 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
           ? _value.layoutMode
           : layoutMode // ignore: cast_nullable_to_non_nullable
               as AppLayoutMode,
+      languague: null == languague
+          ? _value.languague
+          : languague // ignore: cast_nullable_to_non_nullable
+              as AppLanguague,
     ) as $Val);
   }
 }
@@ -151,7 +158,8 @@ abstract class _$$SettingsStateImplCopyWith<$Res>
       bool useClassicMsgBubble,
       bool showOnBoardingScreen,
       bool showOrderItemNotes,
-      AppLayoutMode layoutMode});
+      AppLayoutMode layoutMode,
+      AppLanguague languague});
 }
 
 /// @nodoc
@@ -176,6 +184,7 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
     Object? showOnBoardingScreen = null,
     Object? showOrderItemNotes = null,
     Object? layoutMode = null,
+    Object? languague = null,
   }) {
     return _then(_$SettingsStateImpl(
       themeMode: null == themeMode
@@ -222,6 +231,10 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
           ? _value.layoutMode
           : layoutMode // ignore: cast_nullable_to_non_nullable
               as AppLayoutMode,
+      languague: null == languague
+          ? _value.languague
+          : languague // ignore: cast_nullable_to_non_nullable
+              as AppLanguague,
     ));
   }
 }
@@ -240,7 +253,8 @@ class _$SettingsStateImpl implements _SettingsState {
       this.useClassicMsgBubble = false,
       this.showOnBoardingScreen = true,
       this.showOrderItemNotes = true,
-      this.layoutMode = AppLayoutMode.auto});
+      this.layoutMode = AppLayoutMode.auto,
+      this.languague = AppLanguague.system});
 
   factory _$SettingsStateImpl.fromJson(Map<String, dynamic> json) =>
       _$$SettingsStateImplFromJson(json);
@@ -278,10 +292,13 @@ class _$SettingsStateImpl implements _SettingsState {
   @override
   @JsonKey()
   final AppLayoutMode layoutMode;
+  @override
+  @JsonKey()
+  final AppLanguague languague;
 
   @override
   String toString() {
-    return 'SettingsState(themeMode: $themeMode, isAnimationsEnabled: $isAnimationsEnabled, confirmDeleteCartItem: $confirmDeleteCartItem, clearCartAfterCheckout: $clearCartAfterCheckout, forceUseScrollableChart: $forceUseScrollableChart, useMonthNumberInChart: $useMonthNumberInChart, unFocusAfterSendMsg: $unFocusAfterSendMsg, useClassicMsgBubble: $useClassicMsgBubble, showOnBoardingScreen: $showOnBoardingScreen, showOrderItemNotes: $showOrderItemNotes, layoutMode: $layoutMode)';
+    return 'SettingsState(themeMode: $themeMode, isAnimationsEnabled: $isAnimationsEnabled, confirmDeleteCartItem: $confirmDeleteCartItem, clearCartAfterCheckout: $clearCartAfterCheckout, forceUseScrollableChart: $forceUseScrollableChart, useMonthNumberInChart: $useMonthNumberInChart, unFocusAfterSendMsg: $unFocusAfterSendMsg, useClassicMsgBubble: $useClassicMsgBubble, showOnBoardingScreen: $showOnBoardingScreen, showOrderItemNotes: $showOrderItemNotes, layoutMode: $layoutMode, languague: $languague)';
   }
 
   @override
@@ -311,7 +328,9 @@ class _$SettingsStateImpl implements _SettingsState {
             (identical(other.showOrderItemNotes, showOrderItemNotes) ||
                 other.showOrderItemNotes == showOrderItemNotes) &&
             (identical(other.layoutMode, layoutMode) ||
-                other.layoutMode == layoutMode));
+                other.layoutMode == layoutMode) &&
+            (identical(other.languague, languague) ||
+                other.languague == languague));
   }
 
   @JsonKey(ignore: true)
@@ -328,7 +347,8 @@ class _$SettingsStateImpl implements _SettingsState {
       useClassicMsgBubble,
       showOnBoardingScreen,
       showOrderItemNotes,
-      layoutMode);
+      layoutMode,
+      languague);
 
   @JsonKey(ignore: true)
   @override
@@ -356,7 +376,8 @@ abstract class _SettingsState implements SettingsState {
       final bool useClassicMsgBubble,
       final bool showOnBoardingScreen,
       final bool showOrderItemNotes,
-      final AppLayoutMode layoutMode}) = _$SettingsStateImpl;
+      final AppLayoutMode layoutMode,
+      final AppLanguague languague}) = _$SettingsStateImpl;
 
   factory _SettingsState.fromJson(Map<String, dynamic> json) =
       _$SettingsStateImpl.fromJson;
@@ -383,6 +404,8 @@ abstract class _SettingsState implements SettingsState {
   bool get showOrderItemNotes;
   @override
   AppLayoutMode get layoutMode;
+  @override
+  AppLanguague get languague;
   @override
   @JsonKey(ignore: true)
   _$$SettingsStateImplCopyWith<_$SettingsStateImpl> get copyWith =>

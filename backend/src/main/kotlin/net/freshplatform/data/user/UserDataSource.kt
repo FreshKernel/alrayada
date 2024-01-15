@@ -7,13 +7,13 @@ interface UserDataSource {
     suspend fun getUserByEmail(email: String): User?
     suspend fun getUserByUUID(uuid: String): User?
     suspend fun insertUser(user: User): Boolean
-    suspend fun deleteUserByUUID(userUUID: String): Boolean
+    suspend fun deleteUserById(userId: String): Boolean
     suspend fun verifyEmail(email: String): Boolean
     suspend fun updateEmailVerificationData(email: String, tokenVerification: TokenVerification): Boolean
     suspend fun updateForgotPasswordData(email: String, tokenVerification: TokenVerification): Boolean
-    suspend fun updateUserDataByUUID(userData: UserData, userUUID: String): Boolean
-    suspend fun updateUserPasswordByUUID(newPassword: String, salt: String, userUUID: String): Boolean
-    suspend fun activateUserAccountByUUID(uuid: String): Boolean
-    suspend fun deactivateUserAccountByUUID(uuid: String): Boolean
-    suspend fun updateDeviceTokenByUUID(newDeviceToken: UserDeviceNotificationsToken, userUUID: String): Boolean
+    suspend fun updateUserDataById(userData: UserData, userUUID: String): Boolean
+    suspend fun updateUserPasswordById(newPassword: String, salt: String, userId: String): Boolean
+    suspend fun activateUserAccountById(userId: String): Boolean
+    suspend fun deactivateUserAccountById(userId: String): Boolean
+    suspend fun updateDeviceTokenById(newDeviceToken: UserDeviceNotificationsToken, userId: String): Boolean
 }

@@ -55,7 +55,7 @@ class DioService {
     onInvalidToken = null;
   }
 
-  void setJwtToken(String jwt, VoidCallback onInvalidToken) {
+  void setJwtToken(String jwt, {required VoidCallback onInvalidToken}) {
     _jwtToken = jwt;
     this.onInvalidToken = onInvalidToken;
   }

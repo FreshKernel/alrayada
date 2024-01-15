@@ -23,7 +23,7 @@ class ErrorWithTryAgain extends StatelessWidget {
           children: [
             LayoutBuilder(
               builder: (context, constranints) {
-                final asset = Assets.lottie.error1.path;
+                final asset = Assets.lottie.errors.unknownError.path;
                 final isLandscape =
                     MediaQuery.orientationOf(context) == Orientation.landscape;
                 if (isLandscape) {

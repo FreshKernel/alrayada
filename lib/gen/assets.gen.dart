@@ -33,79 +33,22 @@ class $AssetsImagesGen {
 class $AssetsLottieGen {
   const $AssetsLottieGen();
 
-  /// File path: assets/lottie/auth_1.json
-  LottieGenImage get auth1 => const LottieGenImage('assets/lottie/auth_1.json');
-
-  /// File path: assets/lottie/blinker_indicator.json
-  LottieGenImage get blinkerIndicator =>
-      const LottieGenImage('assets/lottie/blinker_indicator.json');
-
-  /// File path: assets/lottie/error_1.json
-  LottieGenImage get error1 =>
-      const LottieGenImage('assets/lottie/error_1.json');
-
-  /// File path: assets/lottie/loading_1.json
-  LottieGenImage get loading1 =>
-      const LottieGenImage('assets/lottie/loading_1.json');
-
-  /// File path: assets/lottie/login.json
-  LottieGenImage get login => const LottieGenImage('assets/lottie/login.json');
-
-  /// File path: assets/lottie/no_data_1.json
-  LottieGenImage get noData1 =>
-      const LottieGenImage('assets/lottie/no_data_1.json');
-
+  $AssetsLottieAuthGen get auth => const $AssetsLottieAuthGen();
+  $AssetsLottieErrorsGen get errors => const $AssetsLottieErrorsGen();
   $AssetsLottieNoInternetGen get noInternet =>
       const $AssetsLottieNoInternetGen();
   $AssetsLottieOnboardingGen get onboarding =>
       const $AssetsLottieOnboardingGen();
-
-  /// File path: assets/lottie/online_shopping_1.json
-  LottieGenImage get onlineShopping1 =>
-      const LottieGenImage('assets/lottie/online_shopping_1.json');
-
   $AssetsLottiePageNotFoundGen get pageNotFound =>
       const $AssetsLottiePageNotFoundGen();
-
-  /// File path: assets/lottie/server_error_1.json
-  LottieGenImage get serverError1 =>
-      const LottieGenImage('assets/lottie/server_error_1.json');
-
-  /// List of all assets
-  List<LottieGenImage> get values => [
-        auth1,
-        blinkerIndicator,
-        error1,
-        loading1,
-        login,
-        noData1,
-        onlineShopping1,
-        serverError1
-      ];
 }
 
 class $AssetsSvgGen {
   const $AssetsSvgGen();
 
-  /// File path: assets/svg/ic_facebook.svg
-  SvgGenImage get icFacebook => const SvgGenImage('assets/svg/ic_facebook.svg');
-
-  /// File path: assets/svg/ic_google.svg
-  SvgGenImage get icGoogle => const SvgGenImage('assets/svg/ic_google.svg');
-
-  /// File path: assets/svg/ic_instagram.svg
-  SvgGenImage get icInstagram =>
-      const SvgGenImage('assets/svg/ic_instagram.svg');
-
-  /// File path: assets/svg/ic_whatsapp.svg
-  SvgGenImage get icWhatsapp => const SvgGenImage('assets/svg/ic_whatsapp.svg');
-
+  $AssetsSvgIconsGen get icons => const $AssetsSvgIconsGen();
   $AssetsSvgPaymentMethodsGen get paymentMethods =>
       const $AssetsSvgPaymentMethodsGen();
-
-  /// List of all assets
-  List<SvgGenImage> get values =>
-      [icFacebook, icGoogle, icInstagram, icWhatsapp];
 }
 
 class $AssetsImagesPaymentMethodsGen {
@@ -121,6 +64,53 @@ class $AssetsImagesPaymentMethodsGen {
 
   /// List of all assets
   List<AssetGenImage> get values => [cod, zainCash];
+}
+
+class $AssetsLottieAuthGen {
+  const $AssetsLottieAuthGen();
+
+  /// File path: assets/lottie/auth/auth.json
+  LottieGenImage get auth =>
+      const LottieGenImage('assets/lottie/auth/auth.json');
+
+  /// File path: assets/lottie/auth/email.json
+  LottieGenImage get email =>
+      const LottieGenImage('assets/lottie/auth/email.json');
+
+  /// File path: assets/lottie/auth/forgot_password.json
+  LottieGenImage get forgotPassword =>
+      const LottieGenImage('assets/lottie/auth/forgot_password.json');
+
+  /// File path: assets/lottie/auth/login.json
+  LottieGenImage get login =>
+      const LottieGenImage('assets/lottie/auth/login.json');
+
+  /// File path: assets/lottie/auth/login_2.json
+  LottieGenImage get login2 =>
+      const LottieGenImage('assets/lottie/auth/login_2.json');
+
+  /// List of all assets
+  List<LottieGenImage> get values =>
+      [auth, email, forgotPassword, login, login2];
+}
+
+class $AssetsLottieErrorsGen {
+  const $AssetsLottieErrorsGen();
+
+  /// File path: assets/lottie/errors/no_data.json
+  LottieGenImage get noData =>
+      const LottieGenImage('assets/lottie/errors/no_data.json');
+
+  /// File path: assets/lottie/errors/server_error.json
+  LottieGenImage get serverError =>
+      const LottieGenImage('assets/lottie/errors/server_error.json');
+
+  /// File path: assets/lottie/errors/unknown_error.json
+  LottieGenImage get unknownError =>
+      const LottieGenImage('assets/lottie/errors/unknown_error.json');
+
+  /// List of all assets
+  List<LottieGenImage> get values => [noData, serverError, unknownError];
 }
 
 class $AssetsLottieNoInternetGen {
@@ -203,6 +193,28 @@ class $AssetsLottiePageNotFoundGen {
 
   /// List of all assets
   List<LottieGenImage> get values => [pageNotFound1, pageNotFound2];
+}
+
+class $AssetsSvgIconsGen {
+  const $AssetsSvgIconsGen();
+
+  /// File path: assets/svg/icons/facebook.svg
+  SvgGenImage get facebook =>
+      const SvgGenImage('assets/svg/icons/facebook.svg');
+
+  /// File path: assets/svg/icons/google.svg
+  SvgGenImage get google => const SvgGenImage('assets/svg/icons/google.svg');
+
+  /// File path: assets/svg/icons/instagram.svg
+  SvgGenImage get instagram =>
+      const SvgGenImage('assets/svg/icons/instagram.svg');
+
+  /// File path: assets/svg/icons/whatsapp.svg
+  SvgGenImage get whatsapp =>
+      const SvgGenImage('assets/svg/icons/whatsapp.svg');
+
+  /// List of all assets
+  List<SvgGenImage> get values => [facebook, google, instagram, whatsapp];
 }
 
 class $AssetsSvgPaymentMethodsGen {

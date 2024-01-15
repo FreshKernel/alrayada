@@ -2,6 +2,7 @@ name: alrayada
 description: "Work in progress..."
 version: 1.0.0+1
 repository: https://github.com/freshplatform/alrayada
+publish_to: 'none'
 
 environment:
   sdk: '>=3.2.3 <4.0.0'
@@ -39,6 +40,11 @@ dependencies:
   equatable: ^2.0.5
   logger: ^2.0.2+1
 
+  fresh_base_package:
+    git:
+        url: https://github.com/freshplatform/flutter-fresh-base-package.git
+        ref: main
+
   # For code generator
   json_annotation: ^4.8.1
   freezed_annotation: ^2.4.1
@@ -56,6 +62,9 @@ dependencies:
   firebase_crashlytics: ^3.4.8
   firebase_analytics: ^10.7.4
   firebase_messaging: ^14.6.1
+  firebase_auth: ^4.16.0
+  cloud_firestore: ^4.14.0
+  firebase_storage: ^11.6.0
   google_sign_in: ^6.2.1
   sign_in_with_apple: ^5.0.0
 
@@ -75,14 +84,21 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/svg/
+    # Svg folder
+    - assets/svg/icons/
     - assets/svg/payment_methods/
+
+    # Images folder
     - assets/images/
     - assets/images/payment_methods/
-    - assets/lottie/
+
+    # Lottie folder
     - assets/lottie/no_internet/
     - assets/lottie/page_not_found/
     - assets/lottie/onboarding/
+    - assets/lottie/auth/
+    - assets/lottie/errors/
+    
     - .env
 
 

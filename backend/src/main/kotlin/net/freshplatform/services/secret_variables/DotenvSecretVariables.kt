@@ -1,10 +1,13 @@
 package net.freshplatform.services.secret_variables
 
-import net.freshplatform.appDotenv
+import io.github.cdimascio.dotenv.dotenv
 
 class DotenvSecretVariables : SecretVariables {
     companion object {
-        private val dotenv = appDotenv
+        private val dotenv = dotenv {
+            ignoreIfMissing = true
+            systemProperties = false
+        }
     }
     override fun getString(name: SecretVariablesName): String? =
         dotenv[name.value] ?: null

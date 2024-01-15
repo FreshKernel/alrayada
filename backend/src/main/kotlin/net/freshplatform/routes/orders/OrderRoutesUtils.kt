@@ -54,7 +54,6 @@ object OrderRoutesUtils {
                 }
                 val responseJson = response.body<String>()
                 val status = Json.parseToJsonElement(responseJson).jsonObject["status"]?.jsonPrimitive?.content ?: "unknown"
-                println("Zain cash transaction = $responseJson")
 //                    val transactionStatus = responseJson["status"] as String
                 val zainCash = PaymentMethodsConstants.ZainCash
                 isTransactionPaid = zainCash.isOrderStatusCompleted(status)

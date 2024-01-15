@@ -23,6 +23,9 @@ _$SettingsStateImpl _$$SettingsStateImplFromJson(Map<String, dynamic> json) =>
       layoutMode:
           $enumDecodeNullable(_$AppLayoutModeEnumMap, json['layoutMode']) ??
               AppLayoutMode.auto,
+      languague:
+          $enumDecodeNullable(_$AppLanguagueEnumMap, json['languague']) ??
+              AppLanguague.system,
     );
 
 Map<String, dynamic> _$$SettingsStateImplToJson(_$SettingsStateImpl instance) =>
@@ -38,6 +41,7 @@ Map<String, dynamic> _$$SettingsStateImplToJson(_$SettingsStateImpl instance) =>
       'showOnBoardingScreen': instance.showOnBoardingScreen,
       'showOrderItemNotes': instance.showOrderItemNotes,
       'layoutMode': _$AppLayoutModeEnumMap[instance.layoutMode]!,
+      'languague': _$AppLanguagueEnumMap[instance.languague]!,
     };
 
 const _$ThemeModeEnumMap = {
@@ -50,4 +54,10 @@ const _$AppLayoutModeEnumMap = {
   AppLayoutMode.auto: 'auto',
   AppLayoutMode.small: 'small',
   AppLayoutMode.large: 'large',
+};
+
+const _$AppLanguagueEnumMap = {
+  AppLanguague.system: 'system',
+  AppLanguague.en: 'en',
+  AppLanguague.ar: 'ar',
 };
