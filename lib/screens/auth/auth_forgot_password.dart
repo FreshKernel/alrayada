@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../gen/assets.gen.dart';
 import '../../l10n/app_localizations.dart';
-import '../../utils/extensions/scaffold_messenger.dart';
 import '../../widgets/auth/email_text_field.dart';
 
 class AuthForgotPassword extends StatefulWidget {

@@ -28,7 +28,7 @@ abstract class AuthRepository {
     AuthCustomProvider authCustomProvider,
   );
   Future<void> deleteAccount();
-  Future<UserCredential?> fetchSavedUser();
+  Future<UserCredential?> fetchSavedUserCredential();
   Future<void> sendEmailVerification();
   Future<User?> fetchUser();
 }

@@ -18,7 +18,6 @@ import 'models/user.dart';
 
 class AuthRepositoryImpl extends AuthRepository {
   final _dio = DioService.instance.dio;
-  Timer? _authTimer;
   final _secureStorage = const FlutterSecureStorage(
     aOptions: AndroidOptions(
       encryptedSharedPreferences: true,
@@ -32,7 +31,7 @@ class AuthRepositoryImpl extends AuthRepository {
   }) async {
     try {
       final response = await _dio.post(
-        await ServerConfigurations.getRequestUrl(
+        ServerConfigurations.getRequestUrl(
           RoutesConstants.authRoutes.signIn,
         ),
         data: {
@@ -48,10 +47,9 @@ class AuthRepositoryImpl extends AuthRepository {
       ));
       saveUser(userResponse);
       DioService.instance.setJwtToken(
-        userResponse.token,
+        userResponse.accessToken,
         onInvalidToken: logout,
       );
-      autoLogout(userResponse);
       return userResponse;
     } on DioException catch (e) {
       if (e.response?.statusCode == 429) {
@@ -92,8 +90,7 @@ class AuthRepositoryImpl extends AuthRepository {
   }) async {
     try {
       await _dio.post(
-        await ServerConfigurations.getRequestUrl(
-            RoutesConstants.authRoutes.signUp),
+        ServerConfigurations.getRequestUrl(RoutesConstants.authRoutes.signUp),
         data: {
           'email': email,
           'password': password,
@@ -132,30 +129,6 @@ class AuthRepositoryImpl extends AuthRepository {
     }
   }
 
-  void autoLogout(UserCredential userAuthenticatedResponse) {
-    cancelTimer();
-    final expiresAt = DateTime.fromMillisecondsSinceEpoch(
-      userAuthenticatedResponse.expiresAt,
-    );
-    final secondsToExpire = expiresAt.difference(DateTime.now()).inSeconds;
-    if (secondsToExpire <= 0) {
-      logout();
-      return;
-    }
-    _authTimer = Timer(Duration(seconds: secondsToExpire), logout);
-  }
-
-  void cancelTimer() {
-    final authTimer = _authTimer;
-    if (authTimer == null) {
-      return;
-    }
-    if (authTimer.isActive) {
-      authTimer.cancel();
-    }
-    _authTimer = null;
-  }
-
   static const userPrefKey = 'user';
   static const jwtTokenPrefKey = 'jwtToken';
 
@@ -166,11 +139,11 @@ class AuthRepositoryImpl extends AuthRepository {
     // Don't save the token in shared prefs
     await prefs.setString(
       userPrefKey,
-      jsonEncode(userCredential.copyWith(token: '')),
+      jsonEncode(userCredential.copyWith(accessToken: '')),
     );
     await _secureStorage.write(
       key: jwtTokenPrefKey,
-      value: userCredential.token,
+      value: userCredential.accessToken,
     );
   }
 
@@ -179,12 +152,11 @@ class AuthRepositoryImpl extends AuthRepository {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(userPrefKey);
     await _secureStorage.delete(key: jwtTokenPrefKey);
-    cancelTimer();
     DioService.instance.clearJwtToken();
   }
 
   @override
-  Future<UserCredential?> fetchSavedUser() async {
+  Future<UserCredential?> fetchSavedUserCredential() async {
     final prefs = await SharedPreferences.getInstance();
     final savedUserJson = prefs.getString('user');
     if (savedUserJson == null) return null;
@@ -193,9 +165,8 @@ class AuthRepositoryImpl extends AuthRepository {
     // Without Jwt
     final userCredential =
         UserCredential.fromJson(jsonDecode(savedUserJson)).copyWith(
-      token: jwt,
+      accessToken: jwt,
     );
-    autoLogout(userCredential);
     DioService.instance.setJwtToken(jwt, onInvalidToken: logout);
     return userCredential;
   }
@@ -203,7 +174,7 @@ class AuthRepositoryImpl extends AuthRepository {
   @override
   Future<User?> fetchUser() async {
     final response = await _dio.get(
-      await ServerConfigurations.getRequestUrl(RoutesConstants.authRoutes.user),
+      ServerConfigurations.getRequestUrl(RoutesConstants.authRoutes.user),
     );
     final responseData = response.data;
     if (responseData == null) return null;
@@ -221,7 +192,7 @@ class AuthRepositoryImpl extends AuthRepository {
   @override
   Future<void> deleteAccount() async {
     final response = await _dio.delete(
-      await ServerConfigurations.getRequestUrl(
+      ServerConfigurations.getRequestUrl(
           RoutesConstants.authRoutes.deleteAccount),
     );
     if (response.statusCode != 200) {
@@ -233,7 +204,7 @@ class AuthRepositoryImpl extends AuthRepository {
   @override
   Future<void> forgotPassword({required String email}) async {
     await _dio.post(
-      await ServerConfigurations.getRequestUrl(
+      ServerConfigurations.getRequestUrl(
           RoutesConstants.authRoutes.forgotPassword),
       queryParameters: {
         'email': email,
@@ -244,7 +215,7 @@ class AuthRepositoryImpl extends AuthRepository {
   @override
   Future<void> updateDeviceToken() async {
     await _dio.patch(
-      await ServerConfigurations.getRequestUrl(
+      ServerConfigurations.getRequestUrl(
           RoutesConstants.authRoutes.updateDeviceToken),
       data: (await NotificationsService.instanse.getUserDeviceToken()).toJson(),
     );
@@ -255,8 +226,7 @@ class AuthRepositoryImpl extends AuthRepository {
     UserData userData,
   ) async {
     await _dio.put(
-      await ServerConfigurations.getRequestUrl(
-          RoutesConstants.authRoutes.userData),
+      ServerConfigurations.getRequestUrl(RoutesConstants.authRoutes.userData),
       data: userData.toJson(),
     );
     final prefs = await SharedPreferences.getInstance();
@@ -277,7 +247,7 @@ class AuthRepositoryImpl extends AuthRepository {
     required String newPassword,
   }) async {
     await _dio.patch(
-      await ServerConfigurations.getRequestUrl(
+      ServerConfigurations.getRequestUrl(
         RoutesConstants.authRoutes.updatePassword,
       ),
       queryParameters: {

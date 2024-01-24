@@ -251,5 +251,8 @@
    "verifyYourEmailDesc": "أخبار مثيرة! حسابك جاهز تقريبًا لرحلة تسوق رائعة. قم بالتحقق من بريدك الإلكتروني الآن للوصول الحصري وتجربة سلسة!",
    "continueText": "المتابعة",
    "resendEmail": "إعادة إرسال البريد الإلكتروني",
-   "yourAccountHasBeenSuccessfullyCreated": "تم إنشاء حسابك بنجاح"
+   "yourAccountHasBeenSuccessfullyCreated": "تم إنشاء حسابك بنجاح",
+   "report": "أبلغ",
+   "authUserDisabledErrorMessage": "حسابك معطل، الرجاء التواصل معنا للمزيد من المعلومات",
+   "authProviderIsDisabledMessage": "مزود تسجيل الدخول معطل، الرجاء التواصل معنا للمزيد من المعلومات"
 }

@@ -360,5 +360,8 @@
    "verifyYourEmailDesc": "Exciting news! Your account is almost ready for a fantastic shopping journey. Verify your email now for exclusive access and a seamless experience!",
    "continueText": "Continue",
    "resendEmail": "Resend email",
-   "yourAccountHasBeenSuccessfullyCreated": "Your account has been successfully created"
+   "yourAccountHasBeenSuccessfullyCreated": "Your account has been successfully created",
+   "report": "Report",
+   "authUserDisabledErrorMessage": "Your account is disabled. Please contact support for more information.",
+   "authProviderIsDisabledMessage": "This auth provider is disabled, please contact us for more info."
 }

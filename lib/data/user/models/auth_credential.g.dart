@@ -8,17 +8,15 @@ part of 'auth_credential.dart';
 
 _$UserCredentialImpl _$$UserCredentialImplFromJson(Map<String, dynamic> json) =>
     _$UserCredentialImpl(
-      token: json['token'] as String,
-      expiresIn: json['expiresIn'] as int,
-      expiresAt: json['expiresAt'] as int,
+      accessToken: json['accessToken'] as String,
+      refreshToken: json['refreshToken'] as String,
       user: User.fromJson(json['user'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$$UserCredentialImplToJson(
         _$UserCredentialImpl instance) =>
     <String, dynamic>{
-      'token': instance.token,
-      'expiresIn': instance.expiresIn,
-      'expiresAt': instance.expiresAt,
+      'accessToken': instance.accessToken,
+      'refreshToken': instance.refreshToken,
       'user': instance.user,
     };

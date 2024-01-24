@@ -8,12 +8,14 @@ class User with _$User {
   const factory User({
     required String email,
     required UserData data,
-    required DateTime createdAt,
     required String userId,
-    required String pictureUrl,
-    @Default(false) bool accountActivated,
-    @Default(false) bool emailVerified,
-    @Default(UserRole.user) UserRole role,
+    required String? pictureUrl,
+    required bool isAccountVerified,
+    required bool isEmailVerified,
+    required UserRole role,
+    required UserDeviceNotificationsToken deviceNotificationsToken,
+    // required DateTime createdAt,
+    // required DateTime updatedAt,
   }) = _User;
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);

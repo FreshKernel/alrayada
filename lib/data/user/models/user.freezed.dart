@@ -22,12 +22,13 @@ User _$UserFromJson(Map<String, dynamic> json) {
 mixin _$User {
   String get email => throw _privateConstructorUsedError;
   UserData get data => throw _privateConstructorUsedError;
-  DateTime get createdAt => throw _privateConstructorUsedError;
   String get userId => throw _privateConstructorUsedError;
-  String get pictureUrl => throw _privateConstructorUsedError;
-  bool get accountActivated => throw _privateConstructorUsedError;
-  bool get emailVerified => throw _privateConstructorUsedError;
+  String? get pictureUrl => throw _privateConstructorUsedError;
+  bool get isAccountVerified => throw _privateConstructorUsedError;
+  bool get isEmailVerified => throw _privateConstructorUsedError;
   UserRole get role => throw _privateConstructorUsedError;
+  UserDeviceNotificationsToken get deviceNotificationsToken =>
+      throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -42,14 +43,15 @@ abstract class $UserCopyWith<$Res> {
   $Res call(
       {String email,
       UserData data,
-      DateTime createdAt,
       String userId,
-      String pictureUrl,
-      bool accountActivated,
-      bool emailVerified,
-      UserRole role});
+      String? pictureUrl,
+      bool isAccountVerified,
+      bool isEmailVerified,
+      UserRole role,
+      UserDeviceNotificationsToken deviceNotificationsToken});
 
   $UserDataCopyWith<$Res> get data;
+  $UserDeviceNotificationsTokenCopyWith<$Res> get deviceNotificationsToken;
 }
 
 /// @nodoc
@@ -67,12 +69,12 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
   $Res call({
     Object? email = null,
     Object? data = null,
-    Object? createdAt = null,
     Object? userId = null,
-    Object? pictureUrl = null,
-    Object? accountActivated = null,
-    Object? emailVerified = null,
+    Object? pictureUrl = freezed,
+    Object? isAccountVerified = null,
+    Object? isEmailVerified = null,
     Object? role = null,
+    Object? deviceNotificationsToken = null,
   }) {
     return _then(_value.copyWith(
       email: null == email
@@ -83,30 +85,30 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
           ? _value.data
           : data // ignore: cast_nullable_to_non_nullable
               as UserData,
-      createdAt: null == createdAt
-          ? _value.createdAt
-          : createdAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
       userId: null == userId
           ? _value.userId
           : userId // ignore: cast_nullable_to_non_nullable
               as String,
-      pictureUrl: null == pictureUrl
+      pictureUrl: freezed == pictureUrl
           ? _value.pictureUrl
           : pictureUrl // ignore: cast_nullable_to_non_nullable
-              as String,
-      accountActivated: null == accountActivated
-          ? _value.accountActivated
-          : accountActivated // ignore: cast_nullable_to_non_nullable
+              as String?,
+      isAccountVerified: null == isAccountVerified
+          ? _value.isAccountVerified
+          : isAccountVerified // ignore: cast_nullable_to_non_nullable
               as bool,
-      emailVerified: null == emailVerified
-          ? _value.emailVerified
-          : emailVerified // ignore: cast_nullable_to_non_nullable
+      isEmailVerified: null == isEmailVerified
+          ? _value.isEmailVerified
+          : isEmailVerified // ignore: cast_nullable_to_non_nullable
               as bool,
       role: null == role
           ? _value.role
           : role // ignore: cast_nullable_to_non_nullable
               as UserRole,
+      deviceNotificationsToken: null == deviceNotificationsToken
+          ? _value.deviceNotificationsToken
+          : deviceNotificationsToken // ignore: cast_nullable_to_non_nullable
+              as UserDeviceNotificationsToken,
     ) as $Val);
   }
 
@@ -115,6 +117,15 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
   $UserDataCopyWith<$Res> get data {
     return $UserDataCopyWith<$Res>(_value.data, (value) {
       return _then(_value.copyWith(data: value) as $Val);
+    });
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $UserDeviceNotificationsTokenCopyWith<$Res> get deviceNotificationsToken {
+    return $UserDeviceNotificationsTokenCopyWith<$Res>(
+        _value.deviceNotificationsToken, (value) {
+      return _then(_value.copyWith(deviceNotificationsToken: value) as $Val);
     });
   }
 }
@@ -129,15 +140,17 @@ abstract class _$$UserImplCopyWith<$Res> implements $UserCopyWith<$Res> {
   $Res call(
       {String email,
       UserData data,
-      DateTime createdAt,
       String userId,
-      String pictureUrl,
-      bool accountActivated,
-      bool emailVerified,
-      UserRole role});
+      String? pictureUrl,
+      bool isAccountVerified,
+      bool isEmailVerified,
+      UserRole role,
+      UserDeviceNotificationsToken deviceNotificationsToken});
 
   @override
   $UserDataCopyWith<$Res> get data;
+  @override
+  $UserDeviceNotificationsTokenCopyWith<$Res> get deviceNotificationsToken;
 }
 
 /// @nodoc
@@ -152,12 +165,12 @@ class __$$UserImplCopyWithImpl<$Res>
   $Res call({
     Object? email = null,
     Object? data = null,
-    Object? createdAt = null,
     Object? userId = null,
-    Object? pictureUrl = null,
-    Object? accountActivated = null,
-    Object? emailVerified = null,
+    Object? pictureUrl = freezed,
+    Object? isAccountVerified = null,
+    Object? isEmailVerified = null,
     Object? role = null,
+    Object? deviceNotificationsToken = null,
   }) {
     return _then(_$UserImpl(
       email: null == email
@@ -168,30 +181,30 @@ class __$$UserImplCopyWithImpl<$Res>
           ? _value.data
           : data // ignore: cast_nullable_to_non_nullable
               as UserData,
-      createdAt: null == createdAt
-          ? _value.createdAt
-          : createdAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
       userId: null == userId
           ? _value.userId
           : userId // ignore: cast_nullable_to_non_nullable
               as String,
-      pictureUrl: null == pictureUrl
+      pictureUrl: freezed == pictureUrl
           ? _value.pictureUrl
           : pictureUrl // ignore: cast_nullable_to_non_nullable
-              as String,
-      accountActivated: null == accountActivated
-          ? _value.accountActivated
-          : accountActivated // ignore: cast_nullable_to_non_nullable
+              as String?,
+      isAccountVerified: null == isAccountVerified
+          ? _value.isAccountVerified
+          : isAccountVerified // ignore: cast_nullable_to_non_nullable
               as bool,
-      emailVerified: null == emailVerified
-          ? _value.emailVerified
-          : emailVerified // ignore: cast_nullable_to_non_nullable
+      isEmailVerified: null == isEmailVerified
+          ? _value.isEmailVerified
+          : isEmailVerified // ignore: cast_nullable_to_non_nullable
               as bool,
       role: null == role
           ? _value.role
           : role // ignore: cast_nullable_to_non_nullable
               as UserRole,
+      deviceNotificationsToken: null == deviceNotificationsToken
+          ? _value.deviceNotificationsToken
+          : deviceNotificationsToken // ignore: cast_nullable_to_non_nullable
+              as UserDeviceNotificationsToken,
     ));
   }
 }
@@ -202,12 +215,12 @@ class _$UserImpl implements _User {
   const _$UserImpl(
       {required this.email,
       required this.data,
-      required this.createdAt,
       required this.userId,
       required this.pictureUrl,
-      this.accountActivated = false,
-      this.emailVerified = false,
-      this.role = UserRole.user});
+      required this.isAccountVerified,
+      required this.isEmailVerified,
+      required this.role,
+      required this.deviceNotificationsToken});
 
   factory _$UserImpl.fromJson(Map<String, dynamic> json) =>
       _$$UserImplFromJson(json);
@@ -217,24 +230,21 @@ class _$UserImpl implements _User {
   @override
   final UserData data;
   @override
-  final DateTime createdAt;
-  @override
   final String userId;
   @override
-  final String pictureUrl;
+  final String? pictureUrl;
   @override
-  @JsonKey()
-  final bool accountActivated;
+  final bool isAccountVerified;
   @override
-  @JsonKey()
-  final bool emailVerified;
+  final bool isEmailVerified;
   @override
-  @JsonKey()
   final UserRole role;
+  @override
+  final UserDeviceNotificationsToken deviceNotificationsToken;
 
   @override
   String toString() {
-    return 'User(email: $email, data: $data, createdAt: $createdAt, userId: $userId, pictureUrl: $pictureUrl, accountActivated: $accountActivated, emailVerified: $emailVerified, role: $role)';
+    return 'User(email: $email, data: $data, userId: $userId, pictureUrl: $pictureUrl, isAccountVerified: $isAccountVerified, isEmailVerified: $isEmailVerified, role: $role, deviceNotificationsToken: $deviceNotificationsToken)';
   }
 
   @override
@@ -244,22 +254,23 @@ class _$UserImpl implements _User {
             other is _$UserImpl &&
             (identical(other.email, email) || other.email == email) &&
             (identical(other.data, data) || other.data == data) &&
-            (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt) &&
             (identical(other.userId, userId) || other.userId == userId) &&
             (identical(other.pictureUrl, pictureUrl) ||
                 other.pictureUrl == pictureUrl) &&
-            (identical(other.accountActivated, accountActivated) ||
-                other.accountActivated == accountActivated) &&
-            (identical(other.emailVerified, emailVerified) ||
-                other.emailVerified == emailVerified) &&
-            (identical(other.role, role) || other.role == role));
+            (identical(other.isAccountVerified, isAccountVerified) ||
+                other.isAccountVerified == isAccountVerified) &&
+            (identical(other.isEmailVerified, isEmailVerified) ||
+                other.isEmailVerified == isEmailVerified) &&
+            (identical(other.role, role) || other.role == role) &&
+            (identical(
+                    other.deviceNotificationsToken, deviceNotificationsToken) ||
+                other.deviceNotificationsToken == deviceNotificationsToken));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, email, data, createdAt, userId,
-      pictureUrl, accountActivated, emailVerified, role);
+  int get hashCode => Object.hash(runtimeType, email, data, userId, pictureUrl,
+      isAccountVerified, isEmailVerified, role, deviceNotificationsToken);
 
   @JsonKey(ignore: true)
   @override
@@ -279,12 +290,13 @@ abstract class _User implements User {
   const factory _User(
       {required final String email,
       required final UserData data,
-      required final DateTime createdAt,
       required final String userId,
-      required final String pictureUrl,
-      final bool accountActivated,
-      final bool emailVerified,
-      final UserRole role}) = _$UserImpl;
+      required final String? pictureUrl,
+      required final bool isAccountVerified,
+      required final bool isEmailVerified,
+      required final UserRole role,
+      required final UserDeviceNotificationsToken
+          deviceNotificationsToken}) = _$UserImpl;
 
   factory _User.fromJson(Map<String, dynamic> json) = _$UserImpl.fromJson;
 
@@ -293,17 +305,17 @@ abstract class _User implements User {
   @override
   UserData get data;
   @override
-  DateTime get createdAt;
-  @override
   String get userId;
   @override
-  String get pictureUrl;
+  String? get pictureUrl;
   @override
-  bool get accountActivated;
+  bool get isAccountVerified;
   @override
-  bool get emailVerified;
+  bool get isEmailVerified;
   @override
   UserRole get role;
+  @override
+  UserDeviceNotificationsToken get deviceNotificationsToken;
   @override
   @JsonKey(ignore: true)
   _$$UserImplCopyWith<_$UserImpl> get copyWith =>

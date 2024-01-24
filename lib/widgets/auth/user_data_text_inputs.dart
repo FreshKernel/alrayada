@@ -51,8 +51,8 @@ class UserDataTextInputs extends StatelessWidget {
                 ),
                 minLines: 1,
                 maxLines: 1,
-                keyboardType: TextInputType.number,
-                validator: (value) => AuthValidator.validateIraqPhoneNumber(
+                keyboardType: TextInputType.phone,
+                validator: (value) => AuthValidator.validatePhoneNumber(
                   phoneNumber: value ?? '',
                   localizations: context.loc,
                 ),
@@ -65,7 +65,7 @@ class UserDataTextInputs extends StatelessWidget {
                 maxLength: 11,
                 autocorrect: false,
                 textCapitalization: TextCapitalization.none,
-                keyboardType: TextInputType.number,
+                keyboardType: TextInputType.phone,
                 enableSuggestions: true,
                 controller: labPhoneNumberController,
                 autofillHints: const [AutofillHints.telephoneNumberLocal],
@@ -80,7 +80,7 @@ class UserDataTextInputs extends StatelessWidget {
                 ),
                 minLines: 1,
                 maxLines: 1,
-                validator: (value) => AuthValidator.validateIraqPhoneNumber(
+                validator: (value) => AuthValidator.validatePhoneNumber(
                   phoneNumber: value ?? '',
                   localizations: context.loc,
                 ),

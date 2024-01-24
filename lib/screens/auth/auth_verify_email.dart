@@ -4,7 +4,6 @@ import 'package:lottie/lottie.dart';
 
 import '../../gen/assets.gen.dart';
 import '../../l10n/app_localizations.dart';
-import '../../widgets/errors/w_error.dart';
 
 class AuthVerifyEmail extends StatelessWidget {
   const AuthVerifyEmail({super.key});

@@ -46,11 +46,15 @@ class AuthCubit extends Cubit<AuthState> {
     required UserData userData,
   }) async {
     try {
-      await authRepository.signUpWithEmailAndPassword(
+      final userCredential = await authRepository.signUpWithEmailAndPassword(
         email: email,
         password: password,
         userData: userData,
       );
+      emit(state.copyWith(
+        exception: null,
+        userCredential: userCredential,
+      ));
     } on AuthException catch (e) {
       emit(state.copyWith(exception: e));
     }
@@ -76,7 +80,7 @@ class AuthCubit extends Cubit<AuthState> {
           accessToken: googleAuth?.accessToken,
         ),
       );
-      if (!userCredential.user.emailVerified) {
+      if (!userCredential.user.isEmailVerified) {
         await authRepository.sendEmailVerification();
       }
       emit(state.copyWith(
@@ -123,7 +127,7 @@ class AuthCubit extends Cubit<AuthState> {
       }
       final userCredential = await authRepository
           .authenticateWithCustomProvider(authCustomProvider);
-      if (!userCredential.user.emailVerified) {
+      if (!userCredential.user.isEmailVerified) {
         await authRepository.sendEmailVerification();
       }
       emit(state.copyWith(
@@ -168,7 +172,7 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<void> fetchSavedUser() async {
     try {
-      final userCredential = await authRepository.fetchSavedUser();
+      final userCredential = await authRepository.fetchSavedUserCredential();
       emit(state.copyWith(userCredential: userCredential));
       // ignore: empty_catches
     } catch (e) {}

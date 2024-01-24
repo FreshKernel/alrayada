@@ -9,10 +9,11 @@ import '../../logic/settings/settings_cubit.dart';
 import '../onboarding/onboarding_screen.dart';
 import 'dashboard_drawer.dart';
 import 'navigation_item.dart';
+import 'pages/account_page.dart';
 import 'pages/cart_page.dart';
 import 'pages/categories_page.dart';
 import 'pages/home_page.dart';
-import 'pages/orders_page.dart';
+import 'pages/orders/orders_page.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -77,7 +78,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
         NavigationItem(
           label: context.loc.account,
-          body: const CategoriesPage(
+          body: const AccountPage(
             key: PageStorageKey('Account'),
           ),
           title: context.loc.account,

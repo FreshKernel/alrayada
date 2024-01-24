@@ -79,7 +79,7 @@ class AuthValidator {
   }
 
   static const phoneNumberPattern = r'^07\d{9}$';
-  static String? validateIraqPhoneNumber({
+  static String? validatePhoneNumber({
     required String phoneNumber,
     required AppLocalizations localizations,
   }) {

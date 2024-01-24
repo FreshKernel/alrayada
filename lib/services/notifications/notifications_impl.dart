@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../data/user/models/user.dart';
@@ -8,17 +9,17 @@ import 'notifications.dart';
 class NotificationsImpl extends Notifications {
   @override
   Future<UserDeviceNotificationsToken> getUserDeviceToken() async {
-    const newFirebaseToken = '';
+    var newFirebaseToken = '';
     const newOneSignalToken = '';
 
     try {
       // newOneSignalToken = OneSignal.User.pushSubscription.id ?? '';
-      // newFirebaseToken = await FirebaseMessaging.instance.getToken() ?? '';
+      newFirebaseToken = await FirebaseMessaging.instance.getToken() ?? '';
     } catch (e) {
       // Error
     }
 
-    return const UserDeviceNotificationsToken(
+    return UserDeviceNotificationsToken(
       firebase: newFirebaseToken,
       oneSignal: newOneSignalToken,
     );

@@ -55,18 +55,9 @@ app.*.map.json
 **/GoogleService-Info.plist
 **/firebase_app_id_file.json
 
-# Android App Links
-firebase/public/.well-known/assetlinks.json
-
-# Apple Universal Links
-firebase/public/.well-known/apple-app-site-association
-
 # FlutterFire CLI for Firebase
 lib/firebase_options.dart
 
 # Firebase
 .crashlytics
 firebase.json
-
-# localizations
-localazy.json

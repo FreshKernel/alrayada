@@ -31,6 +31,7 @@ import net.freshplatform.utils.extensions.isProductionMode
 import net.freshplatform.utils.extensions.isValidEmail
 import net.freshplatform.utils.extensions.request.*
 import net.freshplatform.utils.extensions.webcontent.webContentHeader
+import org.koin.ktor.ext.inject
 import java.time.LocalDateTime
 
 class UserRoutes(

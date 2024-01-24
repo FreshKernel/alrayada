@@ -265,10 +265,6 @@ class _AuthFormInputsState extends State<AuthFormInputs> {
               ScaffoldMessenger.of(context).showSnackBarText(
                 context.loc.authEmailNotFound,
               );
-            case InvalidCredentialsAuthException():
-              ScaffoldMessenger.of(context).showSnackBarText(
-                context.loc.incorrectPassword,
-              );
             case VerificationLinkAlreadySentAuthException():
               ScaffoldMessenger.of(context).showSnackBarText(
                 context.loc.verificationLinkIsAlreadySentWithMinutesToExpire(
@@ -291,11 +287,28 @@ class _AuthFormInputsState extends State<AuthFormInputs> {
               ScaffoldMessenger.of(context).showSnackBarText(
                 context.loc.yourAccountNeedToBeActivated,
               );
+            case WrongPasswordAUthException():
+            case InvalidCredentialsAuthException():
+              ScaffoldMessenger.of(context).showSnackBarText(
+                context.loc.incorrectPassword,
+              );
+            case UserDisabledAuthException():
+              ScaffoldMessenger.of(context).showSnackBarText(
+                context.loc.authUserDisabledErrorMessage,
+              );
+            case NetworkAuthException():
+              ScaffoldMessenger.of(context).showSnackBarText(
+                context.loc.pleaseCheckYourInternetConnectionMsg,
+              );
+            case OperationNotAllowedAuthException():
+              ScaffoldMessenger.of(context).showSnackBarText(
+                context.loc.authProviderIsDisabledMessage,
+              );
           }
         }
-        if (state.userCredential != null) {
-          context.pop();
-        }
+        // if (state.userCredential != null) {
+        //   context.pop();
+        // }
       },
       child: Builder(
         builder: (context) {

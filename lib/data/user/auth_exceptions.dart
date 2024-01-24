@@ -19,6 +19,10 @@ class InvalidCredentialsAuthException extends AuthException {
   const InvalidCredentialsAuthException({required super.message});
 }
 
+class WrongPasswordAUthException extends AuthException {
+  const WrongPasswordAUthException({required super.message});
+}
+
 class VerificationLinkAlreadySentAuthException extends AuthException {
   const VerificationLinkAlreadySentAuthException({
     required super.message,
@@ -42,4 +46,16 @@ class EmailNeedsVerificationAuthException extends AuthException {
 
 class TooManyRequestsAuthException extends AuthException {
   const TooManyRequestsAuthException({required super.message});
+}
+
+class UserDisabledAuthException extends AuthException {
+  const UserDisabledAuthException({required super.message});
+}
+
+class NetworkAuthException extends AuthException {
+  const NetworkAuthException({required super.message});
+}
+
+class OperationNotAllowedAuthException extends AuthException {
+  const OperationNotAllowedAuthException({required super.message});
 }

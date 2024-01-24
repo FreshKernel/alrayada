@@ -9,25 +9,25 @@ part of 'user.dart';
 _$UserImpl _$$UserImplFromJson(Map<String, dynamic> json) => _$UserImpl(
       email: json['email'] as String,
       data: UserData.fromJson(json['data'] as Map<String, dynamic>),
-      createdAt: DateTime.parse(json['createdAt'] as String),
       userId: json['userId'] as String,
-      pictureUrl: json['pictureUrl'] as String,
-      accountActivated: json['accountActivated'] as bool? ?? false,
-      emailVerified: json['emailVerified'] as bool? ?? false,
-      role:
-          $enumDecodeNullable(_$UserRoleEnumMap, json['role']) ?? UserRole.user,
+      pictureUrl: json['pictureUrl'] as String?,
+      isAccountVerified: json['isAccountVerified'] as bool,
+      isEmailVerified: json['isEmailVerified'] as bool,
+      role: $enumDecode(_$UserRoleEnumMap, json['role']),
+      deviceNotificationsToken: UserDeviceNotificationsToken.fromJson(
+          json['deviceNotificationsToken'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$$UserImplToJson(_$UserImpl instance) =>
     <String, dynamic>{
       'email': instance.email,
       'data': instance.data,
-      'createdAt': instance.createdAt.toIso8601String(),
       'userId': instance.userId,
       'pictureUrl': instance.pictureUrl,
-      'accountActivated': instance.accountActivated,
-      'emailVerified': instance.emailVerified,
+      'isAccountVerified': instance.isAccountVerified,
+      'isEmailVerified': instance.isEmailVerified,
       'role': _$UserRoleEnumMap[instance.role]!,
+      'deviceNotificationsToken': instance.deviceNotificationsToken,
     };
 
 const _$UserRoleEnumMap = {

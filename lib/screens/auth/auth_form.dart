@@ -42,7 +42,6 @@ class _AuthFormState extends State<AuthenticationForm> {
 
   @override
   Widget build(BuildContext context) {
-    final materialTheme = Theme.of(context);
     return BlocBuilder<ConnectionCubit, ConnState>(
       builder: (context, state) {
         if (state is ConnStateDisconnected) {
@@ -64,7 +63,7 @@ class _AuthFormState extends State<AuthenticationForm> {
                       ? context.loc.welcomeAgain
                       : context.loc.registerAccount,
                   textAlign: TextAlign.center,
-                  style: materialTheme.textTheme.headlineMedium,
+                  style: Theme.of(context).textTheme.headlineMedium,
                 ),
               ),
             ),
@@ -76,7 +75,7 @@ class _AuthFormState extends State<AuthenticationForm> {
                 child: Text(
                   context.loc.enterTheAccountCredentialsToContinue,
                   textAlign: TextAlign.center,
-                  style: materialTheme.textTheme.bodyMedium,
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ),
             ),

@@ -20,9 +20,8 @@ UserCredential _$UserCredentialFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$UserCredential {
-  String get token => throw _privateConstructorUsedError;
-  int get expiresIn => throw _privateConstructorUsedError;
-  int get expiresAt => throw _privateConstructorUsedError;
+  String get accessToken => throw _privateConstructorUsedError;
+  String get refreshToken => throw _privateConstructorUsedError;
   User get user => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -37,7 +36,7 @@ abstract class $UserCredentialCopyWith<$Res> {
           UserCredential value, $Res Function(UserCredential) then) =
       _$UserCredentialCopyWithImpl<$Res, UserCredential>;
   @useResult
-  $Res call({String token, int expiresIn, int expiresAt, User user});
+  $Res call({String accessToken, String refreshToken, User user});
 
   $UserCopyWith<$Res> get user;
 }
@@ -55,24 +54,19 @@ class _$UserCredentialCopyWithImpl<$Res, $Val extends UserCredential>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? token = null,
-    Object? expiresIn = null,
-    Object? expiresAt = null,
+    Object? accessToken = null,
+    Object? refreshToken = null,
     Object? user = null,
   }) {
     return _then(_value.copyWith(
-      token: null == token
-          ? _value.token
-          : token // ignore: cast_nullable_to_non_nullable
+      accessToken: null == accessToken
+          ? _value.accessToken
+          : accessToken // ignore: cast_nullable_to_non_nullable
               as String,
-      expiresIn: null == expiresIn
-          ? _value.expiresIn
-          : expiresIn // ignore: cast_nullable_to_non_nullable
-              as int,
-      expiresAt: null == expiresAt
-          ? _value.expiresAt
-          : expiresAt // ignore: cast_nullable_to_non_nullable
-              as int,
+      refreshToken: null == refreshToken
+          ? _value.refreshToken
+          : refreshToken // ignore: cast_nullable_to_non_nullable
+              as String,
       user: null == user
           ? _value.user
           : user // ignore: cast_nullable_to_non_nullable
@@ -97,7 +91,7 @@ abstract class _$$UserCredentialImplCopyWith<$Res>
       __$$UserCredentialImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String token, int expiresIn, int expiresAt, User user});
+  $Res call({String accessToken, String refreshToken, User user});
 
   @override
   $UserCopyWith<$Res> get user;
@@ -114,24 +108,19 @@ class __$$UserCredentialImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? token = null,
-    Object? expiresIn = null,
-    Object? expiresAt = null,
+    Object? accessToken = null,
+    Object? refreshToken = null,
     Object? user = null,
   }) {
     return _then(_$UserCredentialImpl(
-      token: null == token
-          ? _value.token
-          : token // ignore: cast_nullable_to_non_nullable
+      accessToken: null == accessToken
+          ? _value.accessToken
+          : accessToken // ignore: cast_nullable_to_non_nullable
               as String,
-      expiresIn: null == expiresIn
-          ? _value.expiresIn
-          : expiresIn // ignore: cast_nullable_to_non_nullable
-              as int,
-      expiresAt: null == expiresAt
-          ? _value.expiresAt
-          : expiresAt // ignore: cast_nullable_to_non_nullable
-              as int,
+      refreshToken: null == refreshToken
+          ? _value.refreshToken
+          : refreshToken // ignore: cast_nullable_to_non_nullable
+              as String,
       user: null == user
           ? _value.user
           : user // ignore: cast_nullable_to_non_nullable
@@ -144,26 +133,23 @@ class __$$UserCredentialImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$UserCredentialImpl implements _UserCredential {
   const _$UserCredentialImpl(
-      {required this.token,
-      required this.expiresIn,
-      required this.expiresAt,
+      {required this.accessToken,
+      required this.refreshToken,
       required this.user});
 
   factory _$UserCredentialImpl.fromJson(Map<String, dynamic> json) =>
       _$$UserCredentialImplFromJson(json);
 
   @override
-  final String token;
+  final String accessToken;
   @override
-  final int expiresIn;
-  @override
-  final int expiresAt;
+  final String refreshToken;
   @override
   final User user;
 
   @override
   String toString() {
-    return 'UserCredential(token: $token, expiresIn: $expiresIn, expiresAt: $expiresAt, user: $user)';
+    return 'UserCredential(accessToken: $accessToken, refreshToken: $refreshToken, user: $user)';
   }
 
   @override
@@ -171,18 +157,16 @@ class _$UserCredentialImpl implements _UserCredential {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$UserCredentialImpl &&
-            (identical(other.token, token) || other.token == token) &&
-            (identical(other.expiresIn, expiresIn) ||
-                other.expiresIn == expiresIn) &&
-            (identical(other.expiresAt, expiresAt) ||
-                other.expiresAt == expiresAt) &&
+            (identical(other.accessToken, accessToken) ||
+                other.accessToken == accessToken) &&
+            (identical(other.refreshToken, refreshToken) ||
+                other.refreshToken == refreshToken) &&
             (identical(other.user, user) || other.user == user));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, token, expiresIn, expiresAt, user);
+  int get hashCode => Object.hash(runtimeType, accessToken, refreshToken, user);
 
   @JsonKey(ignore: true)
   @override
@@ -201,20 +185,17 @@ class _$UserCredentialImpl implements _UserCredential {
 
 abstract class _UserCredential implements UserCredential {
   const factory _UserCredential(
-      {required final String token,
-      required final int expiresIn,
-      required final int expiresAt,
+      {required final String accessToken,
+      required final String refreshToken,
       required final User user}) = _$UserCredentialImpl;
 
   factory _UserCredential.fromJson(Map<String, dynamic> json) =
       _$UserCredentialImpl.fromJson;
 
   @override
-  String get token;
+  String get accessToken;
   @override
-  int get expiresIn;
-  @override
-  int get expiresAt;
+  String get refreshToken;
   @override
   User get user;
   @override

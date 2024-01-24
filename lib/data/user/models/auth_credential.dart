@@ -8,9 +8,8 @@ part 'auth_credential.g.dart';
 @freezed
 class UserCredential with _$UserCredential {
   const factory UserCredential({
-    required String token,
-    required int expiresIn,
-    required int expiresAt,
+    required String accessToken,
+    required String refreshToken,
     required User user,
   }) = _UserCredential;
 
