@@ -10,9 +10,10 @@ abstract class AuthRepository {
     required String currentPassword,
     required String newPassword,
   });
-  Future<void> forgotPassword({
+  Future<void> sendResetPasswordLink({
     required String email,
   });
+  Future<void> sendEmailVerification();
   Future<void> logout();
   Future<void> updateDeviceToken();
   Future<UserCredential> signInWithEmailAndPassword({
@@ -29,6 +30,5 @@ abstract class AuthRepository {
   );
   Future<void> deleteAccount();
   Future<UserCredential?> fetchSavedUserCredential();
-  Future<void> sendEmailVerification();
   Future<User?> fetchUser();
 }

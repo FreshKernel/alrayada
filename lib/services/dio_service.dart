@@ -28,15 +28,15 @@ class DioService {
         onRequest: (options, handler) async {
           final baseUrl = await ServerConfigurations.getBaseUrl();
           if (options.uri.host == Uri.parse(baseUrl).host &&
-              _jwtToken != null) {
-            options.headers['Authorization'] = 'Bearer $_jwtToken';
+              _accessToken != null) {
+            options.headers['Authorization'] = 'Bearer $_accessToken';
           }
           handler.next(options);
         },
         onError: (error, handler) async {
           final baseUrl = await ServerConfigurations.getBaseUrl();
           if (error.requestOptions.uri.host == Uri.parse(baseUrl).host &&
-              _jwtToken != null &&
+              _accessToken != null &&
               error.response?.statusCode == 401) {
             onInvalidToken?.call();
           }
@@ -47,16 +47,24 @@ class DioService {
     return dio;
   }
 
-  String? _jwtToken;
+  String? _accessToken;
+  // ignore: unused_field
+  String? _refreshToken;
   VoidCallback? onInvalidToken;
 
-  void clearJwtToken() {
-    _jwtToken = null;
+  void clearTokens() {
+    _accessToken = null;
+    _refreshToken = null;
     onInvalidToken = null;
   }
 
-  void setJwtToken(String jwt, {required VoidCallback onInvalidToken}) {
-    _jwtToken = jwt;
+  void setToken({
+    required String accessToken,
+    required String refreshToken,
+    required VoidCallback onInvalidToken,
+  }) {
+    _accessToken = accessToken;
+    _refreshToken = refreshToken;
     this.onInvalidToken = onInvalidToken;
   }
 }

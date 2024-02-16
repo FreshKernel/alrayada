@@ -306,9 +306,9 @@ class _AuthFormInputsState extends State<AuthFormInputs> {
               );
           }
         }
-        // if (state.userCredential != null) {
-        //   context.pop();
-        // }
+        if (state.userCredential != null) {
+          context.pop();
+        }
       },
       child: Builder(
         builder: (context) {

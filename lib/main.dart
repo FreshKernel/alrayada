@@ -44,6 +44,10 @@ Future<void> main() async {
       return true;
     };
 
+    // In debug mode, if the useDevServer is true then we will use the dev
+    // server instead of production one, if the device is physical then it's not
+    // an emulator or simulator then we will use this device ip address as host
+    // otherwise we will use localhost
     if (kDebugMode && getEnvironmentVariables().useDevServer) {
       ServerConfigurations.baseUrl =
           await ServerConfigurations.getDevelopmentBaseUrl();

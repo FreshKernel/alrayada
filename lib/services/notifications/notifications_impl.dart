@@ -1,22 +1,22 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/widgets.dart';
+import 'package:fresh_base_package/fresh_base_package.dart';
 
 import '../../data/user/models/user.dart';
+import '../../utils/app_logger.dart';
 import 'notifications.dart';
-
-// TODO: Complete this
 
 class NotificationsImpl extends Notifications {
   @override
   Future<UserDeviceNotificationsToken> getUserDeviceToken() async {
-    var newFirebaseToken = '';
     const newOneSignalToken = '';
+    var newFirebaseToken = '';
 
     try {
       // newOneSignalToken = OneSignal.User.pushSubscription.id ?? '';
       newFirebaseToken = await FirebaseMessaging.instance.getToken() ?? '';
     } catch (e) {
-      // Error
+      AppLogger.error(e.toString(), error: e);
     }
 
     return UserDeviceNotificationsToken(
@@ -27,7 +27,7 @@ class NotificationsImpl extends Notifications {
 
   @override
   Future<void> registerNotificationsHandlers(BuildContext context) async {
-    // if (!PlatformChecker.isMobileDevice()) return;
+    if (!PlatformChecker.nativePlatform().isMobile()) return;
 
     // OneSignal.Notifications.addClickListener((event) {
     //   // ref

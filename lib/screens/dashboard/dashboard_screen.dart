@@ -12,7 +12,7 @@ import 'navigation_item.dart';
 import 'pages/account_page.dart';
 import 'pages/cart_page.dart';
 import 'pages/categories_page.dart';
-import 'pages/home_page.dart';
+import 'pages/home/home_page.dart';
 import 'pages/orders/orders_page.dart';
 
 class DashboardScreen extends StatefulWidget {

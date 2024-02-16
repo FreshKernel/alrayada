@@ -1,4 +1,3 @@
-import 'dart:async' show Timer;
 import 'dart:convert' show jsonDecode, jsonEncode;
 
 import 'package:dio/dio.dart';
@@ -46,8 +45,9 @@ class AuthRepositoryImpl extends AuthRepository {
         response.data.toString(),
       ));
       saveUser(userResponse);
-      DioService.instance.setJwtToken(
-        userResponse.accessToken,
+      DioService.instance.setToken(
+        accessToken: userResponse.accessToken,
+        refreshToken: userResponse.refreshToken,
         onInvalidToken: logout,
       );
       return userResponse;
@@ -130,20 +130,29 @@ class AuthRepositoryImpl extends AuthRepository {
   }
 
   static const userPrefKey = 'user';
-  static const jwtTokenPrefKey = 'jwtToken';
+  static const accessTokenPrefKey = 'accessToken';
+  static const refreshTokenPrefKey = 'refreshToken';
 
   Future<void> saveUser(
     UserCredential userCredential,
   ) async {
     final prefs = await SharedPreferences.getInstance();
-    // Don't save the token in shared prefs
+    // Don't save the tokens in shared prefs
     await prefs.setString(
       userPrefKey,
-      jsonEncode(userCredential.copyWith(accessToken: '')),
+      jsonEncode(userCredential.copyWith(
+        accessToken: '',
+        refreshToken: '',
+      )),
     );
     await _secureStorage.write(
-      key: jwtTokenPrefKey,
+      key: accessTokenPrefKey,
       value: userCredential.accessToken,
+    );
+
+    await _secureStorage.write(
+      key: refreshTokenPrefKey,
+      value: userCredential.refreshToken,
     );
   }
 
@@ -151,8 +160,9 @@ class AuthRepositoryImpl extends AuthRepository {
   Future<void> logout() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(userPrefKey);
-    await _secureStorage.delete(key: jwtTokenPrefKey);
-    DioService.instance.clearJwtToken();
+    await _secureStorage.delete(key: accessTokenPrefKey);
+    await _secureStorage.delete(key: refreshTokenPrefKey);
+    DioService.instance.clearTokens();
   }
 
   @override
@@ -160,14 +170,20 @@ class AuthRepositoryImpl extends AuthRepository {
     final prefs = await SharedPreferences.getInstance();
     final savedUserJson = prefs.getString('user');
     if (savedUserJson == null) return null;
-    final jwt = await _secureStorage.read(key: jwtTokenPrefKey);
-    if (jwt == null) return null;
+    final accessToken = await _secureStorage.read(key: accessTokenPrefKey);
+    final refreshToken = await _secureStorage.read(key: refreshTokenPrefKey);
+    if (accessToken == null || refreshToken == null) return null;
     // Without Jwt
     final userCredential =
         UserCredential.fromJson(jsonDecode(savedUserJson)).copyWith(
-      accessToken: jwt,
+      accessToken: accessToken,
+      refreshToken: refreshToken,
     );
-    DioService.instance.setJwtToken(jwt, onInvalidToken: logout);
+    DioService.instance.setToken(
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+      onInvalidToken: logout,
+    );
     return userCredential;
   }
 
@@ -202,7 +218,7 @@ class AuthRepositoryImpl extends AuthRepository {
   }
 
   @override
-  Future<void> forgotPassword({required String email}) async {
+  Future<void> sendResetPasswordLink({required String email}) async {
     await _dio.post(
       ServerConfigurations.getRequestUrl(
           RoutesConstants.authRoutes.forgotPassword),

@@ -174,8 +174,9 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       final userCredential = await authRepository.fetchSavedUserCredential();
       emit(state.copyWith(userCredential: userCredential));
-      // ignore: empty_catches
-    } catch (e) {}
+    } catch (e) {
+      AppLogger.error(e.toString(), error: e);
+    }
   }
 
   Future<void> fetchUser() async {
@@ -193,7 +194,7 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> forgotPassword({required String email}) =>
-      authRepository.forgotPassword(email: email);
+      authRepository.sendResetPasswordLink(email: email);
 
   Future<void> logout() async {
     try {

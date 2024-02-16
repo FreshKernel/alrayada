@@ -32,6 +32,7 @@ data class EnvironmentVariables(
 
 val dotenv = dotenv {
     systemProperties = true
+    ignoreIfMissing = true
 }
 
 private fun getEnvironmentVariable(name: String): String {

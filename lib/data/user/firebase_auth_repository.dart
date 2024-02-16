@@ -56,7 +56,7 @@ class FirebaseAuthRepository extends AuthRepository {
   }
 
   @override
-  Future<void> forgotPassword({required String email}) async {
+  Future<void> sendResetPasswordLink({required String email}) async {
     try {
       await firebase.FirebaseAuth.instance.sendPasswordResetEmail(email: email);
     } on firebase.FirebaseAuthException catch (e) {

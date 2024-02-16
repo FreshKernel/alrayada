@@ -6,8 +6,10 @@ import 'notifications_impl.dart';
 
 class NotificationsService implements NotificationsImpl {
   NotificationsService._();
+
   static final instanse = NotificationsService._();
   final Notifications _service = NotificationsImpl();
+
   @override
   Future<UserDeviceNotificationsToken> getUserDeviceToken() =>
       _service.getUserDeviceToken();
