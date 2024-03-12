@@ -3,7 +3,6 @@ package net.freshplatform.routes.auth
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
-import io.ktor.server.auth.jwt.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -37,7 +36,14 @@ fun Route.signUpWithEmailAndPassword() {
             throw ErrorResponseException(HttpStatusCode.BadRequest, error.first, error.second)
         }
 
-        val isEmailUsed = userDataSource.findUserByEmail(request.email) != null
+        val findUserByEmail = userDataSource.findUserByEmail(request.email).getOrElse {
+            throw ErrorResponseException(
+                HttpStatusCode.InternalServerError,
+                "Unknown error while trying to find this user with this email",
+                "UNKNOWN_ERROR"
+            )
+        }
+        val isEmailUsed = findUserByEmail != null
         if (isEmailUsed) {
             throw ErrorResponseException(
                 HttpStatusCode.Conflict,
@@ -102,7 +108,15 @@ fun Route.signInWithEmailAndPassword() {
             )
         }
 
-        val user = userDataSource.findUserByEmail(request.email) ?: throw ErrorResponseException(
+        val findUserByEmail = userDataSource.findUserByEmail(request.email).getOrElse {
+            throw ErrorResponseException(
+                HttpStatusCode.InternalServerError,
+                "Unknown error while trying to find this user with this email",
+                "UNKNOWN_ERROR"
+            )
+        }
+
+        val user = findUserByEmail ?: throw ErrorResponseException(
             HttpStatusCode.NotFound,
             "Email not found. Please check your email address and try again.",
             "USER_NOT_FOUND",
@@ -148,7 +162,15 @@ fun Route.verifyEmail() {
             )
         }
 
-        val user = userDataSource.findUserByEmail(email)
+        val findUserByEmail = userDataSource.findUserByEmail(email).getOrElse {
+            throw ErrorResponseException(
+                HttpStatusCode.InternalServerError,
+                "Unknown error while trying to find this user with this email",
+                "UNKNOWN_ERROR"
+            )
+        }
+
+        val user = findUserByEmail
             ?: throw ErrorResponseException(HttpStatusCode.NotFound, "We couldn't find this user.", "USER_NOT_FOUND")
 
         if (user.isEmailVerified) throw ErrorResponseException(

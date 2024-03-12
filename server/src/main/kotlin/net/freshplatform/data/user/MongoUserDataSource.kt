@@ -19,25 +19,27 @@ class MongoUserDataSource(
         }
     }
 
-    override suspend fun findUserByEmail(email: String): User? {
+    override suspend fun findUserByEmail(email: String): Result<User?> {
         return try {
-            users.find(Filters.eq(User::email.name, email))
-                .singleOrNull()
+            Result.success(users.find(Filters.eq(User::email.name, email))
+                .singleOrNull())
         } catch (e: Exception) {
             e.printStackTrace()
-            null
+            Result.failure(e)
         }
     }
 
-    override suspend fun findUserById(userId: String): User? {
+    override suspend fun findUserById(userId: String): Result<User?> {
         return try {
-            users.find(
-                Filters.eq("_id", ObjectId(userId))
+            Result.success(
+                users.find(
+                    Filters.eq("_id", ObjectId(userId))
+                )
+                    .singleOrNull()
             )
-                .singleOrNull()
         } catch (e: Exception) {
             e.printStackTrace()
-            null
+            Result.failure(e)
         }
     }
 
