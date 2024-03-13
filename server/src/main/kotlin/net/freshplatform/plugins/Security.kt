@@ -1,7 +1,5 @@
 package net.freshplatform.plugins
 
-import com.auth0.jwt.JWT
-import com.auth0.jwt.algorithms.Algorithm
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -11,7 +9,6 @@ import io.ktor.server.response.*
 import net.freshplatform.services.security.jwt.JwtService
 import net.freshplatform.utils.Constants
 import net.freshplatform.utils.ErrorResponse
-import net.freshplatform.utils.getEnvironmentVariables
 import org.koin.ktor.ext.inject
 import kotlin.time.Duration.Companion.minutes
 

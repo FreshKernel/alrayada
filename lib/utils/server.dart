@@ -10,33 +10,27 @@ class ServerConfigurations {
 
   static var baseUrl = getProductionBaseUrl();
 
-  static const _defaultPort = 8080;
+  static const _productionBaseUrl = 'https://alrayada.net';
 
   static String getProductionBaseUrl() {
-    // TODO: Implement
-    throw UnimplementedError();
+    return _productionBaseUrl;
   }
+
+  static const _developmentServerPort = 8080;
 
   static Future<String> getDevelopmentBaseUrl() async {
     final deviceInfoPlugin = DeviceInfoPlugin();
     if (!kIsWeb) {
       if (defaultTargetPlatform == TargetPlatform.android &&
           !(await deviceInfoPlugin.androidInfo).isPhysicalDevice) {
-        return 'http://10.0.2.2:$_defaultPort';
+        return 'http://10.0.2.2:$_developmentServerPort';
       }
       if (defaultTargetPlatform == TargetPlatform.iOS &&
           !(await deviceInfoPlugin.iosInfo).isPhysicalDevice) {
-        return 'http://localhost:$_defaultPort';
+        return 'http://localhost:$_developmentServerPort';
       }
     }
     return getEnvironmentVariables().developmentIpAddress;
-  }
-
-  static Future<String> getBaseUrl() async {
-    if (kDebugMode) {
-      return getDevelopmentBaseUrl();
-    }
-    return getProductionBaseUrl();
   }
 
   /// This add the base url to the path of the route

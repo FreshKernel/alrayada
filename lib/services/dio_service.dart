@@ -26,7 +26,7 @@ class DioService {
     dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
-          final baseUrl = await ServerConfigurations.getBaseUrl();
+          final baseUrl = ServerConfigurations.baseUrl;
           if (options.uri.host == Uri.parse(baseUrl).host &&
               _accessToken != null) {
             options.headers['Authorization'] = 'Bearer $_accessToken';
@@ -34,7 +34,7 @@ class DioService {
           handler.next(options);
         },
         onError: (error, handler) async {
-          final baseUrl = await ServerConfigurations.getBaseUrl();
+          final baseUrl = ServerConfigurations.baseUrl;
           if (error.requestOptions.uri.host == Uri.parse(baseUrl).host &&
               _accessToken != null &&
               error.response?.statusCode == 401) {
