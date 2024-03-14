@@ -4,6 +4,7 @@ import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Updates
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import kotlinx.coroutines.flow.singleOrNull
+import org.bson.conversions.Bson
 import org.bson.types.ObjectId
 
 class MongoUserDataSource(
@@ -21,8 +22,10 @@ class MongoUserDataSource(
 
     override suspend fun findUserByEmail(email: String): Result<User?> {
         return try {
-            Result.success(users.find(Filters.eq(User::email.name, email))
-                .singleOrNull())
+            Result.success(
+                users.find(Filters.eq(User::email.name, email))
+                    .singleOrNull()
+            )
         } catch (e: Exception) {
             e.printStackTrace()
             Result.failure(e)
@@ -33,7 +36,7 @@ class MongoUserDataSource(
         return try {
             Result.success(
                 users.find(
-                    Filters.eq("_id", ObjectId(userId))
+                    userIdFilter(userId)
                 )
                     .singleOrNull()
             )
@@ -58,13 +61,13 @@ class MongoUserDataSource(
         }
     }
 
-    override suspend fun updateDeviceNotificationsToken(
-        deviceNotificationsToken: UserDeviceNotificationsToken,
-        userId: String
+    override suspend fun updateDeviceNotificationsTokenById(
+        userId: String,
+        deviceNotificationsToken: UserDeviceNotificationsToken
     ): Boolean {
         return try {
             users.updateOne(
-                Filters.eq(User::id.name, userId),
+                userIdFilter(userId),
                 Updates.set(
                     User::deviceNotificationsToken.name,
                     deviceNotificationsToken
@@ -79,11 +82,30 @@ class MongoUserDataSource(
     override suspend fun deleteUserById(userId: String): Boolean {
         return try {
             users.deleteOne(
-                Filters.eq(User::id.name, userId),
+                userIdFilter(userId),
             ).wasAcknowledged()
         } catch (e: Exception) {
             e.printStackTrace()
             false
         }
+    }
+
+    override suspend fun updateUserPasswordById(userId: String, newPassword: String): Boolean {
+        return try {
+            users.updateOne(
+                userIdFilter(userId),
+                Updates.set(
+                    User::password.name,
+                    newPassword
+                )
+            ).wasAcknowledged()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+
+    private fun userIdFilter(userId: String): Bson {
+        return Filters.eq("_id", ObjectId(userId))
     }
 }

@@ -24,7 +24,7 @@ class JavaEmailSenderService : EmailSenderService {
         }
     })
 
-    override suspend fun sendMessage(message: EmailMessage): Boolean {
+    override suspend fun sendEmail(message: EmailMessage): Boolean {
         return withContext(Dispatchers.IO) {
             try {
                 val mimeMessage = MimeMessage(session).apply {

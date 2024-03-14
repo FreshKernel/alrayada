@@ -1,6 +1,3 @@
-
-val kotlinVersion: String = libs.versions.kotlin.get()
-
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlinx.serialization)
@@ -22,12 +19,13 @@ repositories {
 }
 
 dependencies {
-    implementation("io.ktor:ktor-server-http-redirect-jvm")
     implementation("io.ktor:ktor-server-core-jvm")
+    implementation("io.ktor:ktor-server-netty-jvm")
     implementation("io.ktor:ktor-server-websockets-jvm")
     implementation("io.ktor:ktor-server-content-negotiation-jvm")
     implementation("io.ktor:ktor-serialization-kotlinx-json-jvm")
     implementation("io.ktor:ktor-server-call-logging-jvm")
+    implementation("io.ktor:ktor-server-http-redirect-jvm")
     implementation("io.ktor:ktor-server-hsts-jvm")
     implementation("io.ktor:ktor-server-default-headers-jvm")
     implementation("io.ktor:ktor-server-cors-jvm")
@@ -36,13 +34,11 @@ dependencies {
     implementation("io.ktor:ktor-server-host-common-jvm")
     implementation("io.ktor:ktor-server-status-pages-jvm")
     implementation("io.ktor:ktor-server-resources")
-//    implementation("io.ktor:ktor-server-sessions-jvm")
     implementation("io.ktor:ktor-server-rate-limit-jvm")
     implementation("io.ktor:ktor-server-auth-jvm")
     implementation("io.ktor:ktor-server-auth-jwt-jvm")
-    implementation("io.ktor:ktor-server-netty-jvm")
-    implementation("ch.qos.logback:logback-classic:${libs.versions.logback.get()}")
     testImplementation("io.ktor:ktor-server-tests-jvm")
+    implementation("ch.qos.logback:logback-classic:${libs.versions.logback.get()}")
 
     // Ktor Client
     implementation("io.ktor:ktor-client-core")
@@ -51,7 +47,7 @@ dependencies {
     implementation("io.ktor:ktor-client-logging")
     implementation("io.ktor:ktor-serialization-kotlinx-json")
 
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:${libs.versions.kotlin.get()}")
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
 
     implementation("at.favre.lib:bcrypt:0.10.2")
@@ -70,6 +66,8 @@ dependencies {
 
     implementation("com.sun.mail:jakarta.mail:2.0.1")
     implementation ("com.auth0:jwks-rsa:0.22.1")
+
+    implementation("io.github.smiley4:ktor-swagger-ui:2.7.4")
 }
 
 tasks {

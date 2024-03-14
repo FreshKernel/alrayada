@@ -1,5 +1,6 @@
 package net.freshplatform.plugins
 
+import io.github.smiley4.ktorswaggerui.SwaggerUI
 import io.ktor.http.*
 import io.ktor.resources.*
 import io.ktor.serialization.*
@@ -13,10 +14,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
-import net.freshplatform.routes.auth.deleteSelfAccount
-import net.freshplatform.routes.auth.signInWithEmailAndPassword
-import net.freshplatform.routes.auth.signUpWithEmailAndPassword
-import net.freshplatform.routes.auth.verifyEmail
+import net.freshplatform.routes.auth.*
 import net.freshplatform.utils.ErrorResponse
 import net.freshplatform.utils.ErrorResponseException
 import net.freshplatform.utils.extensions.AuthorizationRequiredException
@@ -25,10 +23,12 @@ import net.freshplatform.utils.getEnvironmentVariables
 fun Application.configureRouting() {
 
     install(StatusPages) {
-        if (!getEnvironmentVariables().isProductionMode) {
-            exception<Throwable> { call, cause ->
-                cause.printStackTrace()
-                call.respond(HttpStatusCode.InternalServerError, ErrorResponse("500: $cause", "SERVER_ERROR"))
+        exception<Throwable> { call, cause ->
+            cause.printStackTrace()
+            if (getEnvironmentVariables().isProductionMode) {
+                call.respond(HttpStatusCode.InternalServerError, ErrorResponse("Unknown server error", "UNKNOWN_ERROR"))
+            } else {
+                call.respond(HttpStatusCode.InternalServerError, ErrorResponse("500: $cause", "UNKNOWN_ERROR"))
             }
         }
         exception<SerializationException> { call, cause ->
@@ -58,17 +58,14 @@ fun Application.configureRouting() {
         exception<AuthorizationRequiredException> { call, cause ->
             call.respond(
                 HttpStatusCode.Unauthorized,
-                ErrorResponse("You need to be authenticated to complete this action: ${cause.message}", "UNAUTHENTICATED")
+                ErrorResponse(
+                    "You need to be authenticated to complete this action: ${cause.message}",
+                    "UNAUTHENTICATED"
+                )
             )
         }
 //        exception<RouteProtectedException> { _, _ ->
 //            throw ErrorResponseException(HttpStatusCode.Unauthorized, "You don't have access to this api", "ROUTE_PROTECTED")
-//        }
-//        exception<UserShouldAuthenticatedException> { _, cause ->
-//            throw ErrorResponseException(HttpStatusCode.BadRequest, cause.message.toString(), "AUTHENTICATION_REQUIRED")
-//        }
-//        exception<RequestBodyMustValidException> { _, cause ->
-//            throw ErrorResponseException(HttpStatusCode.BadRequest, cause.message.toString(), "INVALID_BODY")
 //        }
         exception<JsonConvertException> { _, cause ->
             throw ErrorResponseException(
@@ -91,21 +88,31 @@ fun Application.configureRouting() {
 
     install(Resources)
 
+    if (!getEnvironmentVariables().isProductionMode) {
+        install(SwaggerUI) {
+            swagger {
+                swaggerUrl = "swagger-ui"
+                forwardRoot = true
+            }
+        }
+    }
+
     routing {
         get("/") {
             call.respondText("Hello, World!")
         }
 
-        route("/api") {
-            rateLimit(RateLimitName("auth")) {
-                route("/auth") {
-                    signUpWithEmailAndPassword()
-                    signInWithEmailAndPassword()
-                    verifyEmail()
-                    deleteSelfAccount()
-                }
+        rateLimit(RateLimitName("auth")) {
+            route("/auth") {
+                signUpWithEmailAndPassword()
+                signInWithEmailAndPassword()
+                verifyEmail()
+                deleteSelfAccount()
+                updatePassword()
+                updateDeviceNotificationsToken()
             }
         }
+
 
         get<Articles> { article ->
             // Get all articles ...

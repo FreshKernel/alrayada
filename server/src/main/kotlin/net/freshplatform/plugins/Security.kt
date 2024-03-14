@@ -15,7 +15,7 @@ import kotlin.time.Duration.Companion.minutes
 fun Application.configureSecurity() {
     install(RateLimit) {
         global {
-            rateLimiter(limit = 50, refillPeriod = 1.minutes)
+            rateLimiter(limit = 100, refillPeriod = 1.minutes)
         }
         register(RateLimitName("auth")) {
             rateLimiter(limit = 20, refillPeriod = 5.minutes)

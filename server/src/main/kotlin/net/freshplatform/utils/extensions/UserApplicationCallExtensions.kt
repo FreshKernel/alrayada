@@ -9,7 +9,7 @@ import net.freshplatform.data.user.UserDataSource
 import net.freshplatform.utils.ErrorResponseException
 import org.koin.ktor.ext.inject
 
-suspend fun ApplicationCall.getCurrentUserNullable(): User? {
+suspend fun ApplicationCall.getCurrentNullableUser(): User? {
     val userID = principal<JWTPrincipal>()?.subject ?: return null
     val userDataSource by inject<UserDataSource>()
     val user = userDataSource.findUserById(userID).getOrElse {
@@ -22,8 +22,9 @@ suspend fun ApplicationCall.getCurrentUserNullable(): User? {
     return user
 }
 
-class AuthorizationRequiredException: Exception("User is required to be authenticated")
+class AuthorizationRequiredException(): Exception("User is required to be authenticated")
 
-suspend fun ApplicationCall.getCurrentUser(): User {
-    return getCurrentUserNullable() ?: throw AuthorizationRequiredException()
+/// Same as above but will require the user to be authenticated
+suspend fun ApplicationCall.requireCurrentUser(): User {
+    return getCurrentNullableUser() ?: throw AuthorizationRequiredException()
 }

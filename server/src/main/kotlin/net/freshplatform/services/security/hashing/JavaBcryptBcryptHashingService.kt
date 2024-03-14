@@ -11,9 +11,9 @@ class JavaBcryptBcryptHashingService : BcryptHashingService {
         }
     }
 
-    override suspend fun verify(value: String, saltedHash: String): Boolean {
+    override suspend fun verify(value: String, bcryptHash: String): Boolean {
         return withContext(Dispatchers.IO) {
-            BCrypt.verifyer().verify(value.toCharArray(), saltedHash).verified
+            BCrypt.verifyer().verify(value.toCharArray(), bcryptHash).verified
         }
     }
 }

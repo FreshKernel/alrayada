@@ -1,7 +1,7 @@
 package net.freshplatform.services.email_sender
 
 class DevEmailSenderService : EmailSenderService {
-    override suspend fun sendMessage(message: EmailMessage): Boolean {
+    override suspend fun sendEmail(message: EmailMessage): Boolean {
         println(
             """
            Email subject: ${message.subject},

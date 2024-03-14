@@ -6,10 +6,12 @@ import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import net.freshplatform.services.security.token_verification.TokenVerification
+import net.freshplatform.utils.InstantAsBsonDateTime
 import net.freshplatform.utils.extensions.isValidPhoneNumber
 import org.bson.types.ObjectId
 
 
+@Serializable
 data class User(
     @SerialName("_id")
     @Contextual
@@ -24,10 +26,13 @@ data class User(
     val emailVerification: TokenVerification?,
     val forgotPasswordVerification: TokenVerification?,
     val deviceNotificationsToken: UserDeviceNotificationsToken,
+    @Serializable(with = InstantAsBsonDateTime::class)
     val createdAt: Instant,
+    @Serializable(with = InstantAsBsonDateTime::class)
     val updatedAt: Instant,
 ) {
     fun toResponse() = UserResponse(
+        userId = id.toString(),
         email = email,
         isEmailVerified = isEmailVerified,
         isAccountActivated = isAccountActivated,
@@ -113,6 +118,7 @@ enum class UserRole {
 
 @Serializable
 data class UserResponse(
+    val userId: String,
     val email: String,
     val isEmailVerified: Boolean,
     val isAccountActivated: Boolean,

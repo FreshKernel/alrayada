@@ -9,14 +9,17 @@ import io.ktor.server.routing.*
 import io.ktor.server.util.*
 import kotlinx.datetime.Clock
 import net.freshplatform.data.user.*
+import net.freshplatform.services.email_sender.EmailMessage
 import net.freshplatform.services.email_sender.EmailSenderService
 import net.freshplatform.services.security.hashing.BcryptHashingService
 import net.freshplatform.services.security.jwt.JwtService
 import net.freshplatform.services.security.token_verification.TokenVerificationService
 import net.freshplatform.services.telegram_bot.TelegramBotService
 import net.freshplatform.utils.ErrorResponseException
-import net.freshplatform.utils.extensions.getCurrentUser
+import net.freshplatform.utils.extensions.baseUrl
 import net.freshplatform.utils.extensions.isValidEmailAddress
+import net.freshplatform.utils.extensions.isValidPassword
+import net.freshplatform.utils.extensions.requireCurrentUser
 import org.koin.ktor.ext.inject
 import kotlin.time.Duration.Companion.minutes
 
@@ -78,6 +81,27 @@ fun Route.signUpWithEmailAndPassword() {
             )
         }
 
+        val verificationLink =
+            "${call.request.baseUrl()}/auth/verifyEmail?email=${user.email}&token=${user.emailVerification?.token}"
+
+        val sendEmailSuccess = emailSenderService.sendEmail(
+            EmailMessage(
+                to = user.email,
+                subject = "Email account verification link",
+                body = "Hi, you have sign up on our platform,\n" +
+                        " to confirm your email, we need you to open this link\n" +
+                        "$verificationLink\n\nif you didn't do that," +
+                        " please ignore this message"
+            )
+        )
+        if (!sendEmailSuccess) {
+            throw ErrorResponseException(
+                HttpStatusCode.InternalServerError,
+                "An error occurred while sending the email verification link, please try again by sign in or contact us",
+                "UNKNOWN_ERROR"
+            )
+        }
+
         val accessToken = jwtService.generateAccessToken(user.id.toString())
 
         call.respond(
@@ -90,7 +114,6 @@ fun Route.signUpWithEmailAndPassword() {
         )
     }
 }
-
 
 fun Route.signInWithEmailAndPassword() {
     val userDataSource by inject<UserDataSource>()
@@ -108,19 +131,21 @@ fun Route.signInWithEmailAndPassword() {
             )
         }
 
-        val findUserByEmail = userDataSource.findUserByEmail(request.email).getOrElse {
+        val user = userDataSource.findUserByEmail(request.email).getOrElse {
             throw ErrorResponseException(
                 HttpStatusCode.InternalServerError,
                 "Unknown error while trying to find this user with this email",
                 "UNKNOWN_ERROR"
             )
-        }
-
-        val user = findUserByEmail ?: throw ErrorResponseException(
+        } ?: throw ErrorResponseException(
+            HttpStatusCode.Unauthorized,
+            "Incorrect email or password",
+            "INVALID_CREDENTIALS"
+        ) /*throw ErrorResponseException(
             HttpStatusCode.NotFound,
             "Email not found. Please check your email address and try again.",
             "USER_NOT_FOUND",
-        )
+        )*/
 
         val isValidPassword = bcryptHashingService.verify(request.password, user.password)
         if (!isValidPassword) {
@@ -132,10 +157,13 @@ fun Route.signInWithEmailAndPassword() {
         }
 
         request.deviceNotificationsToken?.let {
-            userDataSource.updateDeviceNotificationsToken(it, user.id.toString())
+            userDataSource.updateDeviceNotificationsTokenById(
+                deviceNotificationsToken = it,
+                userId = user.id.toString()
+            )
         }
 
-        val accessToken = jwtService.generateAccessToken(user.id.toString())
+        val accessToken = jwtService.generateAccessToken(userId = user.id.toString())
 
         call.respond(
             AuthenticatedUserResponse(
@@ -150,7 +178,7 @@ fun Route.signInWithEmailAndPassword() {
 fun Route.verifyEmail() {
     val userDataSource by inject<UserDataSource>()
 
-    patch("/verifyEmail") {
+    post("/verifyEmail") {
         val token: String by call.request.queryParameters
         val email: String by call.request.queryParameters
 
@@ -162,16 +190,13 @@ fun Route.verifyEmail() {
             )
         }
 
-        val findUserByEmail = userDataSource.findUserByEmail(email).getOrElse {
+        val user = userDataSource.findUserByEmail(email).getOrElse {
             throw ErrorResponseException(
                 HttpStatusCode.InternalServerError,
                 "Unknown error while trying to find this user with this email",
                 "UNKNOWN_ERROR"
             )
-        }
-
-        val user = findUserByEmail
-            ?: throw ErrorResponseException(HttpStatusCode.NotFound, "We couldn't find this user.", "USER_NOT_FOUND")
+        } ?: throw ErrorResponseException(HttpStatusCode.NotFound, "We couldn't find this user.", "USER_NOT_FOUND")
 
         if (user.isEmailVerified) throw ErrorResponseException(
             HttpStatusCode.Conflict,
@@ -181,7 +206,7 @@ fun Route.verifyEmail() {
 
         val emailVerification = user.emailVerification ?: throw ErrorResponseException(
             HttpStatusCode.InternalServerError,
-            "You didn't request email verification, is the email is already verified?",
+            "You didn't request email verification, is the email is already verified? if yes then why we reached this state?",
             "INVALID_STATE"
         )
 
@@ -213,7 +238,7 @@ fun Route.deleteSelfAccount() {
     val userDataSource by inject<UserDataSource>()
     authenticate {
         delete("/deleteAccount") {
-            val user = call.getCurrentUser()
+            val user = call.requireCurrentUser()
             val isDeleteSuccess = userDataSource.deleteUserById(user.id.toString())
             if (!isDeleteSuccess) throw ErrorResponseException(
                 HttpStatusCode.InternalServerError,
@@ -221,6 +246,100 @@ fun Route.deleteSelfAccount() {
                 "UNKNOWN_ERROR"
             )
             call.respondText { "User has been successfully deleted." }
+        }
+    }
+}
+
+fun Route.updatePassword() {
+    val userDataSource by inject<UserDataSource>()
+    val bcryptHashingService by inject<BcryptHashingService>()
+
+    authenticate {
+        post("/updatePassword") {
+            val requestBody: Map<String, String> = call.receive()
+            val currentPassword: String = requestBody["currentPassword"] ?: throw ErrorResponseException(
+                HttpStatusCode.BadRequest,
+                "Please enter the current password",
+                "MISSING_CURRENT_PASSWORD"
+            )
+            val newPassword: String = requestBody["newPassword"] ?: throw ErrorResponseException(
+                HttpStatusCode.BadRequest,
+                "Please enter the new password",
+                "MISSING_NEW_PASSWORD"
+            )
+
+            if (currentPassword == newPassword) {
+                throw ErrorResponseException(
+                    HttpStatusCode.BadRequest, "Please choose a new password", "IDENTICAL_PASSWORD"
+                )
+            }
+
+            if (!newPassword.isValidPassword()) {
+                throw ErrorResponseException(
+                    HttpStatusCode.BadRequest, "Please enter a strong password",
+                    "WEAK_PASSWORD"
+                )
+            }
+
+            val user = call.requireCurrentUser()
+
+            val isCurrentPasswordValid = bcryptHashingService.verify(currentPassword, user.password)
+
+            if (!isCurrentPasswordValid) {
+                throw ErrorResponseException(
+                    HttpStatusCode.Unauthorized,
+                    "Current password is incorrect.",
+                    "INCORRECT_PASSWORD"
+                )
+            }
+
+            val isUpdateSuccess = userDataSource.updateUserPasswordById(
+                user.id.toString(),
+                bcryptHashingService.generatedSaltedHash(newPassword)
+            )
+
+            if (!isUpdateSuccess) {
+                throw ErrorResponseException(
+                    HttpStatusCode.InternalServerError,
+                    "Error while update the password.",
+                    "UPDATE_ERROR"
+                )
+            }
+
+            call.respondText { "Password has been successfully updated." }
+        }
+    }
+}
+
+fun Route.updateDeviceNotificationsToken() {
+    val userDataSource by inject<UserDataSource>()
+    authenticate {
+        patch("/updateDeviceNotificationsToken") {
+            val requestBody: Map<String, String> = call.receive()
+            val firebase: String = requestBody["firebase"] ?: throw ErrorResponseException(
+                HttpStatusCode.BadRequest, "Please enter the firebase notifications token.", "MISSING_FCM_TOKEN"
+            )
+            val oneSignal: String = requestBody["oneSignal"] ?: throw ErrorResponseException(
+                HttpStatusCode.BadRequest, "Please enter the oneSignal notifications token", "MISSING_ONESIGNAL_TOKEN"
+            )
+
+            val currentUser = call.requireCurrentUser()
+            val isUpdateSuccess = userDataSource.updateDeviceNotificationsTokenById(
+                deviceNotificationsToken = UserDeviceNotificationsToken(
+                    firebase, oneSignal
+                ),
+                userId = currentUser.id.toString()
+            )
+
+            if (!isUpdateSuccess) {
+                throw ErrorResponseException(
+                    HttpStatusCode.InternalServerError,
+                    "Error while updating the device notifications token",
+                    "UNKNOWN_ERROR"
+                )
+            }
+
+            call.respondText { "Device notifications token has been successfully updated." }
         }
     }
 }
