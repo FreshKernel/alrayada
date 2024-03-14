@@ -13,6 +13,6 @@ class UserCredential with _$UserCredential {
     required User user,
   }) = _UserCredential;
 
-  factory UserCredential.fromJson(Map<String, dynamic> json) =>
+  factory UserCredential.fromJson(Map<String, Object?> json) =>
       _$UserCredentialFromJson(json);
 }

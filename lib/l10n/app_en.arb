@@ -152,7 +152,8 @@
       }
    },
    "authTooManyFailedAttempts":"Too many failed attempts, Please try again later.",
-   "incorrectPassword":"Incorrect password.",
+   "authIncorrectPassword":"Incorrect password.",
+   "authInvalidEmailOrPassword": "Invalid email or password.",
    "authEmailNotFound":"Email not found. Please check your email address and try again.",
    "authEmailAlreadyInUse":"Email already in use. Please use a different email or try logging in.",
    "createNewAccount":"Create new account",

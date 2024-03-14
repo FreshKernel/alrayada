@@ -13,7 +13,7 @@ class IpLocationImpl implements LocationRepository {
   Future<GeoLocation> getLocation() async {
     try {
       final response =
-          await DioService.instance.dio.get<Map<String, dynamic>>(_url);
+          await DioService.instance.dio.get<Map<String, Object?>>(_url);
       final responseData = response.data;
       if (responseData == null) {
         throw GeoLocationException('Response data is null');

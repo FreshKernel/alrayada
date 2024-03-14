@@ -34,13 +34,11 @@ class EmailTextField extends StatelessWidget {
             PlatformIcons(context).mail,
           ),
           labelText: context.loc.emailAddress,
+          errorText: customError,
         ),
         minLines: 1,
         maxLines: 1,
         validator: (email) {
-          if (customError != null) {
-            return customError;
-          }
           return AuthValidator.validateEmail(
             email ?? '',
             localizations: context.loc,

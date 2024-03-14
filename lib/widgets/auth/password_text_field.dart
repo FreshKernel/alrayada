@@ -23,7 +23,7 @@ class PasswordTextField extends StatefulWidget {
   final TextInputAction textInputAction;
   final String? customError;
 
-  /// Enter the text of the original password to make
+  /// Pass the original password controller (the first one) to make
   /// this text field as confirm password
   final TextEditingController? originalPasswordController;
   final FocusNode? nextFocus;
@@ -72,11 +72,9 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
                 ? PlatformIcons(context).eyeSlash
                 : PlatformIcons(context).eyeSolid),
           ),
+          errorText: widget.customError,
         ),
         validator: (password) {
-          if (widget.customError != null) {
-            return widget.customError;
-          }
           if (widget.originalPasswordController != null) {
             return AuthValidator.validateConfirmPassword(
               password: password ?? '',

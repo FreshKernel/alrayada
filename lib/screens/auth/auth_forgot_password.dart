@@ -7,15 +7,18 @@ import '../../l10n/app_localizations.dart';
 import '../../widgets/auth/email_text_field.dart';
 
 class AuthForgotPassword extends StatefulWidget {
-  const AuthForgotPassword({super.key});
+  const AuthForgotPassword({required this.initialEmailText, super.key});
 
   static const routeName = '/forgotPassword';
+
+  final String initialEmailText;
 
   @override
   State<AuthForgotPassword> createState() => _AuthForgotPasswordState();
 }
 
 class _AuthForgotPasswordState extends State<AuthForgotPassword> {
+  final _emailController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   void _onSubmit() {
@@ -23,6 +26,18 @@ class _AuthForgotPasswordState extends State<AuthForgotPassword> {
     if (!isValid) {
       return;
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _emailController.text = widget.initialEmailText;
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    super.dispose();
   }
 
   @override
@@ -52,7 +67,7 @@ class _AuthForgotPasswordState extends State<AuthForgotPassword> {
                 ),
                 const SizedBox(height: 8),
                 EmailTextField(
-                  controller: TextEditingController(),
+                  controller: _emailController,
                   customError: null,
                   textInputAction: TextInputAction.done,
                 ),

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart' show TapGestureRecognizer;
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -39,18 +40,28 @@ class _AuthFormInputsState extends State<AuthFormInputs> {
   /// Must be the same value in isLogin of [AuthenticationForm]
   var _isLogin = true;
 
-  final _emailController = TextEditingController();
-  final _passwordInputHandler =
-      TextInputHandler(TextEditingController(), FocusNode());
-  final _confirmPasswordInputHandler =
-      TextInputHandler(TextEditingController(), FocusNode());
-  final _labOwnerPhoneNumberInputHandler =
-      TextInputHandler(TextEditingController(), FocusNode());
-  final _labPhoneNumberController = TextEditingController();
-  final _labNameController = TextEditingController();
-  final _labOwnerNameController = TextEditingController();
+  final _emailController =
+      TextEditingController(text: kDebugMode ? 'user@gmail.com' : null);
+  final _passwordInputHandler = TextInputHandler(
+    TextEditingController(text: kDebugMode ? '?Rocej2dr!zL+wiDlni4' : null),
+    FocusNode(),
+  );
+
+  // Sign up inputs
+  final _confirmPasswordInputHandler = TextInputHandler(
+      TextEditingController(text: kDebugMode ? '?Rocej2dr!zL+wiDlni4' : null),
+      FocusNode());
+  final _labOwnerPhoneNumberInputHandler = TextInputHandler(
+      TextEditingController(text: kDebugMode ? '07054726510' : null),
+      FocusNode());
+  final _labPhoneNumberController =
+      TextEditingController(text: kDebugMode ? '07054726510' : null);
+  final _labNameController =
+      TextEditingController(text: kDebugMode ? 'My Lab Name' : null);
+  final _labOwnerNameController =
+      TextEditingController(text: kDebugMode ? 'My name' : null);
   var _labCity = IraqGovernorate.defaultCity;
-  var _isPrivacyPolicyAgreed = false;
+  var _isPrivacyPolicyAgreed = kDebugMode ? true : false;
 
   String? _emailError;
   String? _passwordError;
@@ -80,10 +91,11 @@ class _AuthFormInputsState extends State<AuthFormInputs> {
     _passwordError = null;
 
     final isValid = _formKey.currentState?.validate() ?? false;
-    final authBloc = context.read<AuthCubit>();
     if (!isValid) {
       return;
     }
+
+    final authBloc = context.read<AuthCubit>();
 
     if (!_isLogin) {
       if (!_isPrivacyPolicyAgreed) {
@@ -143,7 +155,7 @@ class _AuthFormInputsState extends State<AuthFormInputs> {
     return [
       PasswordTextField(
         labelText: context.loc.confirmPassword,
-        controller: null,
+        controller: _confirmPasswordInputHandler.controller,
         customError: null,
         textInputAction: TextInputAction.next,
         originalPasswordController: _passwordInputHandler.controller,
@@ -221,7 +233,8 @@ class _AuthFormInputsState extends State<AuthFormInputs> {
         child: Align(
           alignment: Alignment.centerRight,
           child: PlatformTextButton(
-            onPressed: () => context.push(AuthForgotPassword.routeName),
+            onPressed: () => context.push(AuthForgotPassword.routeName,
+                extra: _emailController.text),
             child: Text(context.loc.forgotPasswordWithQuestionMark),
           ),
         ),
@@ -265,19 +278,29 @@ class _AuthFormInputsState extends State<AuthFormInputs> {
               ScaffoldMessenger.of(context).showSnackBarText(
                 context.loc.authEmailNotFound,
               );
+              setState(() {
+                _emailError = context.loc.authEmailNotFound;
+              });
+              break;
             case VerificationLinkAlreadySentAuthException():
               ScaffoldMessenger.of(context).showSnackBarText(
                 context.loc.verificationLinkIsAlreadySentWithMinutesToExpire(
                     authException.minutesToExpire.toString()),
               );
+              break;
             case UnknownAuthException():
               ScaffoldMessenger.of(context).showSnackBarText(
                 context.loc.unknownErrorWithMsg(authException.message),
               );
+              break;
             case EmailAlreadyUsedAuthException():
               ScaffoldMessenger.of(context).showSnackBarText(
                 context.loc.authEmailAlreadyInUse,
               );
+              setState(() {
+                _emailError = context.loc.authEmailAlreadyInUse;
+              });
+              break;
             case TooManyRequestsAuthException():
               ScaffoldMessenger.of(context).showSnackBarText(
                 context.loc.authTooManyFailedAttempts,
@@ -287,23 +310,39 @@ class _AuthFormInputsState extends State<AuthFormInputs> {
               ScaffoldMessenger.of(context).showSnackBarText(
                 context.loc.yourAccountNeedToBeActivated,
               );
-            case WrongPasswordAUthException():
+              break;
             case InvalidCredentialsAuthException():
               ScaffoldMessenger.of(context).showSnackBarText(
-                context.loc.incorrectPassword,
+                context.loc.authInvalidEmailOrPassword,
               );
+              setState(() {
+                _passwordError = context.loc.authInvalidEmailOrPassword;
+                _emailError = context.loc.authInvalidEmailOrPassword;
+              });
+              break;
+            case WrongPasswordAuthException():
+              ScaffoldMessenger.of(context).showSnackBarText(
+                context.loc.authIncorrectPassword,
+              );
+              setState(() {
+                _passwordError = context.loc.authIncorrectPassword;
+              });
+              break;
             case UserDisabledAuthException():
               ScaffoldMessenger.of(context).showSnackBarText(
                 context.loc.authUserDisabledErrorMessage,
               );
+              break;
             case NetworkAuthException():
               ScaffoldMessenger.of(context).showSnackBarText(
                 context.loc.pleaseCheckYourInternetConnectionMsg,
               );
+              break;
             case OperationNotAllowedAuthException():
               ScaffoldMessenger.of(context).showSnackBarText(
                 context.loc.authProviderIsDisabledMessage,
               );
+              break;
           }
         }
         if (state.userCredential != null) {

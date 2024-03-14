@@ -4,5 +4,5 @@ class Constants {
   static const developerUrl = 'https://github.com/freshplatform';
   static const developerName = 'Fresh Platform';
 
-  static const privacyPolicy = 'https://alrayada.net/privacy_policy/';
+  static const privacyPolicy = 'https://alrayada.net/privacy-policy/';
 }

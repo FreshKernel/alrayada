@@ -10,15 +10,15 @@ class User with _$User {
     required UserData data,
     required String userId,
     required String? pictureUrl,
-    required bool isAccountVerified,
+    required bool isAccountActivated,
     required bool isEmailVerified,
     required UserRole role,
     required UserDeviceNotificationsToken deviceNotificationsToken,
-    // required DateTime createdAt,
-    // required DateTime updatedAt,
+    required DateTime createdAt,
+    required DateTime updatedAt,
   }) = _User;
 
-  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
+  factory User.fromJson(Map<String, Object?> json) => _$UserFromJson(json);
 }
 
 enum UserRole {
@@ -38,7 +38,7 @@ class UserData with _$UserData {
     required IraqGovernorate city,
   }) = _UserData;
 
-  factory UserData.fromJson(Map<String, dynamic> json) =>
+  factory UserData.fromJson(Map<String, Object?> json) =>
       _$UserDataFromJson(json);
 }
 
@@ -111,6 +111,6 @@ class UserDeviceNotificationsToken with _$UserDeviceNotificationsToken {
     @Default('') oneSignal,
   }) = _UserDeviceNotificationsToken;
 
-  factory UserDeviceNotificationsToken.fromJson(Map<String, dynamic> json) =>
+  factory UserDeviceNotificationsToken.fromJson(Map<String, Object?> json) =>
       _$UserDeviceNotificationsTokenFromJson(json);
 }

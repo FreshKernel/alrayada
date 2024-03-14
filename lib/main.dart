@@ -81,6 +81,7 @@ class MyApp extends StatelessWidget {
           create: (context) => SettingsCubit(),
         ),
         BlocProvider(
+          lazy: false,
           create: (context) => AuthCubit(
             authRepository: AuthRepositoryImpl(),
           ),
@@ -91,7 +92,6 @@ class MyApp extends StatelessWidget {
             previous.themeMode != current.themeMode ||
             previous.languague != current.languague,
         builder: (context, state) {
-          AppLogger.info('Building the app widget...');
           return MaterialApp.router(
             debugShowCheckedModeBanner: false,
             onGenerateTitle: (context) => context.loc.appName,

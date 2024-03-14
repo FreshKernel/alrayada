@@ -37,7 +37,7 @@ class GeoLocation with _$GeoLocation {
     // required String org,
   }) = _GeoLocation;
 
-  factory GeoLocation.fromJson(Map<String, dynamic> json) =>
+  factory GeoLocation.fromJson(Map<String, Object?> json) =>
       _$GeoLocationFromJson(json);
 
   @override

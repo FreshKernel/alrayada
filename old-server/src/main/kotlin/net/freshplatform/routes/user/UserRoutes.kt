@@ -645,7 +645,6 @@ class UserRoutes(
                 )
             }
             if (!newPassword.isPasswordStrong()) {
-                call.respondJsonText(HttpStatusCode.BadRequest, "Please enter a strong password")
                 throw ErrorResponseException(
                     HttpStatusCode.BadRequest, "Please enter a strong password",
                     "WEAK_PASSWORD"

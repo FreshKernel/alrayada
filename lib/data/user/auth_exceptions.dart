@@ -19,8 +19,8 @@ class InvalidCredentialsAuthException extends AuthException {
   const InvalidCredentialsAuthException({required super.message});
 }
 
-class WrongPasswordAUthException extends AuthException {
-  const WrongPasswordAUthException({required super.message});
+class WrongPasswordAuthException extends AuthException {
+  const WrongPasswordAuthException({required super.message});
 }
 
 class VerificationLinkAlreadySentAuthException extends AuthException {

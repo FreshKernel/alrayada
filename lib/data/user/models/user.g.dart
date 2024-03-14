@@ -11,11 +11,13 @@ _$UserImpl _$$UserImplFromJson(Map<String, dynamic> json) => _$UserImpl(
       data: UserData.fromJson(json['data'] as Map<String, dynamic>),
       userId: json['userId'] as String,
       pictureUrl: json['pictureUrl'] as String?,
-      isAccountVerified: json['isAccountVerified'] as bool,
+      isAccountActivated: json['isAccountActivated'] as bool,
       isEmailVerified: json['isEmailVerified'] as bool,
       role: $enumDecode(_$UserRoleEnumMap, json['role']),
       deviceNotificationsToken: UserDeviceNotificationsToken.fromJson(
           json['deviceNotificationsToken'] as Map<String, dynamic>),
+      createdAt: DateTime.parse(json['createdAt'] as String),
+      updatedAt: DateTime.parse(json['updatedAt'] as String),
     );
 
 Map<String, dynamic> _$$UserImplToJson(_$UserImpl instance) =>
@@ -24,10 +26,12 @@ Map<String, dynamic> _$$UserImplToJson(_$UserImpl instance) =>
       'data': instance.data,
       'userId': instance.userId,
       'pictureUrl': instance.pictureUrl,
-      'isAccountVerified': instance.isAccountVerified,
+      'isAccountActivated': instance.isAccountActivated,
       'isEmailVerified': instance.isEmailVerified,
       'role': _$UserRoleEnumMap[instance.role]!,
       'deviceNotificationsToken': instance.deviceNotificationsToken,
+      'createdAt': instance.createdAt.toIso8601String(),
+      'updatedAt': instance.updatedAt.toIso8601String(),
     };
 
 const _$UserRoleEnumMap = {

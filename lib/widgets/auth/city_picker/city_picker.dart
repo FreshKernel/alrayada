@@ -50,7 +50,7 @@ class _CityPickerFormFieldState extends State<CityPickerFormField> {
         _isLoading = false;
       });
     } catch (e) {
-      if (!context.mounted) return;
+      if (!mounted) return;
       AdaptiveMessenger.showPlatformMessage(
         context: context,
         message: e.toString(),

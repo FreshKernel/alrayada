@@ -36,21 +36,22 @@ class AuthRepositoryImpl extends AuthRepository {
         data: {
           'email': email,
           'password': password,
-          'deviceToken':
+          'deviceNotificationsToken':
               (await NotificationsService.instanse.getUserDeviceToken())
                   .toJson(),
         },
       );
-      final userResponse = UserCredential.fromJson(jsonDecode(
-        response.data.toString(),
-      ));
-      saveUser(userResponse);
+      final userCredential = UserCredential.fromJson(
+        response.data ??
+            (throw StateError('The response data from the server is null')),
+      );
+      saveUser(userCredential);
       DioService.instance.setToken(
-        accessToken: userResponse.accessToken,
-        refreshToken: userResponse.refreshToken,
+        accessToken: userCredential.accessToken,
+        refreshToken: userCredential.refreshToken,
         onInvalidToken: logout,
       );
-      return userResponse;
+      return userCredential;
     } on DioException catch (e) {
       if (e.response?.statusCode == 429) {
         throw TooManyRequestsAuthException(message: e.message.toString());
@@ -89,39 +90,53 @@ class AuthRepositoryImpl extends AuthRepository {
     required UserData userData,
   }) async {
     try {
-      await _dio.post(
+      final response = await _dio.post<Map<String, Object?>>(
         ServerConfigurations.getRequestUrl(RoutesConstants.authRoutes.signUp),
         data: {
           'email': email,
           'password': password,
           'userData': userData.toJson(),
-          'deviceToken':
+          'deviceNotificationsToken':
               (await NotificationsService.instanse.getUserDeviceToken())
                   .toJson(),
         },
       );
-      throw UnimplementedError();
+      final userCredential = UserCredential.fromJson(
+        response.data ??
+            (throw StateError('The response data from the server is null')),
+      );
+      saveUser(userCredential);
+      DioService.instance.setToken(
+        accessToken: userCredential.accessToken,
+        refreshToken: userCredential.refreshToken,
+        onInvalidToken: logout,
+      );
+      return userCredential;
     } on DioException catch (e) {
       if (e.response?.statusCode == 429) {
         throw TooManyRequestsAuthException(message: e.message.toString());
       }
-      final code = e.response?.data['code'].toString() ?? '';
-      final exception = switch (code) {
-        'EMAIL_USED' =>
-          EmailAlreadyUsedAuthException(message: e.message.toString()),
-        'USER_NOT_FOUND' =>
-          UserNotFoundAuthException(message: e.message.toString()),
-        'INVALID_CREDENTIALS' =>
-          InvalidCredentialsAuthException(message: e.message.toString()),
-        'VERIFICATION_LINK_ALREADY_SENT' =>
-          VerificationLinkAlreadySentAuthException(
-            message: e.message.toString(),
-            minutesToExpire: int.parse(
-                e.response?.data['data']['minutesToExpire'] as String),
-          ),
-        String() => UnknownAuthException(message: e.message.toString()),
-      };
-      throw exception;
+      final responseData = e.response?.data;
+      if (responseData is Map) {
+        final code = responseData['code'].toString();
+        final exception = switch (code) {
+          'EMAIL_USED' =>
+            EmailAlreadyUsedAuthException(message: e.message.toString()),
+          'USER_NOT_FOUND' =>
+            UserNotFoundAuthException(message: e.message.toString()),
+          'INVALID_CREDENTIALS' =>
+            InvalidCredentialsAuthException(message: e.message.toString()),
+          'VERIFICATION_LINK_ALREADY_SENT' =>
+            VerificationLinkAlreadySentAuthException(
+              message: e.message.toString(),
+              minutesToExpire: int.parse(
+                  e.response?.data['data']['minutesToExpire'] as String),
+            ),
+          String() => UnknownAuthException(message: e.message.toString()),
+        };
+        throw exception;
+      }
+      throw UnknownAuthException(message: e.message.toString());
     } catch (e) {
       throw UnknownAuthException(
         message: e.toString(),

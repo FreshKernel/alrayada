@@ -48,7 +48,7 @@ class DioService {
   }
 
   String? _accessToken;
-  // ignore: unused_field
+  // ignore: unused_field, remove this in the future when implement refresh token
   String? _refreshToken;
   VoidCallback? onInvalidToken;
 

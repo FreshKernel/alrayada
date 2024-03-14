@@ -39,7 +39,9 @@ class AppRouter {
       ),
       GoRoute(
         path: AuthForgotPassword.routeName,
-        builder: (context, state) => const AuthForgotPassword(),
+        builder: (context, state) => AuthForgotPassword(
+          initialEmailText: state.extra as String,
+        ),
       ),
     ],
   );
