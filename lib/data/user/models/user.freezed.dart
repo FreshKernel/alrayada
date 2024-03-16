@@ -21,7 +21,7 @@ User _$UserFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$User {
   String get email => throw _privateConstructorUsedError;
-  UserData get data => throw _privateConstructorUsedError;
+  UserInfo get info => throw _privateConstructorUsedError;
   String get userId => throw _privateConstructorUsedError;
   String? get pictureUrl => throw _privateConstructorUsedError;
   bool get isAccountActivated => throw _privateConstructorUsedError;
@@ -44,7 +44,7 @@ abstract class $UserCopyWith<$Res> {
   @useResult
   $Res call(
       {String email,
-      UserData data,
+      UserInfo info,
       String userId,
       String? pictureUrl,
       bool isAccountActivated,
@@ -54,7 +54,7 @@ abstract class $UserCopyWith<$Res> {
       DateTime createdAt,
       DateTime updatedAt});
 
-  $UserDataCopyWith<$Res> get data;
+  $UserInfoCopyWith<$Res> get info;
   $UserDeviceNotificationsTokenCopyWith<$Res> get deviceNotificationsToken;
 }
 
@@ -72,7 +72,7 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
   @override
   $Res call({
     Object? email = null,
-    Object? data = null,
+    Object? info = null,
     Object? userId = null,
     Object? pictureUrl = freezed,
     Object? isAccountActivated = null,
@@ -87,10 +87,10 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
               as String,
-      data: null == data
-          ? _value.data
-          : data // ignore: cast_nullable_to_non_nullable
-              as UserData,
+      info: null == info
+          ? _value.info
+          : info // ignore: cast_nullable_to_non_nullable
+              as UserInfo,
       userId: null == userId
           ? _value.userId
           : userId // ignore: cast_nullable_to_non_nullable
@@ -128,9 +128,9 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
 
   @override
   @pragma('vm:prefer-inline')
-  $UserDataCopyWith<$Res> get data {
-    return $UserDataCopyWith<$Res>(_value.data, (value) {
-      return _then(_value.copyWith(data: value) as $Val);
+  $UserInfoCopyWith<$Res> get info {
+    return $UserInfoCopyWith<$Res>(_value.info, (value) {
+      return _then(_value.copyWith(info: value) as $Val);
     });
   }
 
@@ -153,7 +153,7 @@ abstract class _$$UserImplCopyWith<$Res> implements $UserCopyWith<$Res> {
   @useResult
   $Res call(
       {String email,
-      UserData data,
+      UserInfo info,
       String userId,
       String? pictureUrl,
       bool isAccountActivated,
@@ -164,7 +164,7 @@ abstract class _$$UserImplCopyWith<$Res> implements $UserCopyWith<$Res> {
       DateTime updatedAt});
 
   @override
-  $UserDataCopyWith<$Res> get data;
+  $UserInfoCopyWith<$Res> get info;
   @override
   $UserDeviceNotificationsTokenCopyWith<$Res> get deviceNotificationsToken;
 }
@@ -180,7 +180,7 @@ class __$$UserImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? email = null,
-    Object? data = null,
+    Object? info = null,
     Object? userId = null,
     Object? pictureUrl = freezed,
     Object? isAccountActivated = null,
@@ -195,10 +195,10 @@ class __$$UserImplCopyWithImpl<$Res>
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
               as String,
-      data: null == data
-          ? _value.data
-          : data // ignore: cast_nullable_to_non_nullable
-              as UserData,
+      info: null == info
+          ? _value.info
+          : info // ignore: cast_nullable_to_non_nullable
+              as UserInfo,
       userId: null == userId
           ? _value.userId
           : userId // ignore: cast_nullable_to_non_nullable
@@ -240,7 +240,7 @@ class __$$UserImplCopyWithImpl<$Res>
 class _$UserImpl implements _User {
   const _$UserImpl(
       {required this.email,
-      required this.data,
+      required this.info,
       required this.userId,
       required this.pictureUrl,
       required this.isAccountActivated,
@@ -256,7 +256,7 @@ class _$UserImpl implements _User {
   @override
   final String email;
   @override
-  final UserData data;
+  final UserInfo info;
   @override
   final String userId;
   @override
@@ -276,7 +276,7 @@ class _$UserImpl implements _User {
 
   @override
   String toString() {
-    return 'User(email: $email, data: $data, userId: $userId, pictureUrl: $pictureUrl, isAccountActivated: $isAccountActivated, isEmailVerified: $isEmailVerified, role: $role, deviceNotificationsToken: $deviceNotificationsToken, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'User(email: $email, info: $info, userId: $userId, pictureUrl: $pictureUrl, isAccountActivated: $isAccountActivated, isEmailVerified: $isEmailVerified, role: $role, deviceNotificationsToken: $deviceNotificationsToken, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -285,7 +285,7 @@ class _$UserImpl implements _User {
         (other.runtimeType == runtimeType &&
             other is _$UserImpl &&
             (identical(other.email, email) || other.email == email) &&
-            (identical(other.data, data) || other.data == data) &&
+            (identical(other.info, info) || other.info == info) &&
             (identical(other.userId, userId) || other.userId == userId) &&
             (identical(other.pictureUrl, pictureUrl) ||
                 other.pictureUrl == pictureUrl) &&
@@ -308,7 +308,7 @@ class _$UserImpl implements _User {
   int get hashCode => Object.hash(
       runtimeType,
       email,
-      data,
+      info,
       userId,
       pictureUrl,
       isAccountActivated,
@@ -335,7 +335,7 @@ class _$UserImpl implements _User {
 abstract class _User implements User {
   const factory _User(
       {required final String email,
-      required final UserData data,
+      required final UserInfo info,
       required final String userId,
       required final String? pictureUrl,
       required final bool isAccountActivated,
@@ -350,7 +350,7 @@ abstract class _User implements User {
   @override
   String get email;
   @override
-  UserData get data;
+  UserInfo get info;
   @override
   String get userId;
   @override
@@ -373,12 +373,12 @@ abstract class _User implements User {
       throw _privateConstructorUsedError;
 }
 
-UserData _$UserDataFromJson(Map<String, dynamic> json) {
-  return _UserData.fromJson(json);
+UserInfo _$UserInfoFromJson(Map<String, dynamic> json) {
+  return _UserInfo.fromJson(json);
 }
 
 /// @nodoc
-mixin _$UserData {
+mixin _$UserInfo {
   String get labOwnerPhoneNumber => throw _privateConstructorUsedError;
   String get labPhoneNumber => throw _privateConstructorUsedError;
   String get labName => throw _privateConstructorUsedError;
@@ -387,14 +387,14 @@ mixin _$UserData {
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
-  $UserDataCopyWith<UserData> get copyWith =>
+  $UserInfoCopyWith<UserInfo> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $UserDataCopyWith<$Res> {
-  factory $UserDataCopyWith(UserData value, $Res Function(UserData) then) =
-      _$UserDataCopyWithImpl<$Res, UserData>;
+abstract class $UserInfoCopyWith<$Res> {
+  factory $UserInfoCopyWith(UserInfo value, $Res Function(UserInfo) then) =
+      _$UserInfoCopyWithImpl<$Res, UserInfo>;
   @useResult
   $Res call(
       {String labOwnerPhoneNumber,
@@ -405,9 +405,9 @@ abstract class $UserDataCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$UserDataCopyWithImpl<$Res, $Val extends UserData>
-    implements $UserDataCopyWith<$Res> {
-  _$UserDataCopyWithImpl(this._value, this._then);
+class _$UserInfoCopyWithImpl<$Res, $Val extends UserInfo>
+    implements $UserInfoCopyWith<$Res> {
+  _$UserInfoCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -449,11 +449,11 @@ class _$UserDataCopyWithImpl<$Res, $Val extends UserData>
 }
 
 /// @nodoc
-abstract class _$$UserDataImplCopyWith<$Res>
-    implements $UserDataCopyWith<$Res> {
-  factory _$$UserDataImplCopyWith(
-          _$UserDataImpl value, $Res Function(_$UserDataImpl) then) =
-      __$$UserDataImplCopyWithImpl<$Res>;
+abstract class _$$UserInfoImplCopyWith<$Res>
+    implements $UserInfoCopyWith<$Res> {
+  factory _$$UserInfoImplCopyWith(
+          _$UserInfoImpl value, $Res Function(_$UserInfoImpl) then) =
+      __$$UserInfoImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -465,11 +465,11 @@ abstract class _$$UserDataImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$UserDataImplCopyWithImpl<$Res>
-    extends _$UserDataCopyWithImpl<$Res, _$UserDataImpl>
-    implements _$$UserDataImplCopyWith<$Res> {
-  __$$UserDataImplCopyWithImpl(
-      _$UserDataImpl _value, $Res Function(_$UserDataImpl) _then)
+class __$$UserInfoImplCopyWithImpl<$Res>
+    extends _$UserInfoCopyWithImpl<$Res, _$UserInfoImpl>
+    implements _$$UserInfoImplCopyWith<$Res> {
+  __$$UserInfoImplCopyWithImpl(
+      _$UserInfoImpl _value, $Res Function(_$UserInfoImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -481,7 +481,7 @@ class __$$UserDataImplCopyWithImpl<$Res>
     Object? labOwnerName = null,
     Object? city = null,
   }) {
-    return _then(_$UserDataImpl(
+    return _then(_$UserInfoImpl(
       labOwnerPhoneNumber: null == labOwnerPhoneNumber
           ? _value.labOwnerPhoneNumber
           : labOwnerPhoneNumber // ignore: cast_nullable_to_non_nullable
@@ -508,16 +508,16 @@ class __$$UserDataImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$UserDataImpl implements _UserData {
-  const _$UserDataImpl(
+class _$UserInfoImpl implements _UserInfo {
+  const _$UserInfoImpl(
       {required this.labOwnerPhoneNumber,
       required this.labPhoneNumber,
       required this.labName,
       required this.labOwnerName,
       required this.city});
 
-  factory _$UserDataImpl.fromJson(Map<String, dynamic> json) =>
-      _$$UserDataImplFromJson(json);
+  factory _$UserInfoImpl.fromJson(Map<String, dynamic> json) =>
+      _$$UserInfoImplFromJson(json);
 
   @override
   final String labOwnerPhoneNumber;
@@ -532,14 +532,14 @@ class _$UserDataImpl implements _UserData {
 
   @override
   String toString() {
-    return 'UserData(labOwnerPhoneNumber: $labOwnerPhoneNumber, labPhoneNumber: $labPhoneNumber, labName: $labName, labOwnerName: $labOwnerName, city: $city)';
+    return 'UserInfo(labOwnerPhoneNumber: $labOwnerPhoneNumber, labPhoneNumber: $labPhoneNumber, labName: $labName, labOwnerName: $labOwnerName, city: $city)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$UserDataImpl &&
+            other is _$UserInfoImpl &&
             (identical(other.labOwnerPhoneNumber, labOwnerPhoneNumber) ||
                 other.labOwnerPhoneNumber == labOwnerPhoneNumber) &&
             (identical(other.labPhoneNumber, labPhoneNumber) ||
@@ -558,27 +558,27 @@ class _$UserDataImpl implements _UserData {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$UserDataImplCopyWith<_$UserDataImpl> get copyWith =>
-      __$$UserDataImplCopyWithImpl<_$UserDataImpl>(this, _$identity);
+  _$$UserInfoImplCopyWith<_$UserInfoImpl> get copyWith =>
+      __$$UserInfoImplCopyWithImpl<_$UserInfoImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$UserDataImplToJson(
+    return _$$UserInfoImplToJson(
       this,
     );
   }
 }
 
-abstract class _UserData implements UserData {
-  const factory _UserData(
+abstract class _UserInfo implements UserInfo {
+  const factory _UserInfo(
       {required final String labOwnerPhoneNumber,
       required final String labPhoneNumber,
       required final String labName,
       required final String labOwnerName,
-      required final IraqGovernorate city}) = _$UserDataImpl;
+      required final IraqGovernorate city}) = _$UserInfoImpl;
 
-  factory _UserData.fromJson(Map<String, dynamic> json) =
-      _$UserDataImpl.fromJson;
+  factory _UserInfo.fromJson(Map<String, dynamic> json) =
+      _$UserInfoImpl.fromJson;
 
   @override
   String get labOwnerPhoneNumber;
@@ -592,7 +592,7 @@ abstract class _UserData implements UserData {
   IraqGovernorate get city;
   @override
   @JsonKey(ignore: true)
-  _$$UserDataImplCopyWith<_$UserDataImpl> get copyWith =>
+  _$$UserInfoImplCopyWith<_$UserInfoImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 

@@ -17,7 +17,9 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$AuthState {
   UserCredential? get userCredential => throw _privateConstructorUsedError;
-  AuthException? get exception => throw _privateConstructorUsedError;
+  AuthException? get exception =>
+      throw _privateConstructorUsedError; // Used as a workaround for trigger BlocListener everytime
+  String? get lastUpdate => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $AuthStateCopyWith<AuthState> get copyWith =>
@@ -29,7 +31,10 @@ abstract class $AuthStateCopyWith<$Res> {
   factory $AuthStateCopyWith(AuthState value, $Res Function(AuthState) then) =
       _$AuthStateCopyWithImpl<$Res, AuthState>;
   @useResult
-  $Res call({UserCredential? userCredential, AuthException? exception});
+  $Res call(
+      {UserCredential? userCredential,
+      AuthException? exception,
+      String? lastUpdate});
 
   $UserCredentialCopyWith<$Res>? get userCredential;
 }
@@ -49,6 +54,7 @@ class _$AuthStateCopyWithImpl<$Res, $Val extends AuthState>
   $Res call({
     Object? userCredential = freezed,
     Object? exception = freezed,
+    Object? lastUpdate = freezed,
   }) {
     return _then(_value.copyWith(
       userCredential: freezed == userCredential
@@ -59,6 +65,10 @@ class _$AuthStateCopyWithImpl<$Res, $Val extends AuthState>
           ? _value.exception
           : exception // ignore: cast_nullable_to_non_nullable
               as AuthException?,
+      lastUpdate: freezed == lastUpdate
+          ? _value.lastUpdate
+          : lastUpdate // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 
@@ -83,7 +93,10 @@ abstract class _$$UserStateImplCopyWith<$Res>
       __$$UserStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({UserCredential? userCredential, AuthException? exception});
+  $Res call(
+      {UserCredential? userCredential,
+      AuthException? exception,
+      String? lastUpdate});
 
   @override
   $UserCredentialCopyWith<$Res>? get userCredential;
@@ -102,6 +115,7 @@ class __$$UserStateImplCopyWithImpl<$Res>
   $Res call({
     Object? userCredential = freezed,
     Object? exception = freezed,
+    Object? lastUpdate = freezed,
   }) {
     return _then(_$UserStateImpl(
       userCredential: freezed == userCredential
@@ -112,6 +126,10 @@ class __$$UserStateImplCopyWithImpl<$Res>
           ? _value.exception
           : exception // ignore: cast_nullable_to_non_nullable
               as AuthException?,
+      lastUpdate: freezed == lastUpdate
+          ? _value.lastUpdate
+          : lastUpdate // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -119,17 +137,24 @@ class __$$UserStateImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$UserStateImpl implements _UserState {
-  const _$UserStateImpl({required this.userCredential, this.exception = null});
+  const _$UserStateImpl(
+      {required this.userCredential,
+      this.exception = null,
+      this.lastUpdate = null});
 
   @override
   final UserCredential? userCredential;
   @override
   @JsonKey()
   final AuthException? exception;
+// Used as a workaround for trigger BlocListener everytime
+  @override
+  @JsonKey()
+  final String? lastUpdate;
 
   @override
   String toString() {
-    return 'AuthState(userCredential: $userCredential, exception: $exception)';
+    return 'AuthState(userCredential: $userCredential, exception: $exception, lastUpdate: $lastUpdate)';
   }
 
   @override
@@ -140,11 +165,14 @@ class _$UserStateImpl implements _UserState {
             (identical(other.userCredential, userCredential) ||
                 other.userCredential == userCredential) &&
             (identical(other.exception, exception) ||
-                other.exception == exception));
+                other.exception == exception) &&
+            (identical(other.lastUpdate, lastUpdate) ||
+                other.lastUpdate == lastUpdate));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, userCredential, exception);
+  int get hashCode =>
+      Object.hash(runtimeType, userCredential, exception, lastUpdate);
 
   @JsonKey(ignore: true)
   @override
@@ -156,12 +184,15 @@ class _$UserStateImpl implements _UserState {
 abstract class _UserState implements AuthState {
   const factory _UserState(
       {required final UserCredential? userCredential,
-      final AuthException? exception}) = _$UserStateImpl;
+      final AuthException? exception,
+      final String? lastUpdate}) = _$UserStateImpl;
 
   @override
   UserCredential? get userCredential;
   @override
   AuthException? get exception;
+  @override // Used as a workaround for trigger BlocListener everytime
+  String? get lastUpdate;
   @override
   @JsonKey(ignore: true)
   _$$UserStateImplCopyWith<_$UserStateImpl> get copyWith =>

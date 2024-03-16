@@ -7,7 +7,7 @@ part 'user.freezed.dart';
 class User with _$User {
   const factory User({
     required String email,
-    required UserData data,
+    required UserInfo info,
     required String userId,
     required String? pictureUrl,
     required bool isAccountActivated,
@@ -29,17 +29,17 @@ enum UserRole {
 }
 
 @freezed
-class UserData with _$UserData {
-  const factory UserData({
+class UserInfo with _$UserInfo {
+  const factory UserInfo({
     required String labOwnerPhoneNumber,
     required String labPhoneNumber,
     required String labName,
     required String labOwnerName,
     required IraqGovernorate city,
-  }) = _UserData;
+  }) = _UserInfo;
 
-  factory UserData.fromJson(Map<String, Object?> json) =>
-      _$UserDataFromJson(json);
+  factory UserInfo.fromJson(Map<String, Object?> json) =>
+      _$UserInfoFromJson(json);
 }
 
 enum IraqGovernorate {

@@ -21,10 +21,10 @@ data class User(
     val isEmailVerified: Boolean,
     val isAccountActivated: Boolean,
     val role: UserRole,
-    val data: UserData,
+    val info: UserInfo,
     val pictureUrl: String?,
     val emailVerification: TokenVerification?,
-    val forgotPasswordVerification: TokenVerification?,
+    val resetPasswordVerification: TokenVerification?,
     val deviceNotificationsToken: UserDeviceNotificationsToken,
     @Serializable(with = InstantAsBsonDateTime::class)
     val createdAt: Instant,
@@ -37,7 +37,7 @@ data class User(
         isEmailVerified = isEmailVerified,
         isAccountActivated = isAccountActivated,
         role = role,
-        data = data,
+        info = info,
         pictureUrl = pictureUrl,
         deviceNotificationsToken = deviceNotificationsToken,
         createdAt = createdAt,
@@ -52,7 +52,7 @@ data class UserDeviceNotificationsToken(
 )
 
 @Serializable
-data class UserData(
+data class UserInfo(
     val labOwnerPhoneNumber: String,
     val labPhoneNumber: String,
     val labName: String,
@@ -60,7 +60,7 @@ data class UserData(
     val city: IraqGovernorate,
 ) {
     companion object {
-        fun unknown() = UserData(
+        fun unknown() = UserInfo(
             city = IraqGovernorate.Baghdad,
             labOwnerName = "Unknown (User deleted)",
             labName = "Unknown",
@@ -123,7 +123,7 @@ data class UserResponse(
     val isEmailVerified: Boolean,
     val isAccountActivated: Boolean,
     val role: UserRole,
-    val data: UserData,
+    val info: UserInfo,
     val pictureUrl: String?,
     val deviceNotificationsToken: UserDeviceNotificationsToken,
     val createdAt: Instant,

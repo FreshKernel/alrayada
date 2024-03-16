@@ -4,6 +4,7 @@ import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Updates
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import kotlinx.coroutines.flow.singleOrNull
+import net.freshplatform.services.security.token_verification.TokenVerification
 import org.bson.conversions.Bson
 import org.bson.types.ObjectId
 
@@ -61,6 +62,63 @@ class MongoUserDataSource(
         }
     }
 
+    override suspend fun updateEmailVerificationStatusById(
+        userId: String,
+        emailVerification: TokenVerification
+    ): Boolean {
+        return try {
+            users.updateOne(
+                userIdFilter(userId),
+                Updates.set(User::emailVerification.name, emailVerification)
+            ).wasAcknowledged()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+
+    override suspend fun updateResetPasswordVerificationStatusById(
+        userId: String,
+        resetPasswordVerification: TokenVerification
+    ): Boolean {
+        return try {
+            users.updateOne(
+                userIdFilter(userId),
+                Updates.set(User::resetPasswordVerification.name, resetPasswordVerification)
+            ).wasAcknowledged()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+
+    override suspend fun resetPasswordById(userId: String, newPassword: String): Boolean {
+        return try {
+            users.updateOne(
+                userIdFilter(userId),
+                Updates.combine(
+                    Updates.set(User::password.name, newPassword),
+                    Updates.set(User::resetPasswordVerification.name, null)
+                )
+            ).wasAcknowledged()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+
+    override suspend fun updateUserInfoById(userId: String, userInfo: UserInfo): Boolean {
+        return try {
+            users.updateOne(
+                userIdFilter(userId),
+                Updates.set(User::info.name, userInfo)
+            ).wasAcknowledged()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+
     override suspend fun updateDeviceNotificationsTokenById(
         userId: String,
         deviceNotificationsToken: UserDeviceNotificationsToken
@@ -90,7 +148,7 @@ class MongoUserDataSource(
         }
     }
 
-    override suspend fun updateUserPasswordById(userId: String, newPassword: String): Boolean {
+    override suspend fun updatePasswordById(userId: String, newPassword: String): Boolean {
         return try {
             users.updateOne(
                 userIdFilter(userId),

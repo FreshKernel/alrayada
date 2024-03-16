@@ -23,13 +23,26 @@ class WrongPasswordAuthException extends AuthException {
   const WrongPasswordAuthException({required super.message});
 }
 
-class VerificationLinkAlreadySentAuthException extends AuthException {
-  const VerificationLinkAlreadySentAuthException({
+class EmailVerificationLinkAlreadySentAuthException extends AuthException {
+  const EmailVerificationLinkAlreadySentAuthException({
     required super.message,
     required this.minutesToExpire,
   });
 
   final int minutesToExpire;
+}
+
+class ResetPasswordLinkAlreadySentAuthException extends AuthException {
+  const ResetPasswordLinkAlreadySentAuthException({
+    required super.message,
+    required this.minutesToExpire,
+  });
+
+  final int minutesToExpire;
+}
+
+class EmailAlreadyVerifiedAuthException extends AuthException {
+  const EmailAlreadyVerifiedAuthException({required super.message});
 }
 
 class UnknownAuthException extends AuthException {

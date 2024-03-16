@@ -106,13 +106,17 @@ fun Application.configureRouting() {
             route("/auth") {
                 signUpWithEmailAndPassword()
                 signInWithEmailAndPassword()
+                sendEmailVerificationLink()
                 verifyEmail()
                 deleteSelfAccount()
-                updatePassword()
                 updateDeviceNotificationsToken()
+                getUserData()
+                updateUserInfo()
+                sendResetPasswordLink()
+                resetPassword()
+                updatePassword()
             }
         }
-
 
         get<Articles> { article ->
             // Get all articles ...

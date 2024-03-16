@@ -17,7 +17,7 @@ import '../../utils/extensions/scaffold_messenger.dart';
 import '../../utils/text_input_handler.dart';
 import '../../widgets/auth/email_text_field.dart';
 import '../../widgets/auth/password_text_field.dart';
-import '../../widgets/auth/user_data_text_inputs.dart';
+import '../../widgets/auth/user_info_text_inputs.dart';
 import 'auth_forgot_password.dart';
 import 'auth_form.dart';
 import 'auth_social_login.dart';
@@ -86,7 +86,7 @@ class _AuthFormInputsState extends State<AuthFormInputs> {
     widget.onToggleIsLogin();
   }
 
-  Future<void> _submit() async {
+  Future<void> _onSubmit() async {
     _emailError = null;
     _passwordError = null;
 
@@ -139,7 +139,7 @@ class _AuthFormInputsState extends State<AuthFormInputs> {
       await authBloc.signUpWithEmailAndPassword(
         email: _emailController.text,
         password: _passwordInputHandler.controller.text,
-        userData: UserData(
+        userInfo: UserInfo(
           labOwnerPhoneNumber: _labOwnerPhoneNumberInputHandler.controller.text,
           labPhoneNumber: _labPhoneNumberController.text,
           labName: _labNameController.text,
@@ -162,7 +162,7 @@ class _AuthFormInputsState extends State<AuthFormInputs> {
         focusNode: _confirmPasswordInputHandler.focusNode,
         nextFocus: _labOwnerPhoneNumberInputHandler.focusNode,
       ),
-      UserDataTextInputs(
+      UserInfoTextInputs(
         labOwnerPhoneNumberInputHandler: _labOwnerPhoneNumberInputHandler,
         labNameController: _labNameController,
         labPhoneNumberController: _labPhoneNumberController,
@@ -242,7 +242,7 @@ class _AuthFormInputsState extends State<AuthFormInputs> {
       SizedBox(
         width: double.infinity,
         child: PlatformElevatedButton(
-          onPressed: _submit,
+          onPressed: _onSubmit,
           child: Text(_isLogin ? context.loc.signIn : context.loc.signUp),
         ),
       ),
@@ -282,15 +282,10 @@ class _AuthFormInputsState extends State<AuthFormInputs> {
                 _emailError = context.loc.authEmailNotFound;
               });
               break;
-            case VerificationLinkAlreadySentAuthException():
+            case EmailVerificationLinkAlreadySentAuthException():
               ScaffoldMessenger.of(context).showSnackBarText(
                 context.loc.verificationLinkIsAlreadySentWithMinutesToExpire(
                     authException.minutesToExpire.toString()),
-              );
-              break;
-            case UnknownAuthException():
-              ScaffoldMessenger.of(context).showSnackBarText(
-                context.loc.unknownErrorWithMsg(authException.message),
               );
               break;
             case EmailAlreadyUsedAuthException():
@@ -343,9 +338,22 @@ class _AuthFormInputsState extends State<AuthFormInputs> {
                 context.loc.authProviderIsDisabledMessage,
               );
               break;
+            case UnknownAuthException():
+              ScaffoldMessenger.of(context).showSnackBarText(
+                context.loc.unknownErrorWithMsg(authException.message),
+              );
+              break;
+            default:
+              ScaffoldMessenger.of(context).showSnackBarText(
+                context.loc.unknownErrorWithMsg(authException.message),
+              );
+              break;
           }
         }
-        if (state.userCredential != null) {
+        final userCredential = state.userCredential;
+        // The Auth screen will handle switching to the Verify Email screen
+        // We want to pop only when the email is not verified
+        if (userCredential != null && userCredential.user.isEmailVerified) {
           context.pop();
         }
       },

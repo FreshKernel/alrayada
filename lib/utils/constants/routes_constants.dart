@@ -1,17 +1,46 @@
 import 'package:flutter/foundation.dart';
-import '../server.dart';
 
 @immutable
 sealed class RoutesConstants {
   const RoutesConstants();
 
+  static const authRoutes = AuthRoutes._();
   static const productsRoutes = ProductsRoutes._();
   static const productsCategoryRoutes = ProductCategoryRoutes._();
-  static final authRoutes = AuthRoutes._();
   static const offersRoutes = OffersRoutes._();
   static const ordersRoutes = OrdersRoutes._();
 
   static const appSupportRoutes = AppSupportRoutes._();
+}
+
+class AuthRoutes extends RoutesConstants {
+  const AuthRoutes._();
+  static const root = 'auth';
+
+  final signIn = '$root/signIn';
+  final signUp = '$root/signUp';
+
+  final getUserData = '$root/userData';
+  final updateUserInfo = '$root/updateUserInfo';
+
+  final sendEmailVerificationLink = '$root/sendEmailVerificationLink';
+  final sendResetPasswordLink = '$root/sendResetPasswordLink';
+
+  final deleteSelfAccount = '$root/deleteSelfAccount';
+  final updatePassword = '$root/updatePassword';
+  final updateDeviceNotificationsToken = '$root/updateDeviceNotificationsToken';
+
+  final adminRoutes = const AuthAdminRoutes._();
+}
+
+class AuthAdminRoutes extends RoutesConstants {
+  const AuthAdminRoutes._();
+  static const root = '${AuthRoutes.root}admin';
+  final getUsers = root;
+  final activateUserAccount = '$root/activateAccount';
+  final deactivateUserAccount = '$root/deactivateAccount';
+  final deleteUser = '$root/deleteUser';
+  final sendNotificationToUser = '$root/sendNotification';
 }
 
 class ProductsRoutes extends RoutesConstants {
@@ -45,34 +74,6 @@ class ProductCategoryRoutes extends RoutesConstants {
   String updateCategory(String id) {
     return root + id;
   }
-}
-
-class AuthRoutes extends RoutesConstants {
-  AuthRoutes._();
-  static const root = 'auth/';
-
-  final forgotPassword = '${root}forgotPassword';
-  final userData = '${root}userData';
-  final updatePassword = '${root}updatePassword';
-  final socialLogin = '${root}socialLogin';
-  final signIn = '${root}signIn';
-  final signUp = '${root}signUp';
-  final updateDeviceToken = '${root}updateDeviceToken';
-  final user = '${root}user';
-  final deleteAccount = '${root}deleteAccount';
-  final adminRoutes = const AuthAdminRoutes._();
-  final signInWithAppleWebRedirectUrl =
-      '${ServerConfigurations.getProductionBaseUrl()}authentication/socialLogin/signInWithApple';
-}
-
-class AuthAdminRoutes extends RoutesConstants {
-  const AuthAdminRoutes._();
-  static const root = '${AuthRoutes.root}admin/';
-  final getUsers = root;
-  final activateUserAccount = '${root}activateAccount';
-  final deactivateUserAccount = '${root}deactivateAccount';
-  final deleteUser = '${root}deleteUser';
-  final sendNotificationToUser = '${root}sendNotification';
 }
 
 class OffersRoutes extends RoutesConstants {

@@ -364,5 +364,7 @@
    "yourAccountHasBeenSuccessfullyCreated": "Your account has been successfully created",
    "report": "Report",
    "authUserDisabledErrorMessage": "Your account is disabled. Please contact support for more information.",
-   "authProviderIsDisabledMessage": "This auth provider is disabled, please contact us for more info."
+   "authProviderIsDisabledMessage": "This auth provider is disabled, please contact us for more info.",
+   "emailIsStillNotVerified": "Email is still not verified.",
+   "authEmailVerificationLinkSent": "Verification Email Sent! Check your inbox."
 }

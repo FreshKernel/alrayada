@@ -3,11 +3,13 @@ package net.freshplatform.services.security.token_verification
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
+import net.freshplatform.utils.InstantAsBsonDateTime
 
 @Serializable
 data class TokenVerification(
     val token: String,
-    val expiresAt: Instant
+    @Serializable(with = InstantAsBsonDateTime::class)
+    val expiresAt: Instant,
 ) {
     fun minutesToExpire(): Long {
         if (hasTokenExpired()) return 0

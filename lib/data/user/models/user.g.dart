@@ -8,7 +8,7 @@ part of 'user.dart';
 
 _$UserImpl _$$UserImplFromJson(Map<String, dynamic> json) => _$UserImpl(
       email: json['email'] as String,
-      data: UserData.fromJson(json['data'] as Map<String, dynamic>),
+      info: UserInfo.fromJson(json['info'] as Map<String, dynamic>),
       userId: json['userId'] as String,
       pictureUrl: json['pictureUrl'] as String?,
       isAccountActivated: json['isAccountActivated'] as bool,
@@ -23,7 +23,7 @@ _$UserImpl _$$UserImplFromJson(Map<String, dynamic> json) => _$UserImpl(
 Map<String, dynamic> _$$UserImplToJson(_$UserImpl instance) =>
     <String, dynamic>{
       'email': instance.email,
-      'data': instance.data,
+      'info': instance.info,
       'userId': instance.userId,
       'pictureUrl': instance.pictureUrl,
       'isAccountActivated': instance.isAccountActivated,
@@ -39,8 +39,8 @@ const _$UserRoleEnumMap = {
   UserRole.user: 'User',
 };
 
-_$UserDataImpl _$$UserDataImplFromJson(Map<String, dynamic> json) =>
-    _$UserDataImpl(
+_$UserInfoImpl _$$UserInfoImplFromJson(Map<String, dynamic> json) =>
+    _$UserInfoImpl(
       labOwnerPhoneNumber: json['labOwnerPhoneNumber'] as String,
       labPhoneNumber: json['labPhoneNumber'] as String,
       labName: json['labName'] as String,
@@ -48,7 +48,7 @@ _$UserDataImpl _$$UserDataImplFromJson(Map<String, dynamic> json) =>
       city: $enumDecode(_$IraqGovernorateEnumMap, json['city']),
     );
 
-Map<String, dynamic> _$$UserDataImplToJson(_$UserDataImpl instance) =>
+Map<String, dynamic> _$$UserInfoImplToJson(_$UserInfoImpl instance) =>
     <String, dynamic>{
       'labOwnerPhoneNumber': instance.labOwnerPhoneNumber,
       'labPhoneNumber': instance.labPhoneNumber,

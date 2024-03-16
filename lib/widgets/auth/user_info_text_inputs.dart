@@ -9,8 +9,8 @@ import '../../utils/validators/auth_validator.dart';
 import '../../utils/validators/global_validator.dart';
 import 'city_picker/city_picker.dart';
 
-class UserDataTextInputs extends StatelessWidget {
-  const UserDataTextInputs({
+class UserInfoTextInputs extends StatelessWidget {
+  const UserInfoTextInputs({
     required this.labOwnerPhoneNumberInputHandler,
     required this.labPhoneNumberController,
     required this.labNameController,

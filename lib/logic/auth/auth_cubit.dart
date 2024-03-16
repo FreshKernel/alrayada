@@ -43,13 +43,13 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> signUpWithEmailAndPassword({
     required String email,
     required String password,
-    required UserData userData,
+    required UserInfo userInfo,
   }) async {
     try {
       final userCredential = await authRepository.signUpWithEmailAndPassword(
         email: email,
         password: password,
-        userData: userData,
+        userInfo: userInfo,
       );
       emit(state.copyWith(
         exception: null,
@@ -81,7 +81,7 @@ class AuthCubit extends Cubit<AuthState> {
         ),
       );
       if (!userCredential.user.isEmailVerified) {
-        await authRepository.sendEmailVerification();
+        await authRepository.sendEmailVerificationLink();
       }
       emit(state.copyWith(
         userCredential: userCredential,
@@ -128,7 +128,7 @@ class AuthCubit extends Cubit<AuthState> {
       final userCredential = await authRepository
           .authenticateWithCustomProvider(authCustomProvider);
       if (!userCredential.user.isEmailVerified) {
-        await authRepository.sendEmailVerification();
+        await authRepository.sendEmailVerificationLink();
       }
       emit(state.copyWith(
         userCredential: userCredential,
@@ -159,23 +159,12 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  Future<void> deleteAccount() async {
-    try {
-      await authRepository.deleteAccount();
-      emit(
-        state.copyWith(userCredential: null, exception: null),
-      );
-    } catch (e) {
-      emit(state.copyWith(exception: null));
-    }
-  }
-
   Future<void> fetchSavedUser() async {
     try {
       final userCredential = await authRepository.fetchSavedUserCredential();
       emit(state.copyWith(userCredential: userCredential));
-    } catch (e) {
-      AppLogger.error(e.toString(), error: e);
+    } on AuthException catch (e) {
+      emit(state.copyWith(userCredential: null, exception: e));
     }
   }
 
@@ -187,53 +176,62 @@ class AuthCubit extends Cubit<AuthState> {
         userCredential: state.userCredential?.copyWith(
           user: user,
         ),
+        lastUpdate: DateTime.now().toIso8601String(),
       ));
-    } catch (e) {
-      emit(state.copyWith(userCredential: null, exception: null));
+    } on AuthException catch (e) {
+      emit(state.copyWith(exception: e));
     }
   }
-
-  Future<void> forgotPassword({required String email}) =>
-      authRepository.sendResetPasswordLink(email: email);
 
   Future<void> logout() async {
     try {
       await authRepository.logout();
       emit(state.copyWith(userCredential: null));
-    } catch (e) {
-      emit(state.copyWith(exception: null));
+    } on AuthException catch (e) {
+      emit(state.copyWith(exception: e));
     }
   }
 
-  Future<void> updateDeviceToken() => authRepository.updateDeviceToken();
-
-  Future<void> updateUserData(
-    UserData userData,
+  Future<void> updateUserInfo(
+    UserInfo userInfo,
   ) async {
     final userCredential = state.userCredential;
     if (userCredential == null) {
       return;
     }
     try {
-      await authRepository.updateUserData(userData);
+      await authRepository.updateUserInfo(userInfo);
       emit(
         state.copyWith(
           userCredential: userCredential.copyWith(
             user: userCredential.user.copyWith(
-              data: userData,
+              info: userInfo,
             ),
           ),
         ),
       );
-    } catch (e) {
-      emit(state.copyWith(exception: null));
+    } on AuthException catch (e) {
+      emit(state.copyWith(exception: e));
     }
   }
 
-  Future<void> updateUserPassword(
-          {required String currentPassword, required String newPassword}) =>
-      authRepository.updateUserPassword(
-        currentPassword: currentPassword,
-        newPassword: newPassword,
-      );
+  Future<void> sendEmailVerificationLink() async {
+    final userCredential = state.userCredential;
+    if (userCredential == null) {
+      return;
+    }
+    try {
+      await authRepository.sendEmailVerificationLink();
+    } on AuthException catch (e) {
+      emit(state.copyWith(exception: e));
+    }
+  }
+
+  Future<void> sendResetPasswordLink({required String email}) async {
+    try {
+      await authRepository.sendResetPasswordLink(email: email);
+    } on AuthException catch (e) {
+      emit(state.copyWith(exception: e));
+    }
+  }
 }

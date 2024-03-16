@@ -255,5 +255,7 @@
    "yourAccountHasBeenSuccessfullyCreated": "تم إنشاء حسابك بنجاح",
    "report": "أبلغ",
    "authUserDisabledErrorMessage": "حسابك معطل، الرجاء التواصل معنا للمزيد من المعلومات",
-   "authProviderIsDisabledMessage": "مزود تسجيل الدخول معطل، الرجاء التواصل معنا للمزيد من المعلومات"
+   "authProviderIsDisabledMessage": "مزود تسجيل الدخول معطل، الرجاء التواصل معنا للمزيد من المعلومات",
+   "emailIsStillNotVerified": "لم يتم التحقق من البريد الإلكتروني بعد.",
+   "authEmailVerificationLinkSent": "تم إرسال رابط التحقق عبر البريد الإلكتروني! تحقق من صندوق الوارد الخاص بك."
 }

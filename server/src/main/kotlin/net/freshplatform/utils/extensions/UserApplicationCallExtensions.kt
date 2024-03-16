@@ -9,10 +9,11 @@ import net.freshplatform.data.user.UserDataSource
 import net.freshplatform.utils.ErrorResponseException
 import org.koin.ktor.ext.inject
 
+// TODO: Separate the get userId into a function
 suspend fun ApplicationCall.getCurrentNullableUser(): User? {
-    val userID = principal<JWTPrincipal>()?.subject ?: return null
+    val userId = principal<JWTPrincipal>()?.subject ?: return null
     val userDataSource by inject<UserDataSource>()
-    val user = userDataSource.findUserById(userID).getOrElse {
+    val user = userDataSource.findUserById(userId).getOrElse {
         throw ErrorResponseException(
             HttpStatusCode.InternalServerError,
             "Unknown error while trying to find a user with this user id",

@@ -62,11 +62,11 @@ class DashboardDrawer extends StatelessWidget {
                 ),
                 currentAccountPicture: const FlutterLogo(),
                 accountName: Text(
-                  user != null ? user.user.data.labName : context.loc.guestUser,
+                  user != null ? user.user.info.labName : context.loc.guestUser,
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 accountEmail: user != null
-                    ? Text(user.user.data.labOwnerName)
+                    ? Text(user.user.info.labOwnerName)
                     : const SizedBox.shrink(),
               );
             },

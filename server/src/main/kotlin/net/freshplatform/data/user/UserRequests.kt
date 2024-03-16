@@ -9,7 +9,7 @@ data class AuthSignUpRequest(
     val email: String,
     val password: String,
     val deviceNotificationsToken: UserDeviceNotificationsToken,
-    val userData: UserData
+    val userInfo: UserInfo
 ) {
     fun validate(): Pair<String, String>? {
         return when {
@@ -18,7 +18,7 @@ data class AuthSignUpRequest(
             password.length > 255 -> Pair("Password is too long", "PASSWORD_TOO_LONG")
             password.length < 8 -> Pair("Password is too short", "PASSWORD_TOO_SHORT")
             !password.isValidPassword() -> Pair("Please enter a strong password", "PASSWORD_WEAK")
-            userData.validate() != null -> userData.validate()
+            userInfo.validate() != null -> userInfo.validate()
             else -> null
         }
     }
