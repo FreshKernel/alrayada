@@ -40,7 +40,7 @@ fun Route.sendResetPasswordLink() {
         } ?: throw ErrorResponseException(
             HttpStatusCode.NotFound,
             "There is no user with this email.",
-            "USER_NOT_FOUND"
+            "EMAIL_NOT_FOUND"
         )
 
         user.resetPasswordVerification?.let {
@@ -72,7 +72,7 @@ fun Route.sendResetPasswordLink() {
         val resetLink = AuthUtils.createResetPasswordLink(
             baseUrl = call.request.baseUrl(),
             email = user.email,
-            resetPasswordVerification = resetPasswordVerification // Use this instead of the one from user
+            resetPasswordVerificationToken = resetPasswordVerification.token // Use this instead of the one from user
         )
 
         val isSendEmailSuccess = emailSenderService.sendEmail(
@@ -143,7 +143,7 @@ fun Route.resetPassword() {
         } ?: throw ErrorResponseException(
             HttpStatusCode.NotFound,
             "There is no user with this email.",
-            "USER_NOT_FOUND"
+            "EMAIL_NOT_FOUND"
         )
 
         val resetPasswordVerification = user.resetPasswordVerification ?: throw ErrorResponseException(

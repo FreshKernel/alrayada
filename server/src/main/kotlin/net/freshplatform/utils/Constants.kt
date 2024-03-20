@@ -1,7 +1,5 @@
 package net.freshplatform.utils
 
-import kotlin.time.Duration.Companion.minutes
-
 object Constants {
     const val DATABASE_NAME = "alrayada"
     const val APP_NAME = "Alrayada"
@@ -14,9 +12,18 @@ object Constants {
         const val REALM = APP_NAME
     }
 
+    object AppId {
+        private const val APP_ID = "net.freshplatform.alrayada"
+        const val ANDROID = APP_ID
+        const val IOS = APP_ID
+
+
+        const val APPLE_AUTH_SERVICE_ID = ""
+    }
+
     object Patterns {
         /**
-         * Iraqi Phone number pattern
+         * Phone number pattern for the audience
          * */
         const val PHONE_NUMBER = "^07\\d{9}\$"
         const val EMAIL_ADDRESS = ("[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
@@ -26,6 +33,7 @@ object Constants {
                 "\\." +
                 "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
                 ")+")
+
         // Strong password
         const val PASSWORD = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$"
     }

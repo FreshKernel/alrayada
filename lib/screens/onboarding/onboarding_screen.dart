@@ -27,7 +27,6 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
 
   void _navigateToPage(int index) {
     final settingsBloc = context.read<SettingsCubit>();
-    // TODO: Try to use _controller.nextPage() instead
     if (settingsBloc.state.isAnimationsEnabled) {
       _controller.animateToPage(
         index,

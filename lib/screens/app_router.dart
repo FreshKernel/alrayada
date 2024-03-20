@@ -38,8 +38,8 @@ class AppRouter {
         builder: (context, state) => const AuthScreen(),
       ),
       GoRoute(
-        path: AuthForgotPassword.routeName,
-        builder: (context, state) => AuthForgotPassword(
+        path: AuthForgotPasswordScreen.routeName,
+        builder: (context, state) => AuthForgotPasswordScreen(
           initialEmailText: state.extra as String,
         ),
       ),

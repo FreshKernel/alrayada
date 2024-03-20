@@ -90,6 +90,7 @@ fun Application.configureRouting() {
 
     if (!getEnvironmentVariables().isProductionMode) {
         install(SwaggerUI) {
+            ignoredRouteSelectors += RateLimitRouteSelector::class
             swagger {
                 swaggerUrl = "swagger-ui"
                 forwardRoot = true
@@ -106,6 +107,7 @@ fun Application.configureRouting() {
             route("/auth") {
                 signUpWithEmailAndPassword()
                 signInWithEmailAndPassword()
+                socialLogin()
                 sendEmailVerificationLink()
                 verifyEmail()
                 deleteSelfAccount()

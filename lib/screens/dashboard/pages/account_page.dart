@@ -27,7 +27,14 @@ class _AccountPageState extends State<AccountPage> {
     return Center(
       child: BlocBuilder<AuthCubit, AuthState>(
         builder: (context, state) {
-          if (state.userCredential != null) {
+          final userCredential = state.userCredential;
+          if (userCredential != null) {
+            if (!userCredential.user.isEmailVerified) {
+              return PlatformElevatedButton(
+                child: Text(context.loc.verifyYourEmail),
+                onPressed: () => context.push(AuthScreen.routeName),
+              );
+            }
             return PlatformElevatedButton(
               child: Text(context.loc.logout),
               onPressed: () => context.read<AuthCubit>().logout(),

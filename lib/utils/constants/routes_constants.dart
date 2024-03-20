@@ -19,6 +19,7 @@ class AuthRoutes extends RoutesConstants {
 
   final signIn = '$root/signIn';
   final signUp = '$root/signUp';
+  final socialLogin = '$root/socialLogin';
 
   final getUserData = '$root/userData';
   final updateUserInfo = '$root/updateUserInfo';

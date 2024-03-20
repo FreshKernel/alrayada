@@ -3,35 +3,26 @@ part of 'settings_cubit.dart';
 @freezed
 class SettingsState with _$SettingsState {
   const factory SettingsState({
-    @Default(ThemeMode.system) ThemeMode themeMode,
+    // General
+    @Default(AppLanguague.system) AppLanguague appLanguague,
+    @Default(AppThemeMode.system) AppThemeMode themeMode,
+    @Default(AppThemeSystem.material3) AppThemeSystem themeSystem,
+    @Default(AppLayoutMode.auto) AppLayoutMode layoutMode,
     @Default(true) bool isAnimationsEnabled,
+    @Default(false) darkDuringDayInAutoMode,
+    @Default(true) bool showOnBoardingScreen,
+    // Cart
     @Default(false) bool confirmDeleteCartItem,
     @Default(true) bool clearCartAfterCheckout,
+    // Statistics
     @Default(false) bool forceUseScrollableChart,
     @Default(false) bool useMonthNumberInChart,
+    // Support chat
     @Default(true) bool unFocusAfterSendMsg,
     @Default(false) bool useClassicMsgBubble,
-    @Default(true) bool showOnBoardingScreen,
+    // Orders
     @Default(true) bool showOrderItemNotes,
-    @Default(AppLayoutMode.auto) AppLayoutMode layoutMode,
-    @Default(AppLanguague.system) AppLanguague languague,
   }) = _SettingsState;
   factory SettingsState.fromJson(Map<String, Object?> json) =>
       _$SettingsStateFromJson(json);
-}
-
-enum AppLayoutMode {
-  auto,
-  small,
-  large,
-}
-
-enum AppLanguague {
-  system(valueName: 'System'),
-  en(valueName: 'English'),
-  ar(valueName: 'العربية');
-
-  const AppLanguague({required this.valueName});
-
-  final String valueName;
 }

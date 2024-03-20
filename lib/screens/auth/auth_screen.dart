@@ -15,7 +15,7 @@ class AuthScreen extends StatelessWidget {
       {required BuildContext context}) {
     final user = authState.userCredential?.user;
     if (user != null && !user.isEmailVerified) {
-      return const AuthVerifyEmail();
+      return const AuthVerifyEmailScreen();
     }
     return Scaffold(
       appBar: AppBar(
@@ -56,15 +56,11 @@ class AuthScreen extends StatelessWidget {
           duration: const Duration(milliseconds: 330),
           transitionBuilder: (child, animation) {
             // This animation is from flutter.dev example
-            const begin = Offset(0.0, 1.0);
-            const end = Offset.zero;
-            const curve = Curves.ease;
-
             final tween = Tween(
-              begin: begin,
-              end: end,
+              begin: const Offset(0.0, 1.0),
+              end: Offset.zero,
             ).chain(
-              CurveTween(curve: curve),
+              CurveTween(curve: Curves.ease),
             );
 
             return SlideTransition(

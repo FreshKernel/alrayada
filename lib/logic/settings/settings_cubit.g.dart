@@ -8,9 +8,21 @@ part of 'settings_cubit.dart';
 
 _$SettingsStateImpl _$$SettingsStateImplFromJson(Map<String, dynamic> json) =>
     _$SettingsStateImpl(
-      themeMode: $enumDecodeNullable(_$ThemeModeEnumMap, json['themeMode']) ??
-          ThemeMode.system,
+      appLanguague:
+          $enumDecodeNullable(_$AppLanguagueEnumMap, json['appLanguague']) ??
+              AppLanguague.system,
+      themeMode:
+          $enumDecodeNullable(_$AppThemeModeEnumMap, json['themeMode']) ??
+              AppThemeMode.system,
+      themeSystem:
+          $enumDecodeNullable(_$AppThemeSystemEnumMap, json['themeSystem']) ??
+              AppThemeSystem.material3,
+      layoutMode:
+          $enumDecodeNullable(_$AppLayoutModeEnumMap, json['layoutMode']) ??
+              AppLayoutMode.auto,
       isAnimationsEnabled: json['isAnimationsEnabled'] as bool? ?? true,
+      darkDuringDayInAutoMode: json['darkDuringDayInAutoMode'] ?? false,
+      showOnBoardingScreen: json['showOnBoardingScreen'] as bool? ?? true,
       confirmDeleteCartItem: json['confirmDeleteCartItem'] as bool? ?? false,
       clearCartAfterCheckout: json['clearCartAfterCheckout'] as bool? ?? true,
       forceUseScrollableChart:
@@ -18,46 +30,49 @@ _$SettingsStateImpl _$$SettingsStateImplFromJson(Map<String, dynamic> json) =>
       useMonthNumberInChart: json['useMonthNumberInChart'] as bool? ?? false,
       unFocusAfterSendMsg: json['unFocusAfterSendMsg'] as bool? ?? true,
       useClassicMsgBubble: json['useClassicMsgBubble'] as bool? ?? false,
-      showOnBoardingScreen: json['showOnBoardingScreen'] as bool? ?? true,
       showOrderItemNotes: json['showOrderItemNotes'] as bool? ?? true,
-      layoutMode:
-          $enumDecodeNullable(_$AppLayoutModeEnumMap, json['layoutMode']) ??
-              AppLayoutMode.auto,
-      languague:
-          $enumDecodeNullable(_$AppLanguagueEnumMap, json['languague']) ??
-              AppLanguague.system,
     );
 
 Map<String, dynamic> _$$SettingsStateImplToJson(_$SettingsStateImpl instance) =>
     <String, dynamic>{
-      'themeMode': _$ThemeModeEnumMap[instance.themeMode]!,
+      'appLanguague': _$AppLanguagueEnumMap[instance.appLanguague]!,
+      'themeMode': _$AppThemeModeEnumMap[instance.themeMode]!,
+      'themeSystem': _$AppThemeSystemEnumMap[instance.themeSystem]!,
+      'layoutMode': _$AppLayoutModeEnumMap[instance.layoutMode]!,
       'isAnimationsEnabled': instance.isAnimationsEnabled,
+      'darkDuringDayInAutoMode': instance.darkDuringDayInAutoMode,
+      'showOnBoardingScreen': instance.showOnBoardingScreen,
       'confirmDeleteCartItem': instance.confirmDeleteCartItem,
       'clearCartAfterCheckout': instance.clearCartAfterCheckout,
       'forceUseScrollableChart': instance.forceUseScrollableChart,
       'useMonthNumberInChart': instance.useMonthNumberInChart,
       'unFocusAfterSendMsg': instance.unFocusAfterSendMsg,
       'useClassicMsgBubble': instance.useClassicMsgBubble,
-      'showOnBoardingScreen': instance.showOnBoardingScreen,
       'showOrderItemNotes': instance.showOrderItemNotes,
-      'layoutMode': _$AppLayoutModeEnumMap[instance.layoutMode]!,
-      'languague': _$AppLanguagueEnumMap[instance.languague]!,
     };
 
-const _$ThemeModeEnumMap = {
-  ThemeMode.system: 'system',
-  ThemeMode.light: 'light',
-  ThemeMode.dark: 'dark',
+const _$AppLanguagueEnumMap = {
+  AppLanguague.system: 'system',
+  AppLanguague.en: 'en',
+  AppLanguague.ar: 'ar',
+};
+
+const _$AppThemeModeEnumMap = {
+  AppThemeMode.dark: 'dark',
+  AppThemeMode.light: 'light',
+  AppThemeMode.system: 'system',
+  AppThemeMode.auto: 'auto',
+  AppThemeMode.random: 'random',
+};
+
+const _$AppThemeSystemEnumMap = {
+  AppThemeSystem.material3: 'material3',
+  AppThemeSystem.material2: 'material2',
+  AppThemeSystem.cupertino: 'cupertino',
 };
 
 const _$AppLayoutModeEnumMap = {
   AppLayoutMode.auto: 'auto',
   AppLayoutMode.small: 'small',
   AppLayoutMode.large: 'large',
-};
-
-const _$AppLanguagueEnumMap = {
-  AppLanguague.system: 'system',
-  AppLanguague.en: 'en',
-  AppLanguague.ar: 'ar',
 };

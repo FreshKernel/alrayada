@@ -6,6 +6,7 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import '../../l10n/app_localizations.dart';
 
 import '../../logic/settings/settings_cubit.dart';
+import '../../logic/settings/settings_data.dart';
 import '../onboarding/onboarding_screen.dart';
 import 'dashboard_drawer.dart';
 import 'navigation_item.dart';
@@ -123,15 +124,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
           duration: const Duration(milliseconds: 330),
           transitionBuilder: (child, animation) {
             // This animation is from flutter.dev example
-            const begin = Offset(0.0, 1.0);
-            const end = Offset.zero;
-            const curve = Curves.ease;
-
             final tween = Tween(
-              begin: begin,
-              end: end,
+              begin: const Offset(0.0, 1.0),
+              end: Offset.zero,
             ).chain(
-              CurveTween(curve: curve),
+              CurveTween(curve: Curves.ease),
             );
 
             return SlideTransition(

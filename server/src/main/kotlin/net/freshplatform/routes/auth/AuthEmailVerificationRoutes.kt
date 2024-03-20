@@ -112,7 +112,7 @@ fun Route.verifyEmail() {
                 "Unknown error while trying to find this user with this email",
                 "UNKNOWN_ERROR"
             )
-        } ?: throw ErrorResponseException(HttpStatusCode.NotFound, "We couldn't find this user.", "USER_NOT_FOUND")
+        } ?: throw ErrorResponseException(HttpStatusCode.NotFound, "We couldn't find this user.", "EMAIL_NOT_FOUND")
 
         if (user.isEmailVerified) throw ErrorResponseException(
             HttpStatusCode.Conflict,

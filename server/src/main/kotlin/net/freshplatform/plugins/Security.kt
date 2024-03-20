@@ -32,7 +32,10 @@ fun Application.configureSecurity() {
                 if (credential.payload.audience.contains(Constants.JwtConfig.AUDIENCE)) JWTPrincipal(credential.payload) else null
             }
             challenge { _, _ ->
-                call.respond(HttpStatusCode.Unauthorized, ErrorResponse("Token is invalid or expired.", "INVALID_TOKEN"))
+                call.respond(
+                    HttpStatusCode.Unauthorized,
+                    ErrorResponse("Token is invalid or expired.", "INVALID_TOKEN"),
+                )
             }
         }
     }

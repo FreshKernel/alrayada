@@ -5,12 +5,17 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.server.util.*
 import kotlinx.datetime.Clock
 import net.freshplatform.data.user.*
 import net.freshplatform.services.email_sender.EmailMessage
 import net.freshplatform.services.email_sender.EmailSenderService
 import net.freshplatform.services.security.hashing.BcryptHashingService
 import net.freshplatform.services.security.jwt.JwtService
+import net.freshplatform.services.security.social_login.SocialLogin
+import net.freshplatform.services.security.social_login.SocialLoginRequest
+import net.freshplatform.services.security.social_login.SocialLoginService
+import net.freshplatform.services.security.social_login.SocialLoginUserData
 import net.freshplatform.services.security.token_verification.TokenVerificationService
 import net.freshplatform.services.telegram_bot.TelegramBotService
 import net.freshplatform.utils.ErrorResponseException
@@ -116,7 +121,7 @@ fun Route.signUpWithEmailAndPassword() {
             )
         }
 
-        val accessToken = jwtService.generateAccessToken(user.id.toString())
+        val accessToken = jwtService.generateAccessToken(user.id.toString(), AuthUtils.USER_ACCESS_TOKEN_EXPIRES_IN)
 
         call.respond(
             HttpStatusCode.Created,
@@ -162,7 +167,7 @@ fun Route.signInWithEmailAndPassword() {
         ) /*throw ErrorResponseException(
             HttpStatusCode.NotFound,
             "Email not found. Please check your email address and try again.",
-            "USER_NOT_FOUND",
+            "EMAIL_NOT_FOUND",
         )*/
 
         val isValidPassword = bcryptHashingService.verify(request.password, user.password)
@@ -171,7 +176,11 @@ fun Route.signInWithEmailAndPassword() {
                 HttpStatusCode.Unauthorized,
                 "Incorrect email or password.",
                 "INVALID_CREDENTIALS"
-            )
+            ) /*throw ErrorResponseException(
+                HttpStatusCode.Unauthorized,
+                "Incorrect password.",
+                "WRONG_PASSWORD"
+            )*/
         }
 
         request.deviceNotificationsToken?.let {
@@ -181,7 +190,8 @@ fun Route.signInWithEmailAndPassword() {
             )
         }
 
-        val accessToken = jwtService.generateAccessToken(userId = user.id.toString())
+        val accessToken =
+            jwtService.generateAccessToken(userId = user.id.toString(), AuthUtils.USER_ACCESS_TOKEN_EXPIRES_IN)
 
         call.respond(
             AuthenticatedUserResponse(
@@ -190,5 +200,118 @@ fun Route.signInWithEmailAndPassword() {
                 user = user.toResponse()
             )
         )
+    }
+}
+
+fun Route.socialLogin() {
+    val socialLoginService by inject<SocialLoginService>()
+    val userDataSource by inject<UserDataSource>()
+    val jwtService by inject<JwtService>()
+    val telegramBotService by inject<TelegramBotService>()
+
+    post("/socialLogin") {
+        val provider: String by call.request.queryParameters
+        val socialUserData: SocialLoginUserData
+
+        // userInfo is null for sign in, not null for sign up
+        val (userInfo, deviceNotificationsToken) = when (provider) {
+            SocialLogin.Google::class.simpleName -> {
+                val googleSocialRequest = call.receive<SocialLoginRequest<SocialLogin.Google>>()
+                socialUserData = socialLoginService.authenticateWith(googleSocialRequest.socialLogin).getOrElse {
+                    throw ErrorResponseException(
+                        HttpStatusCode.InternalServerError,
+                        "Unknown error while validating the social login info for Google",
+                        "UNKNOWN_ERROR"
+                    )
+                } ?: throw ErrorResponseException(
+                    HttpStatusCode.Unauthorized, "Invalid social login info for Google", "INVALID_SOCIAL_INFO",
+                )
+                Pair(googleSocialRequest.userInfo, googleSocialRequest.deviceNotificationsToken)
+            }
+
+            SocialLogin.Apple::class.simpleName -> {
+                val appleSocialRequest = call.receive<SocialLoginRequest<SocialLogin.Apple>>()
+                socialUserData = socialLoginService.authenticateWith(appleSocialRequest.socialLogin).getOrElse {
+                    throw ErrorResponseException(
+                        HttpStatusCode.InternalServerError,
+                        "Unknown error while validating the social login info for Apple",
+                        "UNKNOWN_ERROR"
+                    )
+                } ?: throw ErrorResponseException(
+                    HttpStatusCode.Unauthorized, "Invalid social login info for Apple", "INVALID_SOCIAL_INFO",
+                )
+                Pair(appleSocialRequest.userInfo, appleSocialRequest.deviceNotificationsToken)
+            }
+
+            else -> throw ErrorResponseException(
+                HttpStatusCode.BadRequest, "Unsupported provider: $provider", "UNSUPPORTED"
+            )
+        }
+
+        if (!socialUserData.isEmailVerified) {
+            throw ErrorResponseException(
+                HttpStatusCode.Forbidden, "Your email is not verified",
+                "SOCIAL_EMAIL_NOT_VERIFIED",
+            )
+        }
+
+        val user = userDataSource.findUserByEmail(socialUserData.email).getOrElse {
+            throw ErrorResponseException(
+                HttpStatusCode.InternalServerError,
+                "Unknown error while trying to find this user with this email",
+                "UNKNOWN_ERROR"
+            )
+        } ?: kotlin.run {
+            val signUpUserInfo = userInfo ?: throw ErrorResponseException(
+                HttpStatusCode.UnprocessableEntity,
+                "There is no matching email account, to create an account you must provide the user info.",
+                "SOCIAL_MISSING_SIGNUP_DATA"
+            )
+            val newUser = User(
+                email = socialUserData.email.lowercase(),
+                password = "", // No password
+                isAccountActivated = false,
+                isEmailVerified = true,
+                role = UserRole.User,
+                info = signUpUserInfo,
+                deviceNotificationsToken = deviceNotificationsToken,
+                pictureUrl = socialUserData.pictureUrl,
+                emailVerification = null,
+                resetPasswordVerification = null,
+                createdAt = Clock.System.now(),
+                updatedAt = Clock.System.now(),
+            )
+            val isCreateSuccess = userDataSource.insertUser(newUser)
+            if (!isCreateSuccess) {
+                throw ErrorResponseException(
+                    HttpStatusCode.InternalServerError,
+                    "Unknown error while trying to insert the user in the database.",
+                    "UNKNOWN_ERROR"
+                )
+            }
+            notifyAdminsUserRegistration(newUser, telegramBotService)
+            newUser
+        }
+
+        val isSignIn = userInfo == null
+        if (isSignIn) {
+            userDataSource.updateDeviceNotificationsTokenById(
+                user.id.toString(),
+                deviceNotificationsToken
+            )
+        }
+
+        val accessToken =
+            jwtService.generateAccessToken(user.id.toString(), AuthUtils.USER_ACCESS_TOKEN_EXPIRES_IN).token
+
+        call.respond(
+            if (isSignIn) HttpStatusCode.OK else HttpStatusCode.Created,
+            AuthenticatedUserResponse(
+                accessToken = accessToken,
+                refreshToken = "",
+                user = user.toResponse(),
+            )
+        )
+
     }
 }

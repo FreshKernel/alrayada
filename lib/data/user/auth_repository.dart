@@ -1,4 +1,4 @@
-import 'auth_custom_provider.dart';
+import 'auth_social_login.dart';
 import 'models/auth_credential.dart';
 import 'models/user.dart';
 
@@ -13,9 +13,11 @@ abstract class AuthRepository {
     required UserInfo userInfo,
   });
 
-  Future<UserCredential> authenticateWithCustomProvider(
-    AuthCustomProvider authCustomProvider,
-  );
+  Future<UserCredential> authenticateWithSocialLogin(
+    SocialLogin socialLogin, {
+    // Used for sign up only
+    required UserInfo? userInfo,
+  });
 
   Future<void> updateUserInfo(
     UserInfo userInfo,

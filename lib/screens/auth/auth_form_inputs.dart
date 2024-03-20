@@ -13,7 +13,7 @@ import '../../l10n/app_localizations.dart';
 import '../../logic/auth/auth_cubit.dart';
 import '../../logic/settings/settings_cubit.dart';
 import '../../utils/constants/constants.dart';
-import '../../utils/extensions/scaffold_messenger.dart';
+import '../../utils/extensions/scaffold_messenger_ext.dart';
 import '../../utils/text_input_handler.dart';
 import '../../widgets/auth/email_text_field.dart';
 import '../../widgets/auth/password_text_field.dart';
@@ -35,8 +35,6 @@ class AuthFormInputs extends StatefulWidget {
 }
 
 class _AuthFormInputsState extends State<AuthFormInputs> {
-  var _isLoading = false;
-
   /// Must be the same value in isLogin of [AuthenticationForm]
   var _isLogin = true;
 
@@ -129,7 +127,6 @@ class _AuthFormInputsState extends State<AuthFormInputs> {
     }
     _formKey.currentState?.save();
 
-    setState(() => _isLoading = true);
     if (_isLogin) {
       await authBloc.signInWithEmailAndPassword(
         email: _emailController.text,
@@ -148,7 +145,6 @@ class _AuthFormInputsState extends State<AuthFormInputs> {
         ),
       );
     }
-    setState(() => _isLoading = false);
   }
 
   List<Widget> get _signUpInputs {
@@ -233,7 +229,7 @@ class _AuthFormInputsState extends State<AuthFormInputs> {
         child: Align(
           alignment: Alignment.centerRight,
           child: PlatformTextButton(
-            onPressed: () => context.push(AuthForgotPassword.routeName,
+            onPressed: () => context.push(AuthForgotPasswordScreen.routeName,
                 extra: _emailController.text),
             child: Text(context.loc.forgotPasswordWithQuestionMark),
           ),
@@ -271,10 +267,10 @@ class _AuthFormInputsState extends State<AuthFormInputs> {
   Widget build(BuildContext context) {
     return BlocListener<AuthCubit, AuthState>(
       listener: (context, state) {
-        final authException = state.exception;
-        if (authException != null) {
+        if (state is AuthLoginFailure) {
+          final authException = state.exception;
           switch (authException) {
-            case UserNotFoundAuthException():
+            case EmailNotFoundAuthException():
               ScaffoldMessenger.of(context).showSnackBarText(
                 context.loc.authEmailNotFound,
               );
@@ -349,17 +345,26 @@ class _AuthFormInputsState extends State<AuthFormInputs> {
               );
               break;
           }
+          return;
         }
-        final userCredential = state.userCredential;
-        // The Auth screen will handle switching to the Verify Email screen
-        // We want to pop only when the email is not verified
-        if (userCredential != null && userCredential.user.isEmailVerified) {
-          context.pop();
+        if (state is AuthLoginSuccess) {
+          final userCredential = state.userCredential;
+          if (userCredential == null) {
+            throw StateError(
+              'The user credential should not be null in the success state',
+            );
+          }
+          // The Auth screen will handle switching to the Verify Email screen
+          // We want to pop only when the email is not verified
+          if (userCredential.user.isEmailVerified) {
+            context.pop();
+          }
+          return;
         }
       },
-      child: Builder(
-        builder: (context) {
-          if (_isLoading) {
+      child: BlocBuilder<AuthCubit, AuthState>(
+        builder: (context, state) {
+          if (state is AuthLoginInProgress) {
             return const Center(
               child: CircularProgressIndicator.adaptive(),
             );

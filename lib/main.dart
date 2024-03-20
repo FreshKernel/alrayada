@@ -14,6 +14,7 @@ import 'l10n/app_localizations.dart';
 import 'logic/auth/auth_cubit.dart';
 import 'logic/connection/connection_cubit.dart';
 import 'logic/settings/settings_cubit.dart';
+import 'logic/settings/settings_data.dart';
 import 'screens/app_router.dart';
 import 'utils/app_logger.dart';
 import 'utils/env.dart';
@@ -90,7 +91,10 @@ class MyApp extends StatelessWidget {
       child: BlocBuilder<SettingsCubit, SettingsState>(
         buildWhen: (previous, current) =>
             previous.themeMode != current.themeMode ||
-            previous.languague != current.languague,
+            previous.darkDuringDayInAutoMode !=
+                current.darkDuringDayInAutoMode ||
+            previous.appLanguague != current.appLanguague ||
+            previous.themeSystem != current.themeSystem,
         builder: (context, state) {
           return MaterialApp.router(
             debugShowCheckedModeBanner: false,
@@ -99,7 +103,7 @@ class MyApp extends StatelessWidget {
             supportedLocales: AppLocalizations.supportedLocales,
             routerConfig: AppRouter.router,
             theme: ThemeData(
-              useMaterial3: true,
+              useMaterial3: state.themeSystem == AppThemeSystem.material3,
               visualDensity: VisualDensity.adaptivePlatformDensity,
               colorScheme: ColorScheme.fromSeed(
                 seedColor: Colors.green,
@@ -107,17 +111,18 @@ class MyApp extends StatelessWidget {
               ),
             ),
             darkTheme: ThemeData(
-              useMaterial3: true,
+              useMaterial3: state.themeSystem == AppThemeSystem.material3,
               visualDensity: VisualDensity.adaptivePlatformDensity,
               colorScheme: ColorScheme.fromSeed(
                 seedColor: Colors.green,
                 brightness: Brightness.dark,
               ),
             ),
-            themeMode: state.themeMode,
-            locale: state.languague == AppLanguague.system
+            themeMode: state.themeMode.toMaterialThemeMode(
+                darkDuringDayInAutoMode: state.darkDuringDayInAutoMode),
+            locale: state.appLanguague == AppLanguague.system
                 ? null
-                : Locale(state.languague.name),
+                : Locale(state.appLanguague.name),
           );
         },
       ),

@@ -11,8 +11,10 @@ sealed class AuthException implements Exception {
   String toString() => message;
 }
 
-class UserNotFoundAuthException extends AuthException {
-  const UserNotFoundAuthException({required super.message});
+// Sign In
+
+class EmailNotFoundAuthException extends AuthException {
+  const EmailNotFoundAuthException({required super.message});
 }
 
 class InvalidCredentialsAuthException extends AuthException {
@@ -21,6 +23,12 @@ class InvalidCredentialsAuthException extends AuthException {
 
 class WrongPasswordAuthException extends AuthException {
   const WrongPasswordAuthException({required super.message});
+}
+
+// Sign Up
+
+class EmailAlreadyUsedAuthException extends AuthException {
+  const EmailAlreadyUsedAuthException({required super.message});
 }
 
 class EmailVerificationLinkAlreadySentAuthException extends AuthException {
@@ -49,10 +57,6 @@ class UnknownAuthException extends AuthException {
   const UnknownAuthException({required super.message});
 }
 
-class EmailAlreadyUsedAuthException extends AuthException {
-  const EmailAlreadyUsedAuthException({required super.message});
-}
-
 class EmailNeedsVerificationAuthException extends AuthException {
   const EmailNeedsVerificationAuthException({required super.message});
 }
@@ -71,4 +75,24 @@ class NetworkAuthException extends AuthException {
 
 class OperationNotAllowedAuthException extends AuthException {
   const OperationNotAllowedAuthException({required super.message});
+}
+
+class UserNotLoggedInAnyMoreAuthException extends AuthException {
+  const UserNotLoggedInAnyMoreAuthException({required super.message});
+}
+
+class SocialAuthException extends AuthException {
+  const SocialAuthException({required super.message});
+}
+
+class InvalidSocialInfoAuthException extends SocialAuthException {
+  const InvalidSocialInfoAuthException({required super.message});
+}
+
+class SocialEmailIsNotVerifiedAuthException extends SocialAuthException {
+  const SocialEmailIsNotVerifiedAuthException({required super.message});
+}
+
+class SocialMissingSignUpDataAuthException extends SocialAuthException {
+  const SocialMissingSignUpDataAuthException({required super.message});
 }

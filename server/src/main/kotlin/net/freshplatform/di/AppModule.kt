@@ -8,12 +8,14 @@ import net.freshplatform.services.email_sender.DevEmailSenderService
 import net.freshplatform.services.email_sender.EmailSenderService
 import net.freshplatform.services.email_sender.JavaEmailSenderService
 import net.freshplatform.services.ktor_client.HttpService
-import net.freshplatform.services.security.hashing.JavaBcryptBcryptHashingService
 import net.freshplatform.services.security.hashing.BcryptHashingService
+import net.freshplatform.services.security.hashing.JavaBcryptBcryptHashingService
 import net.freshplatform.services.security.jwt.JwtService
 import net.freshplatform.services.security.jwt.JwtServiceImpl
-import net.freshplatform.services.security.token_verification.TokenVerificationService
+import net.freshplatform.services.security.social_login.SocialLoginService
+import net.freshplatform.services.security.social_login.SocialLoginServiceImpl
 import net.freshplatform.services.security.token_verification.JavaTokenVerificationService
+import net.freshplatform.services.security.token_verification.TokenVerificationService
 import net.freshplatform.services.telegram_bot.KtorTelegramBotService
 import net.freshplatform.services.telegram_bot.TelegramBotService
 import net.freshplatform.utils.getEnvironmentVariables
@@ -47,6 +49,9 @@ val servicesModule = module {
     }
     single<JwtService> {
         JwtServiceImpl()
+    }
+    single<SocialLoginService> {
+        SocialLoginServiceImpl()
     }
 }
 

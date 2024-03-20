@@ -1,6 +1,6 @@
 import 'package:meta/meta.dart';
 
-import '../extensions/uri.dart';
+import '../extensions/uri_ext.dart';
 
 @immutable
 class GlobalValidator {

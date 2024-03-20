@@ -3,62 +3,31 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
+import 'package:path/path.dart';
 
 import '../../data/user/auth_exceptions.dart';
 import '../../gen/assets.gen.dart';
 import '../../l10n/app_localizations.dart';
 import '../../logic/auth/auth_cubit.dart';
 import '../../logic/connection/connection_cubit.dart';
-import '../../utils/extensions/scaffold_messenger.dart';
+import '../../utils/extensions/scaffold_messenger_ext.dart';
 import '../../widgets/errors/w_internet_error.dart';
 
-class AuthVerifyEmail extends StatefulWidget {
-  const AuthVerifyEmail({super.key});
-
-  @override
-  State<AuthVerifyEmail> createState() => _AuthVerifyEmailState();
-}
-
-class _AuthVerifyEmailState extends State<AuthVerifyEmail> {
-  var _isLoading = false;
-
-  Future<void> _checkEmailVerification() async {
-    final authBloc = context.read<AuthCubit>();
-    setState(() => _isLoading = true);
-    await context.read<AuthCubit>().fetchUser();
-    setState(() => _isLoading = false);
-
-    final userCredential = authBloc.state.userCredential;
-    if (userCredential == null) return;
-    if (!mounted) return;
-
-    if (!userCredential.user.isEmailVerified) {
-      ScaffoldMessenger.of(context).showSnackBarText(
-        context.loc.emailIsStillNotVerified,
-      );
-      return;
-    }
-    context.pop();
-  }
-
-  Future<void> _sendEmailVerificationLink() async {
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
-    final localizations = context.loc;
-
-    setState(() => _isLoading = true);
-    await context.read<AuthCubit>().sendEmailVerificationLink();
-    setState(() => _isLoading = false);
-
-    scaffoldMessenger.showSnackBarText(
-      localizations.authEmailVerificationLinkSent,
-    );
-  }
+class AuthVerifyEmailScreen extends StatelessWidget {
+  const AuthVerifyEmailScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(context.loc.verifyYourEmail),
+        actions: [
+          IconButton(
+            onPressed: () => context.read<AuthCubit>().logout(),
+            icon: const Icon(Icons.logout),
+            tooltip: context.loc.logout,
+          )
+        ],
       ),
       body: BlocBuilder<ConnectionCubit, ConnState>(
         builder: (context, state) {
@@ -79,46 +48,14 @@ class _AuthVerifyEmailState extends State<AuthVerifyEmail> {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 8),
-                  BlocConsumer<AuthCubit, AuthState>(
+                  BlocBuilder<AuthCubit, AuthState>(
                     builder: (context, state) {
-                      final email = state.userCredential?.user.email ??
-                          (throw StateError(
-                              'To access the verify email screen, the user must be authenticated'));
+                      final email = state.userCredential?.user.email ?? '';
                       return Text(
                         email,
                         style: Theme.of(context).textTheme.labelLarge,
                         textAlign: TextAlign.center,
                       );
-                    },
-                    listener: (context, state) {
-                      final authException = state.exception;
-                      if (authException != null) {
-                        switch (authException) {
-                          case EmailVerificationLinkAlreadySentAuthException():
-                            ScaffoldMessenger.of(context).showSnackBarText(
-                              context.loc
-                                  .verificationLinkIsAlreadySentWithMinutesToExpire(
-                                      authException.minutesToExpire.toString()),
-                            );
-                            break;
-                          case EmailAlreadyVerifiedAuthException():
-                            // TODO: If the email verified and the user
-                            // click send email verification then let's handle that
-                            break;
-                          case UnknownAuthException():
-                            ScaffoldMessenger.of(context).showSnackBarText(
-                              context.loc
-                                  .unknownErrorWithMsg(authException.message),
-                            );
-                            break;
-                          default:
-                            ScaffoldMessenger.of(context).showSnackBarText(
-                              context.loc
-                                  .unknownErrorWithMsg(authException.message),
-                            );
-                            break;
-                        }
-                      }
                     },
                   ),
                   const SizedBox(height: 6),
@@ -128,20 +65,92 @@ class _AuthVerifyEmailState extends State<AuthVerifyEmail> {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 16),
-                  if (!_isLoading) ...[
-                    SizedBox(
-                      width: double.infinity,
-                      child: PlatformElevatedButton(
-                        onPressed: _checkEmailVerification,
-                        child: Text(context.loc.continueText),
-                      ),
-                    ),
-                    PlatformTextButton(
-                      onPressed: _sendEmailVerificationLink,
-                      child: Text(context.loc.resendEmail),
-                    ),
-                  ] else
-                    const CircularProgressIndicator.adaptive()
+                  BlocConsumer<AuthCubit, AuthState>(
+                    listener: (context, state) {
+                      if (state is AuthFetchUserFailure) {
+                        ScaffoldMessenger.of(context).showSnackBarText(
+                          context.loc
+                              .unknownErrorWithMsg(state.exception.message),
+                        );
+                        return;
+                      }
+                      if (state is AuthFetchUserSuccess) {
+                        final userCredential = state.userCredential;
+                        if (userCredential == null) {
+                          throw StateError(
+                            'The user credential should not be null in the verify email screen',
+                          );
+                        }
+                        if (!userCredential.user.isEmailVerified) {
+                          ScaffoldMessenger.of(context).showSnackBarText(
+                            context.loc.emailIsStillNotVerified,
+                          );
+                          return;
+                        }
+                        context.pop();
+                        return;
+                      }
+                      if (state is AuthResendEmailVerificationFailure) {
+                        final authException = state.exception;
+                        switch (authException) {
+                          case UserNotLoggedInAnyMoreAuthException():
+                            context.read<AuthCubit>().logout();
+                            break;
+                          case EmailVerificationLinkAlreadySentAuthException():
+                            ScaffoldMessenger.of(context).showSnackBarText(
+                              context.loc
+                                  .verificationLinkIsAlreadySentWithMinutesToExpire(
+                                authException.minutesToExpire.toString(),
+                              ),
+                            );
+                            break;
+                          case EmailAlreadyVerifiedAuthException():
+                            context.read<AuthCubit>().fetchUser();
+                            break;
+                          case TooManyRequestsAuthException():
+                            ScaffoldMessenger.of(context).showSnackBarText(
+                                context.loc.tooManyRequestsPleaseTryAgainLater);
+                            break;
+                          default:
+                            ScaffoldMessenger.of(context).showSnackBarText(
+                              context.loc
+                                  .unknownErrorWithMsg(authException.message),
+                            );
+                            break;
+                        }
+                        return;
+                      }
+                      if (state is AuthResendEmailVerificationSuccess) {
+                        ScaffoldMessenger.of(context).showSnackBarText(
+                          context.loc.authEmailVerificationLinkSent,
+                        );
+                        return;
+                      }
+                    },
+                    builder: (context, state) {
+                      if (state is AuthFetchUserInProgress) {
+                        return const CircularProgressIndicator.adaptive();
+                      }
+                      return Column(
+                        children: [
+                          SizedBox(
+                            width: double.infinity,
+                            child: PlatformElevatedButton(
+                              onPressed: () =>
+                                  context.read<AuthCubit>().fetchUser(),
+                              child: Text(context.loc.continueText),
+                            ),
+                          ),
+                          PlatformTextButton(
+                            onPressed: () => context
+                                .read<AuthCubit>()
+                                .sendEmailVerificationLink(),
+                            child: Text(context.loc.resendEmail),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
                 ],
               ),
             ),

@@ -30,7 +30,7 @@ class ServerConfigurations {
         return 'http://localhost:$_developmentServerPort';
       }
     }
-    return getEnvironmentVariables().developmentIpAddress;
+    return 'http://${getEnvironmentVariables().developmentIpAddress}:$_developmentServerPort';
   }
 
   /// This add the base url to the path of the route

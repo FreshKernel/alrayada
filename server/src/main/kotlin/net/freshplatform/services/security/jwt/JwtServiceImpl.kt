@@ -7,12 +7,10 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.toJavaInstant
 import net.freshplatform.utils.Constants
 import net.freshplatform.utils.getEnvironmentVariables
-import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration
 
 class JwtServiceImpl : JwtService {
-    override suspend fun generateAccessToken(userId: String): JwtValue {
-        val expiresIn = 60.minutes
-
+    override suspend fun generateAccessToken(userId: String, expiresIn: Duration): JwtValue {
         val expiresAt = Clock.System.now().plus(expiresIn)
         val token = JWT.create()
             .withIssuer(Constants.JwtConfig.ISSUER)

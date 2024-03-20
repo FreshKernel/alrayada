@@ -20,18 +20,23 @@ SettingsState _$SettingsStateFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$SettingsState {
-  ThemeMode get themeMode => throw _privateConstructorUsedError;
-  bool get isAnimationsEnabled => throw _privateConstructorUsedError;
-  bool get confirmDeleteCartItem => throw _privateConstructorUsedError;
-  bool get clearCartAfterCheckout => throw _privateConstructorUsedError;
-  bool get forceUseScrollableChart => throw _privateConstructorUsedError;
-  bool get useMonthNumberInChart => throw _privateConstructorUsedError;
-  bool get unFocusAfterSendMsg => throw _privateConstructorUsedError;
-  bool get useClassicMsgBubble => throw _privateConstructorUsedError;
-  bool get showOnBoardingScreen => throw _privateConstructorUsedError;
-  bool get showOrderItemNotes => throw _privateConstructorUsedError;
+// General
+  AppLanguague get appLanguague => throw _privateConstructorUsedError;
+  AppThemeMode get themeMode => throw _privateConstructorUsedError;
+  AppThemeSystem get themeSystem => throw _privateConstructorUsedError;
   AppLayoutMode get layoutMode => throw _privateConstructorUsedError;
-  AppLanguague get languague => throw _privateConstructorUsedError;
+  bool get isAnimationsEnabled => throw _privateConstructorUsedError;
+  dynamic get darkDuringDayInAutoMode => throw _privateConstructorUsedError;
+  bool get showOnBoardingScreen => throw _privateConstructorUsedError; // Cart
+  bool get confirmDeleteCartItem => throw _privateConstructorUsedError;
+  bool get clearCartAfterCheckout =>
+      throw _privateConstructorUsedError; // Statistics
+  bool get forceUseScrollableChart => throw _privateConstructorUsedError;
+  bool get useMonthNumberInChart =>
+      throw _privateConstructorUsedError; // Support chat
+  bool get unFocusAfterSendMsg => throw _privateConstructorUsedError;
+  bool get useClassicMsgBubble => throw _privateConstructorUsedError; // Orders
+  bool get showOrderItemNotes => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -46,18 +51,20 @@ abstract class $SettingsStateCopyWith<$Res> {
       _$SettingsStateCopyWithImpl<$Res, SettingsState>;
   @useResult
   $Res call(
-      {ThemeMode themeMode,
+      {AppLanguague appLanguague,
+      AppThemeMode themeMode,
+      AppThemeSystem themeSystem,
+      AppLayoutMode layoutMode,
       bool isAnimationsEnabled,
+      dynamic darkDuringDayInAutoMode,
+      bool showOnBoardingScreen,
       bool confirmDeleteCartItem,
       bool clearCartAfterCheckout,
       bool forceUseScrollableChart,
       bool useMonthNumberInChart,
       bool unFocusAfterSendMsg,
       bool useClassicMsgBubble,
-      bool showOnBoardingScreen,
-      bool showOrderItemNotes,
-      AppLayoutMode layoutMode,
-      AppLanguague languague});
+      bool showOrderItemNotes});
 }
 
 /// @nodoc
@@ -73,27 +80,49 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? appLanguague = null,
     Object? themeMode = null,
+    Object? themeSystem = null,
+    Object? layoutMode = null,
     Object? isAnimationsEnabled = null,
+    Object? darkDuringDayInAutoMode = freezed,
+    Object? showOnBoardingScreen = null,
     Object? confirmDeleteCartItem = null,
     Object? clearCartAfterCheckout = null,
     Object? forceUseScrollableChart = null,
     Object? useMonthNumberInChart = null,
     Object? unFocusAfterSendMsg = null,
     Object? useClassicMsgBubble = null,
-    Object? showOnBoardingScreen = null,
     Object? showOrderItemNotes = null,
-    Object? layoutMode = null,
-    Object? languague = null,
   }) {
     return _then(_value.copyWith(
+      appLanguague: null == appLanguague
+          ? _value.appLanguague
+          : appLanguague // ignore: cast_nullable_to_non_nullable
+              as AppLanguague,
       themeMode: null == themeMode
           ? _value.themeMode
           : themeMode // ignore: cast_nullable_to_non_nullable
-              as ThemeMode,
+              as AppThemeMode,
+      themeSystem: null == themeSystem
+          ? _value.themeSystem
+          : themeSystem // ignore: cast_nullable_to_non_nullable
+              as AppThemeSystem,
+      layoutMode: null == layoutMode
+          ? _value.layoutMode
+          : layoutMode // ignore: cast_nullable_to_non_nullable
+              as AppLayoutMode,
       isAnimationsEnabled: null == isAnimationsEnabled
           ? _value.isAnimationsEnabled
           : isAnimationsEnabled // ignore: cast_nullable_to_non_nullable
+              as bool,
+      darkDuringDayInAutoMode: freezed == darkDuringDayInAutoMode
+          ? _value.darkDuringDayInAutoMode
+          : darkDuringDayInAutoMode // ignore: cast_nullable_to_non_nullable
+              as dynamic,
+      showOnBoardingScreen: null == showOnBoardingScreen
+          ? _value.showOnBoardingScreen
+          : showOnBoardingScreen // ignore: cast_nullable_to_non_nullable
               as bool,
       confirmDeleteCartItem: null == confirmDeleteCartItem
           ? _value.confirmDeleteCartItem
@@ -119,22 +148,10 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
           ? _value.useClassicMsgBubble
           : useClassicMsgBubble // ignore: cast_nullable_to_non_nullable
               as bool,
-      showOnBoardingScreen: null == showOnBoardingScreen
-          ? _value.showOnBoardingScreen
-          : showOnBoardingScreen // ignore: cast_nullable_to_non_nullable
-              as bool,
       showOrderItemNotes: null == showOrderItemNotes
           ? _value.showOrderItemNotes
           : showOrderItemNotes // ignore: cast_nullable_to_non_nullable
               as bool,
-      layoutMode: null == layoutMode
-          ? _value.layoutMode
-          : layoutMode // ignore: cast_nullable_to_non_nullable
-              as AppLayoutMode,
-      languague: null == languague
-          ? _value.languague
-          : languague // ignore: cast_nullable_to_non_nullable
-              as AppLanguague,
     ) as $Val);
   }
 }
@@ -148,18 +165,20 @@ abstract class _$$SettingsStateImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {ThemeMode themeMode,
+      {AppLanguague appLanguague,
+      AppThemeMode themeMode,
+      AppThemeSystem themeSystem,
+      AppLayoutMode layoutMode,
       bool isAnimationsEnabled,
+      dynamic darkDuringDayInAutoMode,
+      bool showOnBoardingScreen,
       bool confirmDeleteCartItem,
       bool clearCartAfterCheckout,
       bool forceUseScrollableChart,
       bool useMonthNumberInChart,
       bool unFocusAfterSendMsg,
       bool useClassicMsgBubble,
-      bool showOnBoardingScreen,
-      bool showOrderItemNotes,
-      AppLayoutMode layoutMode,
-      AppLanguague languague});
+      bool showOrderItemNotes});
 }
 
 /// @nodoc
@@ -173,27 +192,48 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? appLanguague = null,
     Object? themeMode = null,
+    Object? themeSystem = null,
+    Object? layoutMode = null,
     Object? isAnimationsEnabled = null,
+    Object? darkDuringDayInAutoMode = freezed,
+    Object? showOnBoardingScreen = null,
     Object? confirmDeleteCartItem = null,
     Object? clearCartAfterCheckout = null,
     Object? forceUseScrollableChart = null,
     Object? useMonthNumberInChart = null,
     Object? unFocusAfterSendMsg = null,
     Object? useClassicMsgBubble = null,
-    Object? showOnBoardingScreen = null,
     Object? showOrderItemNotes = null,
-    Object? layoutMode = null,
-    Object? languague = null,
   }) {
     return _then(_$SettingsStateImpl(
+      appLanguague: null == appLanguague
+          ? _value.appLanguague
+          : appLanguague // ignore: cast_nullable_to_non_nullable
+              as AppLanguague,
       themeMode: null == themeMode
           ? _value.themeMode
           : themeMode // ignore: cast_nullable_to_non_nullable
-              as ThemeMode,
+              as AppThemeMode,
+      themeSystem: null == themeSystem
+          ? _value.themeSystem
+          : themeSystem // ignore: cast_nullable_to_non_nullable
+              as AppThemeSystem,
+      layoutMode: null == layoutMode
+          ? _value.layoutMode
+          : layoutMode // ignore: cast_nullable_to_non_nullable
+              as AppLayoutMode,
       isAnimationsEnabled: null == isAnimationsEnabled
           ? _value.isAnimationsEnabled
           : isAnimationsEnabled // ignore: cast_nullable_to_non_nullable
+              as bool,
+      darkDuringDayInAutoMode: freezed == darkDuringDayInAutoMode
+          ? _value.darkDuringDayInAutoMode!
+          : darkDuringDayInAutoMode,
+      showOnBoardingScreen: null == showOnBoardingScreen
+          ? _value.showOnBoardingScreen
+          : showOnBoardingScreen // ignore: cast_nullable_to_non_nullable
               as bool,
       confirmDeleteCartItem: null == confirmDeleteCartItem
           ? _value.confirmDeleteCartItem
@@ -219,22 +259,10 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
           ? _value.useClassicMsgBubble
           : useClassicMsgBubble // ignore: cast_nullable_to_non_nullable
               as bool,
-      showOnBoardingScreen: null == showOnBoardingScreen
-          ? _value.showOnBoardingScreen
-          : showOnBoardingScreen // ignore: cast_nullable_to_non_nullable
-              as bool,
       showOrderItemNotes: null == showOrderItemNotes
           ? _value.showOrderItemNotes
           : showOrderItemNotes // ignore: cast_nullable_to_non_nullable
               as bool,
-      layoutMode: null == layoutMode
-          ? _value.layoutMode
-          : layoutMode // ignore: cast_nullable_to_non_nullable
-              as AppLayoutMode,
-      languague: null == languague
-          ? _value.languague
-          : languague // ignore: cast_nullable_to_non_nullable
-              as AppLanguague,
     ));
   }
 }
@@ -243,62 +271,75 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$SettingsStateImpl implements _SettingsState {
   const _$SettingsStateImpl(
-      {this.themeMode = ThemeMode.system,
+      {this.appLanguague = AppLanguague.system,
+      this.themeMode = AppThemeMode.system,
+      this.themeSystem = AppThemeSystem.material3,
+      this.layoutMode = AppLayoutMode.auto,
       this.isAnimationsEnabled = true,
+      this.darkDuringDayInAutoMode = false,
+      this.showOnBoardingScreen = true,
       this.confirmDeleteCartItem = false,
       this.clearCartAfterCheckout = true,
       this.forceUseScrollableChart = false,
       this.useMonthNumberInChart = false,
       this.unFocusAfterSendMsg = true,
       this.useClassicMsgBubble = false,
-      this.showOnBoardingScreen = true,
-      this.showOrderItemNotes = true,
-      this.layoutMode = AppLayoutMode.auto,
-      this.languague = AppLanguague.system});
+      this.showOrderItemNotes = true});
 
   factory _$SettingsStateImpl.fromJson(Map<String, dynamic> json) =>
       _$$SettingsStateImplFromJson(json);
 
+// General
   @override
   @JsonKey()
-  final ThemeMode themeMode;
+  final AppLanguague appLanguague;
+  @override
+  @JsonKey()
+  final AppThemeMode themeMode;
+  @override
+  @JsonKey()
+  final AppThemeSystem themeSystem;
+  @override
+  @JsonKey()
+  final AppLayoutMode layoutMode;
   @override
   @JsonKey()
   final bool isAnimationsEnabled;
+  @override
+  @JsonKey()
+  final dynamic darkDuringDayInAutoMode;
+  @override
+  @JsonKey()
+  final bool showOnBoardingScreen;
+// Cart
   @override
   @JsonKey()
   final bool confirmDeleteCartItem;
   @override
   @JsonKey()
   final bool clearCartAfterCheckout;
+// Statistics
   @override
   @JsonKey()
   final bool forceUseScrollableChart;
   @override
   @JsonKey()
   final bool useMonthNumberInChart;
+// Support chat
   @override
   @JsonKey()
   final bool unFocusAfterSendMsg;
   @override
   @JsonKey()
   final bool useClassicMsgBubble;
-  @override
-  @JsonKey()
-  final bool showOnBoardingScreen;
+// Orders
   @override
   @JsonKey()
   final bool showOrderItemNotes;
-  @override
-  @JsonKey()
-  final AppLayoutMode layoutMode;
-  @override
-  @JsonKey()
-  final AppLanguague languague;
 
   @override
   String toString() {
-    return 'SettingsState(themeMode: $themeMode, isAnimationsEnabled: $isAnimationsEnabled, confirmDeleteCartItem: $confirmDeleteCartItem, clearCartAfterCheckout: $clearCartAfterCheckout, forceUseScrollableChart: $forceUseScrollableChart, useMonthNumberInChart: $useMonthNumberInChart, unFocusAfterSendMsg: $unFocusAfterSendMsg, useClassicMsgBubble: $useClassicMsgBubble, showOnBoardingScreen: $showOnBoardingScreen, showOrderItemNotes: $showOrderItemNotes, layoutMode: $layoutMode, languague: $languague)';
+    return 'SettingsState(appLanguague: $appLanguague, themeMode: $themeMode, themeSystem: $themeSystem, layoutMode: $layoutMode, isAnimationsEnabled: $isAnimationsEnabled, darkDuringDayInAutoMode: $darkDuringDayInAutoMode, showOnBoardingScreen: $showOnBoardingScreen, confirmDeleteCartItem: $confirmDeleteCartItem, clearCartAfterCheckout: $clearCartAfterCheckout, forceUseScrollableChart: $forceUseScrollableChart, useMonthNumberInChart: $useMonthNumberInChart, unFocusAfterSendMsg: $unFocusAfterSendMsg, useClassicMsgBubble: $useClassicMsgBubble, showOrderItemNotes: $showOrderItemNotes)';
   }
 
   @override
@@ -306,10 +347,20 @@ class _$SettingsStateImpl implements _SettingsState {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$SettingsStateImpl &&
+            (identical(other.appLanguague, appLanguague) ||
+                other.appLanguague == appLanguague) &&
             (identical(other.themeMode, themeMode) ||
                 other.themeMode == themeMode) &&
+            (identical(other.themeSystem, themeSystem) ||
+                other.themeSystem == themeSystem) &&
+            (identical(other.layoutMode, layoutMode) ||
+                other.layoutMode == layoutMode) &&
             (identical(other.isAnimationsEnabled, isAnimationsEnabled) ||
                 other.isAnimationsEnabled == isAnimationsEnabled) &&
+            const DeepCollectionEquality().equals(
+                other.darkDuringDayInAutoMode, darkDuringDayInAutoMode) &&
+            (identical(other.showOnBoardingScreen, showOnBoardingScreen) ||
+                other.showOnBoardingScreen == showOnBoardingScreen) &&
             (identical(other.confirmDeleteCartItem, confirmDeleteCartItem) ||
                 other.confirmDeleteCartItem == confirmDeleteCartItem) &&
             (identical(other.clearCartAfterCheckout, clearCartAfterCheckout) ||
@@ -323,32 +374,28 @@ class _$SettingsStateImpl implements _SettingsState {
                 other.unFocusAfterSendMsg == unFocusAfterSendMsg) &&
             (identical(other.useClassicMsgBubble, useClassicMsgBubble) ||
                 other.useClassicMsgBubble == useClassicMsgBubble) &&
-            (identical(other.showOnBoardingScreen, showOnBoardingScreen) ||
-                other.showOnBoardingScreen == showOnBoardingScreen) &&
             (identical(other.showOrderItemNotes, showOrderItemNotes) ||
-                other.showOrderItemNotes == showOrderItemNotes) &&
-            (identical(other.layoutMode, layoutMode) ||
-                other.layoutMode == layoutMode) &&
-            (identical(other.languague, languague) ||
-                other.languague == languague));
+                other.showOrderItemNotes == showOrderItemNotes));
   }
 
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
       runtimeType,
+      appLanguague,
       themeMode,
+      themeSystem,
+      layoutMode,
       isAnimationsEnabled,
+      const DeepCollectionEquality().hash(darkDuringDayInAutoMode),
+      showOnBoardingScreen,
       confirmDeleteCartItem,
       clearCartAfterCheckout,
       forceUseScrollableChart,
       useMonthNumberInChart,
       unFocusAfterSendMsg,
       useClassicMsgBubble,
-      showOnBoardingScreen,
-      showOrderItemNotes,
-      layoutMode,
-      languague);
+      showOrderItemNotes);
 
   @JsonKey(ignore: true)
   @override
@@ -366,46 +413,52 @@ class _$SettingsStateImpl implements _SettingsState {
 
 abstract class _SettingsState implements SettingsState {
   const factory _SettingsState(
-      {final ThemeMode themeMode,
+      {final AppLanguague appLanguague,
+      final AppThemeMode themeMode,
+      final AppThemeSystem themeSystem,
+      final AppLayoutMode layoutMode,
       final bool isAnimationsEnabled,
+      final dynamic darkDuringDayInAutoMode,
+      final bool showOnBoardingScreen,
       final bool confirmDeleteCartItem,
       final bool clearCartAfterCheckout,
       final bool forceUseScrollableChart,
       final bool useMonthNumberInChart,
       final bool unFocusAfterSendMsg,
       final bool useClassicMsgBubble,
-      final bool showOnBoardingScreen,
-      final bool showOrderItemNotes,
-      final AppLayoutMode layoutMode,
-      final AppLanguague languague}) = _$SettingsStateImpl;
+      final bool showOrderItemNotes}) = _$SettingsStateImpl;
 
   factory _SettingsState.fromJson(Map<String, dynamic> json) =
       _$SettingsStateImpl.fromJson;
 
+  @override // General
+  AppLanguague get appLanguague;
   @override
-  ThemeMode get themeMode;
+  AppThemeMode get themeMode;
   @override
-  bool get isAnimationsEnabled;
-  @override
-  bool get confirmDeleteCartItem;
-  @override
-  bool get clearCartAfterCheckout;
-  @override
-  bool get forceUseScrollableChart;
-  @override
-  bool get useMonthNumberInChart;
-  @override
-  bool get unFocusAfterSendMsg;
-  @override
-  bool get useClassicMsgBubble;
-  @override
-  bool get showOnBoardingScreen;
-  @override
-  bool get showOrderItemNotes;
+  AppThemeSystem get themeSystem;
   @override
   AppLayoutMode get layoutMode;
   @override
-  AppLanguague get languague;
+  bool get isAnimationsEnabled;
+  @override
+  dynamic get darkDuringDayInAutoMode;
+  @override
+  bool get showOnBoardingScreen;
+  @override // Cart
+  bool get confirmDeleteCartItem;
+  @override
+  bool get clearCartAfterCheckout;
+  @override // Statistics
+  bool get forceUseScrollableChart;
+  @override
+  bool get useMonthNumberInChart;
+  @override // Support chat
+  bool get unFocusAfterSendMsg;
+  @override
+  bool get useClassicMsgBubble;
+  @override // Orders
+  bool get showOrderItemNotes;
   @override
   @JsonKey(ignore: true)
   _$$SettingsStateImplCopyWith<_$SettingsStateImpl> get copyWith =>

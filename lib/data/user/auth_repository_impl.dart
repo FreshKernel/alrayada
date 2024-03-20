@@ -10,9 +10,9 @@ import '../../services/notifications/s_notifications.dart';
 import '../../utils/constants/routes_constants.dart';
 import '../../utils/error_response.dart';
 import '../../utils/server.dart';
-import 'auth_custom_provider.dart';
 import 'auth_exceptions.dart';
 import 'auth_repository.dart';
+import 'auth_social_login.dart';
 import 'models/auth_credential.dart';
 import 'models/user.dart';
 
@@ -42,16 +42,7 @@ class AuthRepositoryImpl extends AuthRepository {
                   .toJson(),
         },
       );
-      final userCredential = UserCredential.fromJson(
-        response.data ??
-            (throw StateError('The response data from the server is null')),
-      );
-      await saveUser(userCredential);
-      DioService.instance.setToken(
-        accessToken: userCredential.accessToken,
-        refreshToken: userCredential.refreshToken,
-        onInvalidToken: logout,
-      );
+      final userCredential = _handleAuthSuccessResponse(response.data);
       return userCredential;
     } on DioException catch (e) {
       if (e.response?.statusCode == 429) {
@@ -61,12 +52,10 @@ class AuthRepositoryImpl extends AuthRepository {
       if (responseData is Map) {
         final code = ErrorResponse.fromJson(responseData.cast()).code;
         final exception = switch (code) {
-          'EMAIL_USED' =>
-            EmailAlreadyUsedAuthException(message: e.message.toString()),
           'INVALID_CREDENTIALS' =>
             InvalidCredentialsAuthException(message: e.message.toString()),
-          'USER_NOT_FOUND' =>
-            UserNotFoundAuthException(message: e.message.toString()),
+          'EMAIL_NOT_FOUND' =>
+            EmailNotFoundAuthException(message: e.message.toString()),
           'WRONG_PASSWORD' =>
             WrongPasswordAuthException(message: e.message.toString()),
           String() => UnknownAuthException(message: e.message.toString()),
@@ -99,16 +88,7 @@ class AuthRepositoryImpl extends AuthRepository {
                   .toJson(),
         },
       );
-      final userCredential = UserCredential.fromJson(
-        response.data ??
-            (throw StateError('The response data from the server is null')),
-      );
-      await saveUser(userCredential);
-      DioService.instance.setToken(
-        accessToken: userCredential.accessToken,
-        refreshToken: userCredential.refreshToken,
-        onInvalidToken: logout,
-      );
+      final userCredential = _handleAuthSuccessResponse(response.data);
       return userCredential;
     } on DioException catch (e) {
       if (e.response?.statusCode == 429) {
@@ -130,6 +110,20 @@ class AuthRepositoryImpl extends AuthRepository {
         message: e.toString(),
       );
     }
+  }
+
+  Future<UserCredential> _handleAuthSuccessResponse(
+      Map<String, Object?>? data) async {
+    final userCredential = UserCredential.fromJson(
+      data ?? (throw StateError('The response data from the server is null')),
+    );
+    await saveUser(userCredential);
+    DioService.instance.setToken(
+      accessToken: userCredential.accessToken,
+      refreshToken: userCredential.refreshToken,
+      onInvalidToken: logout,
+    );
+    return userCredential;
   }
 
   static const userPrefKey = 'user';
@@ -212,18 +206,65 @@ class AuthRepositoryImpl extends AuthRepository {
       final responseData = response.data;
       if (responseData == null) return null;
       final user = User.fromJson(responseData);
-      // TODO: We need to save the new fetched user
+      final savedUserCredential = await fetchSavedUserCredential() ??
+          (throw StateError(
+              'To load the user from server, user must be authenticated.'));
+      await saveUser(savedUserCredential.copyWith(user: user));
       return user;
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 401) {
+        // The user is no longer authenticated
+        return null;
+      }
+      throw UnknownAuthException(message: e.toString());
     } catch (e) {
       throw UnknownAuthException(message: e.toString());
     }
   }
 
   @override
-  Future<UserCredential> authenticateWithCustomProvider(
-    AuthCustomProvider authCustomProvider,
-  ) async {
-    throw UnimplementedError();
+  Future<UserCredential> authenticateWithSocialLogin(
+    SocialLogin socialLogin, {
+    required UserInfo? userInfo,
+  }) async {
+    try {
+      final response = await _dio.post<Map<String, Object?>>(
+        ServerConfigurations.getRequestUrl(
+            RoutesConstants.authRoutes.socialLogin),
+        data: {
+          'socialLogin': socialLogin.toJson(),
+          'userInfo': userInfo?.toJson(),
+          'deviceNotificationsToken':
+              (await NotificationsService.instanse.getUserDeviceToken())
+                  .toJson(),
+        },
+      );
+      final userCredential = _handleAuthSuccessResponse(response.data);
+      return userCredential;
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 429) {
+        throw TooManyRequestsAuthException(message: e.message.toString());
+      }
+      final responseData = e.response?.data;
+      if (responseData is Map) {
+        final code = ErrorResponse.fromJson(responseData.cast()).code;
+        final exception = switch (code) {
+          'INVALID_SOCIAL_INFO' =>
+            InvalidSocialInfoAuthException(message: e.message.toString()),
+          'SOCIAL_EMAIL_NOT_VERIFIED' => SocialEmailIsNotVerifiedAuthException(
+              message: e.message.toString()),
+          'SOCIAL_MISSING_SIGNUP_DATA' =>
+            SocialMissingSignUpDataAuthException(message: e.message.toString()),
+          String() => UnknownAuthException(message: e.message.toString()),
+        };
+        throw exception;
+      }
+      throw UnknownAuthException(message: e.message.toString());
+    } catch (e) {
+      throw UnknownAuthException(
+        message: e.toString(),
+      );
+    }
   }
 
   @override
@@ -307,6 +348,11 @@ class AuthRepositoryImpl extends AuthRepository {
       if (e.response?.statusCode == 429) {
         throw TooManyRequestsAuthException(message: e.message.toString());
       }
+      if (e.response?.statusCode == 401) {
+        throw UserNotLoggedInAnyMoreAuthException(
+          message: e.message.toString(),
+        );
+      }
       // TODO: See why ErrorResponse data property can't cast to Map<String, String> and only Map<String, dynamic>
       final responseData = e.response?.data;
       if (responseData is Map) {
@@ -349,8 +395,8 @@ class AuthRepositoryImpl extends AuthRepository {
       if (responseData is Map) {
         final errorResponse = ErrorResponse.fromJson(responseData.cast());
         final exception = switch (errorResponse.code) {
-          'USER_NOT_FOUND' =>
-            UserNotFoundAuthException(message: e.message.toString()),
+          'EMAIL_NOT_FOUND' =>
+            EmailNotFoundAuthException(message: e.message.toString()),
           'RESET_PASSWORD_LINK_ALREADY_SENT' =>
             ResetPasswordLinkAlreadySentAuthException(
               message: e.message.toString(),

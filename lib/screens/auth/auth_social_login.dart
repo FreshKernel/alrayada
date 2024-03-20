@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../../gen/assets.gen.dart';
 import '../../l10n/app_localizations.dart';
+import '../../logic/auth/auth_cubit.dart';
+import '../../utils/extensions/scaffold_messenger_ext.dart';
 
 class AuthSocialLogin extends StatelessWidget {
   const AuthSocialLogin({super.key});
@@ -27,7 +31,6 @@ class AuthSocialLogin extends StatelessWidget {
               const SizedBox(width: 6),
               Text(
                 label,
-                semanticsLabel: label,
                 style: TextStyle(color: fontColor),
               ),
             ],
@@ -53,29 +56,55 @@ class AuthSocialLogin extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 4),
-        _buildButton(
-          label: context.loc.loginWithGoogle,
-          icon: SvgPicture.asset(
-            Assets.svg.icons.google.path,
-            height: 25,
-            width: 25,
-          ),
-          onPressed: () {},
-          backgroundColor: Colors.white,
-          fontColor: Colors.black,
-        ),
-        const SizedBox(height: 8),
-        _buildButton(
-          label: context.loc.loginWithApple,
-          icon: Icon(
-            Icons.apple,
-            semanticLabel: context.loc.loginWithApple,
-            color: Colors.white,
-            size: 25,
-          ),
-          onPressed: () {},
-          backgroundColor: Colors.black,
-          fontColor: Colors.white,
+        BlocBuilder<AuthCubit, AuthState>(
+          builder: (context, state) {
+            if (state is AuthSocialLoginInProgress) {
+              return const CircularProgressIndicator.adaptive();
+            }
+            return Column(
+              children: [
+                _buildButton(
+                  label: context.loc.loginWithGoogle,
+                  icon: SvgPicture.asset(
+                    Assets.svg.icons.google.path,
+                    height: 25,
+                    width: 25,
+                  ),
+                  onPressed: () => context
+                      .read<AuthCubit>()
+                      .authenticateWithGoogle(userInfo: null),
+                  backgroundColor: Colors.white,
+                  fontColor: Colors.black,
+                ),
+                const SizedBox(height: 8),
+                _buildButton(
+                  label: context.loc.loginWithApple,
+                  icon: Icon(
+                    Icons.apple,
+                    semanticLabel: context.loc.loginWithApple,
+                    color: Colors.white,
+                    size: 25,
+                  ),
+                  onPressed: () async {
+                    final authBloc = context.read<AuthCubit>();
+                    final scaffoldMessenger = ScaffoldMessenger.of(context);
+                    final localizations = context.loc;
+
+                    final isAvaliable = await SignInWithApple.isAvailable();
+                    if (!isAvaliable) {
+                      scaffoldMessenger.showSnackBarText(
+                        localizations.signInWithAppleIsNotSupportedOnYourDevice,
+                      );
+                      return;
+                    }
+                    authBloc.authenticateWithApple(userInfo: null);
+                  },
+                  backgroundColor: Colors.black,
+                  fontColor: Colors.white,
+                ),
+              ],
+            );
+          },
         ),
         const SizedBox(height: 25),
       ],
