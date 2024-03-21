@@ -248,14 +248,7 @@ fun Route.socialLogin() {
             )
         }
 
-        if (!socialUserData.isEmailVerified) {
-            throw ErrorResponseException(
-                HttpStatusCode.Forbidden, "Your email is not verified",
-                "SOCIAL_EMAIL_NOT_VERIFIED",
-            )
-        }
-
-        val user = userDataSource.findUserByEmail(socialUserData.email).getOrElse {
+        var user = userDataSource.findUserByEmail(socialUserData.email).getOrElse {
             throw ErrorResponseException(
                 HttpStatusCode.InternalServerError,
                 "Unknown error while trying to find this user with this email",
@@ -271,7 +264,7 @@ fun Route.socialLogin() {
                 email = socialUserData.email.lowercase(),
                 password = "", // No password
                 isAccountActivated = false,
-                isEmailVerified = true,
+                isEmailVerified = socialUserData.isEmailVerified,
                 role = UserRole.User,
                 info = signUpUserInfo,
                 deviceNotificationsToken = deviceNotificationsToken,
@@ -299,13 +292,15 @@ fun Route.socialLogin() {
                 user.id.toString(),
                 deviceNotificationsToken
             )
-            if (!user.isEmailVerified) {
+            // When the user is not verified in the database but verified in social login then we will verify him/her
+            if (!user.isEmailVerified && socialUserData.isEmailVerified) {
                 val isVerifyEmailSuccess = userDataSource.verifyEmail(user.email)
                 if (!isVerifyEmailSuccess) throw ErrorResponseException(
                     HttpStatusCode.InternalServerError,
                     "Unknown error while verify the user email in the database.",
                     "UNKNOWN_ERROR"
                 )
+                user = user.copy(isEmailVerified = true)
             }
         }
 
@@ -317,7 +312,7 @@ fun Route.socialLogin() {
             AuthenticatedUserResponse(
                 accessToken = accessToken,
                 refreshToken = "",
-                user = user.toResponse().copy(isEmailVerified = true),
+                user = user.toResponse(),
             )
         )
 

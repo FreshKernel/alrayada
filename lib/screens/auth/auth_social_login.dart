@@ -103,7 +103,17 @@ class AuthSocialLogin extends StatelessWidget {
               }
             }
             if (state is AuthSocialLoginSuccess) {
-              context.pop();
+              final userCredential = state.userCredential;
+              if (userCredential == null) {
+                throw StateError(
+                  'The user credential should not be null in the success state',
+                );
+              }
+              // The Auth screen will handle switching to the Verify Email screen
+              // We want to pop only when the email is not verified
+              if (userCredential.user.isEmailVerified) {
+                context.pop();
+              }
               return;
             }
           },

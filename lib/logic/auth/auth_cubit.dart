@@ -187,11 +187,6 @@ class AuthCubit extends Cubit<AuthState> {
         socialLogin,
         userInfo: userInfo,
       );
-      if (!userCredential.user.isEmailVerified) {
-        throw StateError(
-          'The email should be always verified when logging using social login.',
-        );
-      }
       emit(AuthSocialLoginSuccess(userCredential: userCredential));
     } on AuthException catch (e) {
       emit(AuthSocialLoginFailure(e));
