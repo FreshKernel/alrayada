@@ -2,6 +2,8 @@ plugins {
     id "com.android.application"
     id "kotlin-android"
     id "dev.flutter.flutter-gradle-plugin"
+    // Workaround to get the id_token without null value in google sign in plugin
+    id "com.google.gms.google-services" version "4.3.8"
 }
 
 def localProperties = new Properties()

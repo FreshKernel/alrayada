@@ -229,15 +229,23 @@ class AuthRepositoryImpl extends AuthRepository {
     required UserInfo? userInfo,
   }) async {
     try {
+      final provider = switch (socialLogin) {
+        GoogleSocialLogin() => 'Google',
+        AppleSocialLogin() => 'Apple',
+      };
       final response = await _dio.post<Map<String, Object?>>(
         ServerConfigurations.getRequestUrl(
-            RoutesConstants.authRoutes.socialLogin),
+          RoutesConstants.authRoutes.socialLogin,
+        ),
         data: {
           'socialLogin': socialLogin.toJson(),
           'userInfo': userInfo?.toJson(),
           'deviceNotificationsToken':
               (await NotificationsService.instanse.getUserDeviceToken())
                   .toJson(),
+        },
+        queryParameters: {
+          'provider': provider,
         },
       );
       final userCredential = _handleAuthSuccessResponse(response.data);
@@ -254,8 +262,10 @@ class AuthRepositoryImpl extends AuthRepository {
             InvalidSocialInfoAuthException(message: e.message.toString()),
           'SOCIAL_EMAIL_NOT_VERIFIED' => SocialEmailIsNotVerifiedAuthException(
               message: e.message.toString()),
-          'SOCIAL_MISSING_SIGNUP_DATA' =>
-            SocialMissingSignUpDataAuthException(message: e.message.toString()),
+          'SOCIAL_MISSING_SIGNUP_DATA' => SocialMissingSignUpDataAuthException(
+              message: e.message.toString(),
+              socialLogin: socialLogin,
+            ),
           String() => UnknownAuthException(message: e.message.toString()),
         };
         throw exception;

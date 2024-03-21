@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/services.dart' show PlatformException;
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../../data/user/auth_exceptions.dart';
@@ -53,6 +54,8 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
+  static const String socialLoginDisplayNamePrefKey = 'socialLoginDisplayName';
+
   Future<void> loginWithGoogle() async {
     try {
       emit(const AuthSocialLoginInProgress());
@@ -72,16 +75,19 @@ class AuthCubit extends Cubit<AuthState> {
         return;
       }
       final googleAuth = await googleUser.authentication;
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(
+        socialLoginDisplayNamePrefKey,
+        googleUser.displayName ?? '',
+      );
 
       authenticateWithSocialLogin(
         GoogleSocialLogin(
           // TODO: This needs to be updated, this exception has nothing to do with the error
           idToken: googleAuth.idToken ??
-              (throw const OperationNotAllowedAuthException(
-                  message: 'The google id token should not be null')),
+              (throw StateError('The google id token should not be null')),
           accessToken: googleAuth.accessToken ??
-              (throw const OperationNotAllowedAuthException(
-                  message: 'The google access token should not be null')),
+              (throw StateError('The google access token should not be null')),
         ),
         userInfo: null,
       );
@@ -108,6 +114,13 @@ class AuthCubit extends Cubit<AuthState> {
           AppleIDAuthorizationScopes.email,
           AppleIDAuthorizationScopes.fullName,
         ],
+      );
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(
+        socialLoginDisplayNamePrefKey,
+        credential.givenName != null
+            ? ('${credential.givenName} ${credential.familyName}')
+            : '',
       );
       authenticateWithSocialLogin(
         AppleSocialLogin(
@@ -162,16 +175,24 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<void> authenticateWithSocialLogin(
     SocialLogin socialLogin, {
+    /// Initially this will be null, but when the server tell us the user doesn't
+    /// exists and we need to provide sign up data then we will pass a value
     required UserInfo? userInfo,
   }) async {
     try {
+      // Make sure we are in the in progress state
+      // will be useful when we request the user to enter the data and re-try again
+      emit(const AuthSocialLoginInProgress());
       final userCredential = await authRepository.authenticateWithSocialLogin(
         socialLogin,
         userInfo: userInfo,
       );
       if (!userCredential.user.isEmailVerified) {
-        await authRepository.sendEmailVerificationLink();
+        throw StateError(
+          'The email should be always verified when logging using social login.',
+        );
       }
+      emit(AuthSocialLoginSuccess(userCredential: userCredential));
     } on AuthException catch (e) {
       emit(AuthSocialLoginFailure(e));
     }

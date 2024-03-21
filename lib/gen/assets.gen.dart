@@ -89,9 +89,13 @@ class $AssetsLottieAuthGen {
   LottieGenImage get login2 =>
       const LottieGenImage('assets/lottie/auth/login_2.json');
 
+  /// File path: assets/lottie/auth/user_data.json
+  LottieGenImage get userData =>
+      const LottieGenImage('assets/lottie/auth/user_data.json');
+
   /// List of all assets
   List<LottieGenImage> get values =>
-      [auth, email, forgotPassword, login, login2];
+      [auth, email, forgotPassword, login, login2, userData];
 }
 
 class $AssetsLottieErrorsGen {

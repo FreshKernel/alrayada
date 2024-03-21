@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'account_data/account_data_screen.dart';
 import 'auth/auth_forgot_password.dart';
 import 'auth/auth_screen.dart';
+import 'auth/auth_social_login_sign_up.dart';
 import 'dashboard/dashboard_screen.dart';
 import 'notifications/notifications_screen.dart';
 import 'settings/settings_screen.dart';
@@ -41,6 +42,12 @@ class AppRouter {
         path: AuthForgotPasswordScreen.routeName,
         builder: (context, state) => AuthForgotPasswordScreen(
           initialEmailText: state.extra as String,
+        ),
+      ),
+      GoRoute(
+        path: AuthSocialLoginSignUpScreen.routeName,
+        builder: (context, state) => AuthSocialLoginSignUpScreen(
+          args: state.extra as AuthSocialLoginSignUpScreenArgs,
         ),
       ),
     ],

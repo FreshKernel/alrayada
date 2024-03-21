@@ -1,5 +1,7 @@
 import 'package:meta/meta.dart';
 
+import 'auth_social_login.dart';
+
 @immutable
 sealed class AuthException implements Exception {
   const AuthException({
@@ -81,18 +83,21 @@ class UserNotLoggedInAnyMoreAuthException extends AuthException {
   const UserNotLoggedInAnyMoreAuthException({required super.message});
 }
 
-class SocialAuthException extends AuthException {
-  const SocialAuthException({required super.message});
-}
-
-class InvalidSocialInfoAuthException extends SocialAuthException {
+class InvalidSocialInfoAuthException extends AuthException {
   const InvalidSocialInfoAuthException({required super.message});
 }
 
-class SocialEmailIsNotVerifiedAuthException extends SocialAuthException {
+class SocialEmailIsNotVerifiedAuthException extends AuthException {
   const SocialEmailIsNotVerifiedAuthException({required super.message});
 }
 
-class SocialMissingSignUpDataAuthException extends SocialAuthException {
-  const SocialMissingSignUpDataAuthException({required super.message});
+class SocialMissingSignUpDataAuthException extends AuthException {
+  const SocialMissingSignUpDataAuthException({
+    required super.message,
+    required this.socialLogin,
+  });
+
+  /// When handle this exception, will request the sign up data then use this
+  /// and send the request to the server once again.
+  final SocialLogin socialLogin;
 }

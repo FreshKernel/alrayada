@@ -299,6 +299,14 @@ fun Route.socialLogin() {
                 user.id.toString(),
                 deviceNotificationsToken
             )
+            if (!user.isEmailVerified) {
+                val isVerifyEmailSuccess = userDataSource.verifyEmail(user.email)
+                if (!isVerifyEmailSuccess) throw ErrorResponseException(
+                    HttpStatusCode.InternalServerError,
+                    "Unknown error while verify the user email in the database.",
+                    "UNKNOWN_ERROR"
+                )
+            }
         }
 
         val accessToken =
@@ -309,7 +317,7 @@ fun Route.socialLogin() {
             AuthenticatedUserResponse(
                 accessToken = accessToken,
                 refreshToken = "",
-                user = user.toResponse(),
+                user = user.toResponse().copy(isEmailVerified = true),
             )
         )
 

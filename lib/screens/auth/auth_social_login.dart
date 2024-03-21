@@ -2,12 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
+import '../../data/user/auth_exceptions.dart';
 import '../../gen/assets.gen.dart';
 import '../../l10n/app_localizations.dart';
 import '../../logic/auth/auth_cubit.dart';
 import '../../utils/extensions/scaffold_messenger_ext.dart';
+import 'auth_social_login_sign_up.dart';
 
 class AuthSocialLogin extends StatelessWidget {
   const AuthSocialLogin({super.key});
@@ -59,9 +63,47 @@ class AuthSocialLogin extends StatelessWidget {
         BlocConsumer<AuthCubit, AuthState>(
           listener: (context, state) {
             if (state is AuthSocialLoginFailure) {
-              ScaffoldMessenger.of(context).showSnackBarText(
-                context.loc.unknownErrorWithMsg(state.exception.message),
-              );
+              final authException = state.exception;
+              switch (authException) {
+                case InvalidSocialInfoAuthException():
+                  ScaffoldMessenger.of(context).showSnackBarText(
+                    authException.message,
+                  );
+                  break;
+                case SocialEmailIsNotVerifiedAuthException():
+                  ScaffoldMessenger.of(context).showSnackBarText(
+                    context.loc.emailIsStillNotVerified,
+                  );
+                  break;
+                case SocialMissingSignUpDataAuthException():
+                  SharedPreferences.getInstance().then(
+                    (value) {
+                      context.push(
+                        AuthSocialLoginSignUpScreen.routeName,
+                        extra: AuthSocialLoginSignUpScreenArgs(
+                          initialLabOwnerNameText: value.getString(
+                                  AuthCubit.socialLoginDisplayNamePrefKey) ??
+                              '',
+                          socialLogin: authException.socialLogin,
+                        ),
+                      );
+                    },
+                  );
+                  break;
+                case TooManyRequestsAuthException():
+                  ScaffoldMessenger.of(context).showSnackBarText(
+                    context.loc.tooManyRequestsPleaseTryAgainLater,
+                  );
+                  break;
+                default:
+                  ScaffoldMessenger.of(context).showSnackBarText(
+                    context.loc.unknownErrorWithMsg(state.exception.message),
+                  );
+                  break;
+              }
+            }
+            if (state is AuthSocialLoginSuccess) {
+              context.pop();
               return;
             }
           },

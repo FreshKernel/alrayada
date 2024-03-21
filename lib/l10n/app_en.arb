@@ -153,7 +153,7 @@
    },
    "authTooManyFailedAttempts":"Too many failed attempts, Please try again later.",
    "authIncorrectPassword":"Incorrect password.",
-   "authInvalidEmailOrPassword": "Invalid email or password.",
+   "authIncorrectEmailOrPassword": "Invalid email or password.",
    "authEmailNotFound":"Email not found. Please check your email address and try again.",
    "authEmailAlreadyInUse":"Email already in use. Please use a different email or try logging in.",
    "createNewAccount":"Create new account",
@@ -383,5 +383,7 @@
    "large": "Large",
    "small": "Small",
    "signInWithAppleIsNotSupportedOnYourDevice": "Sign in with Apple is not supported on your device.",
-   "tooManyRequestsPleaseTryAgainLater": "Too many requests, please try again later"
+   "tooManyRequestsPleaseTryAgainLater": "Too many requests, please try again later",
+   "yourEmailIsNotVerified": "Your email is not verified.",
+   "enterSignUpDataDesc": "Unlock the door to a world of possibilities! Kindly furnish us with your details to embark on your journey with us."
 }

@@ -9,7 +9,7 @@ import 'auth_verify_email.dart';
 class AuthScreen extends StatelessWidget {
   const AuthScreen({super.key});
 
-  static const routeName = '/authentication';
+  static const routeName = '/auth';
 
   Widget _getScreenByAuthState(AuthState authState,
       {required BuildContext context}) {

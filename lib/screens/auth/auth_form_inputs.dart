@@ -1,22 +1,20 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart' show TapGestureRecognizer;
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:go_router/go_router.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../data/user/auth_exceptions.dart';
 import '../../data/user/models/user.dart';
 import '../../l10n/app_localizations.dart';
 import '../../logic/auth/auth_cubit.dart';
 import '../../logic/settings/settings_cubit.dart';
-import '../../utils/constants/constants.dart';
 import '../../utils/extensions/scaffold_messenger_ext.dart';
 import '../../utils/text_input_handler.dart';
 import '../../widgets/auth/email_text_field.dart';
 import '../../widgets/auth/password_text_field.dart';
+import '../../widgets/auth/privacy_policy_field.dart';
 import '../../widgets/auth/user_info_text_inputs.dart';
 import 'auth_forgot_password.dart';
 import 'auth_form.dart';
@@ -49,6 +47,7 @@ class _AuthFormInputsState extends State<AuthFormInputs> {
   final _confirmPasswordInputHandler = TextInputHandler(
       TextEditingController(text: kDebugMode ? '?Rocej2dr!zL+wiDlni4' : null),
       FocusNode());
+
   final _labOwnerPhoneNumberInputHandler = TextInputHandler(
       TextEditingController(text: kDebugMode ? '07054726510' : null),
       FocusNode());
@@ -165,40 +164,15 @@ class _AuthFormInputsState extends State<AuthFormInputs> {
         labOwnerNameController: _labOwnerNameController,
         cityInputHandler: (
           initialCity: _labCity,
-          onSaved: (newValue) {
-            _labCity = newValue ?? IraqGovernorate.defaultCity;
-          },
+          onSaved: (newValue) =>
+              _labCity = newValue ?? IraqGovernorate.defaultCity,
         ),
       ),
       const SizedBox(height: 8),
-      Row(
-        children: [
-          Checkbox.adaptive(
-            value: _isPrivacyPolicyAgreed,
-            onChanged: (value) =>
-                setState(() => _isPrivacyPolicyAgreed = value ?? false),
-          ),
-          Text.rich(
-            TextSpan(
-              children: [
-                TextSpan(
-                  text: '${context.loc.iAgreeTo} ',
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-                TextSpan(
-                  text: context.loc.privacyPolicy,
-                  style: Theme.of(context).textTheme.bodyMedium?.apply(
-                        decoration: TextDecoration.underline,
-                        color: Colors.blue,
-                        decorationColor: Colors.blue,
-                      ),
-                  recognizer: TapGestureRecognizer()
-                    ..onTap = () => launchUrlString(Constants.privacyPolicy),
-                ),
-              ],
-            ),
-          ),
-        ],
+      PrivacyPolicyCheckboxField(
+        value: _isPrivacyPolicyAgreed,
+        onChanged: (value) =>
+            setState(() => _isPrivacyPolicyAgreed = value ?? false),
       ),
     ];
   }
@@ -302,11 +276,11 @@ class _AuthFormInputsState extends State<AuthFormInputs> {
               break;
             case InvalidCredentialsAuthException():
               ScaffoldMessenger.of(context).showSnackBarText(
-                context.loc.authInvalidEmailOrPassword,
+                context.loc.authIncorrectEmailOrPassword,
               );
               setState(() {
-                _passwordError = context.loc.authInvalidEmailOrPassword;
-                _emailError = context.loc.authInvalidEmailOrPassword;
+                _passwordError = context.loc.authIncorrectEmailOrPassword;
+                _emailError = context.loc.authIncorrectEmailOrPassword;
               });
               break;
             case WrongPasswordAuthException():

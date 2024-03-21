@@ -39,6 +39,7 @@
    "labOwnerName":"اسم مالك المختبر",
    "city":"المدينة",
    "selectedCity":"المدينة المختارة {city}",
+   "forgotPassword": "نسيت كلمة المرور",
    "forgotPasswordWithQuestionMark":"نسيت كلمة المرور؟",
    "resetPassword":"إعادة تعيين كلمة المرور",
    "forgotPasswordDesc": "لا داعي للقلق – يحدث للجميع! أدخل بريدك الإلكتروني لإعادة تعيين كلمة المرور والعودة إلى حسابك بسرعة. نحن هنا لمساعدتك في استعادة السيطرة على حسابك بسرعة!",
@@ -274,5 +275,7 @@
    "large": "كبير",
    "small": "صغير",
    "signInWithAppleIsNotSupportedOnYourDevice": "تسجيل الدخول مع التفاح غير مدعوم علي جهازك",
-   "tooManyRequestsPleaseTryAgainLater": "هنالك طلبات كثيرة، الرجاء المحاولة لاحقا"
+   "tooManyRequestsPleaseTryAgainLater": "هنالك طلبات كثيرة، الرجاء المحاولة لاحقا",
+   "yourEmailIsNotVerified": "بريدك الإلكتروني غير مؤكد.",
+   "enterSignUpDataDesc": "افتح الباب أمام عالم من الاحتمالات! يرجى تزويدنا بالتفاصيل الخاصة بك لبدء رحلتك معنا."
 }
