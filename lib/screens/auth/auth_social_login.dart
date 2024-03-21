@@ -56,7 +56,15 @@ class AuthSocialLogin extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 4),
-        BlocBuilder<AuthCubit, AuthState>(
+        BlocConsumer<AuthCubit, AuthState>(
+          listener: (context, state) {
+            if (state is AuthSocialLoginFailure) {
+              ScaffoldMessenger.of(context).showSnackBarText(
+                context.loc.unknownErrorWithMsg(state.exception.message),
+              );
+              return;
+            }
+          },
           builder: (context, state) {
             if (state is AuthSocialLoginInProgress) {
               return const CircularProgressIndicator.adaptive();
@@ -70,9 +78,7 @@ class AuthSocialLogin extends StatelessWidget {
                     height: 25,
                     width: 25,
                   ),
-                  onPressed: () => context
-                      .read<AuthCubit>()
-                      .authenticateWithGoogle(userInfo: null),
+                  onPressed: () => context.read<AuthCubit>().loginWithGoogle(),
                   backgroundColor: Colors.white,
                   fontColor: Colors.black,
                 ),
@@ -97,7 +103,7 @@ class AuthSocialLogin extends StatelessWidget {
                       );
                       return;
                     }
-                    authBloc.authenticateWithApple(userInfo: null);
+                    authBloc.loginWithApple();
                   },
                   backgroundColor: Colors.black,
                   fontColor: Colors.white,

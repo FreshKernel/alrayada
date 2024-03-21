@@ -112,6 +112,7 @@ class AuthRepositoryImpl extends AuthRepository {
     }
   }
 
+  /// Shared code between sign in, sign up, and social login
   Future<UserCredential> _handleAuthSuccessResponse(
       Map<String, Object?>? data) async {
     final userCredential = UserCredential.fromJson(
@@ -174,7 +175,7 @@ class AuthRepositoryImpl extends AuthRepository {
   Future<UserCredential?> fetchSavedUserCredential() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final savedUserJson = prefs.getString('user');
+      final savedUserJson = prefs.getString(userPrefKey);
       if (savedUserJson == null) return null;
       final accessToken = await _secureStorage.read(key: accessTokenPrefKey);
       final refreshToken = await _secureStorage.read(key: refreshTokenPrefKey);

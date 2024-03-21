@@ -274,9 +274,7 @@ class _AuthFormInputsState extends State<AuthFormInputs> {
               ScaffoldMessenger.of(context).showSnackBarText(
                 context.loc.authEmailNotFound,
               );
-              setState(() {
-                _emailError = context.loc.authEmailNotFound;
-              });
+              setState(() => _emailError = context.loc.authEmailNotFound);
               break;
             case EmailVerificationLinkAlreadySentAuthException():
               ScaffoldMessenger.of(context).showSnackBarText(

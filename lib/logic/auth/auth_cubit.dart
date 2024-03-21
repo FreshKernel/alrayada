@@ -53,7 +53,7 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  Future<void> authenticateWithGoogle({required UserInfo? userInfo}) async {
+  Future<void> loginWithGoogle() async {
     try {
       emit(const AuthSocialLoginInProgress());
       final googleSignIn = GoogleSignIn(
@@ -73,7 +73,7 @@ class AuthCubit extends Cubit<AuthState> {
       }
       final googleAuth = await googleUser.authentication;
 
-      final userCredential = await authRepository.authenticateWithSocialLogin(
+      authenticateWithSocialLogin(
         GoogleSocialLogin(
           // TODO: This needs to be updated, this exception has nothing to do with the error
           idToken: googleAuth.idToken ??
@@ -83,26 +83,24 @@ class AuthCubit extends Cubit<AuthState> {
               (throw const OperationNotAllowedAuthException(
                   message: 'The google access token should not be null')),
         ),
-        userInfo: userInfo,
+        userInfo: null,
       );
-      if (!userCredential.user.isEmailVerified) {
-        await authRepository.sendEmailVerificationLink();
-      }
-      emit(AuthSocialLoginSuccess(userCredential: userCredential));
     } on PlatformException catch (e) {
       emit(
         AuthSocialLoginFailure(
           UnknownAuthException(message: e.message.toString()),
         ),
       );
-    } on AuthException catch (e) {
+    } on Exception catch (e) {
       emit(
-        AuthSocialLoginFailure(e),
+        AuthSocialLoginFailure(
+          UnknownAuthException(message: e.toString()),
+        ),
       );
     }
   }
 
-  Future<void> authenticateWithApple({required UserInfo? userInfo}) async {
+  Future<void> loginWithApple() async {
     try {
       emit(const AuthSocialLoginInProgress());
       final credential = await SignInWithApple.getAppleIDCredential(
@@ -111,7 +109,7 @@ class AuthCubit extends Cubit<AuthState> {
           AppleIDAuthorizationScopes.fullName,
         ],
       );
-      final userCredential = await authRepository.authenticateWithSocialLogin(
+      authenticateWithSocialLogin(
         AppleSocialLogin(
           // TODO: This needs to be updated, handle exception in ui
           identityToken: credential.identityToken ??
@@ -121,19 +119,17 @@ class AuthCubit extends Cubit<AuthState> {
               (throw StateError(
                   'The apple user identifier should not be null')),
         ),
-        userInfo: userInfo,
+        userInfo: null,
       );
-      if (!userCredential.user.isEmailVerified) {
-        await authRepository.sendEmailVerificationLink();
-      }
-      emit(AuthSocialLoginSuccess(userCredential: userCredential));
     } on SignInWithAppleException catch (e) {
+      // TODO: emit the [AuthSocialLoginAborted]
       if (e is SignInWithAppleAuthorizationException) {
         // TODO: Test and remove this later
         AppLogger.info('Sign in with apple result is ${e.code}');
         switch (e.code) {
           case AuthorizationErrorCode.canceled:
-            return;
+            emit(const AuthSocialLoginAborted());
+            break;
           case AuthorizationErrorCode.failed:
             rethrow;
           case AuthorizationErrorCode.invalidResponse:
@@ -149,7 +145,35 @@ class AuthCubit extends Cubit<AuthState> {
       AppLogger.error(
         'Error in sign in with apple: ${e.toString()} ${e.runtimeType}',
       );
-      rethrow;
+    } on PlatformException catch (e) {
+      emit(
+        AuthSocialLoginFailure(
+          UnknownAuthException(message: e.message.toString()),
+        ),
+      );
+    } on Exception catch (e) {
+      emit(
+        AuthSocialLoginFailure(
+          UnknownAuthException(message: e.toString()),
+        ),
+      );
+    }
+  }
+
+  Future<void> authenticateWithSocialLogin(
+    SocialLogin socialLogin, {
+    required UserInfo? userInfo,
+  }) async {
+    try {
+      final userCredential = await authRepository.authenticateWithSocialLogin(
+        socialLogin,
+        userInfo: userInfo,
+      );
+      if (!userCredential.user.isEmailVerified) {
+        await authRepository.sendEmailVerificationLink();
+      }
+    } on AuthException catch (e) {
+      emit(AuthSocialLoginFailure(e));
     }
   }
 
@@ -162,7 +186,11 @@ class AuthCubit extends Cubit<AuthState> {
       }
       emit(AuthLoggedIn(userCredential: userCredential));
     } on AuthException catch (e) {
-      print(e);
+      // TODO: Handle this error
+      AppLogger.error(
+        'Unknown error while fetching the saved user: ${e.message}',
+        error: e,
+      );
       emit(const AuthLoggedOut());
     }
   }
@@ -183,7 +211,6 @@ class AuthCubit extends Cubit<AuthState> {
         await logout();
         return;
       }
-      // TODO: Needs to be tested in the verify email screen
       emit(AuthFetchUserSuccess(
         userCredential: savedUserCredential.copyWith(user: user),
       ));

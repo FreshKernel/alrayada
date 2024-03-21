@@ -57,6 +57,9 @@ final class AuthForgotPasswordFailure extends AuthState {
   const AuthForgotPasswordFailure(this.exception) : super(userCredential: null);
 
   final AuthException exception;
+
+  @override
+  List<Object?> get props => [userCredential, exception];
 }
 
 // For usage in different screens (account page, verify email screen etc..)
@@ -73,6 +76,9 @@ final class AuthFetchUserFailure extends AuthState {
   const AuthFetchUserFailure(this.exception, {required super.userCredential});
 
   final AuthException exception;
+
+  @override
+  List<Object?> get props => [userCredential, exception];
 }
 
 // For verify email screen
@@ -90,6 +96,9 @@ final class AuthResendEmailVerificationFailure extends AuthState {
       {required super.userCredential});
 
   final AuthException exception;
+
+  @override
+  List<Object?> get props => [userCredential, exception];
 }
 
 // For the social login
@@ -110,4 +119,7 @@ final class AuthSocialLoginFailure extends AuthState {
   const AuthSocialLoginFailure(this.exception) : super(userCredential: null);
 
   final AuthException exception;
+
+  @override
+  List<Object?> get props => [userCredential, exception];
 }

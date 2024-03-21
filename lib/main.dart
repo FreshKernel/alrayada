@@ -119,7 +119,8 @@ class MyApp extends StatelessWidget {
               ),
             ),
             themeMode: state.themeMode.toMaterialThemeMode(
-                darkDuringDayInAutoMode: state.darkDuringDayInAutoMode),
+              darkDuringDayInAutoMode: state.darkDuringDayInAutoMode,
+            ),
             locale: state.appLanguague == AppLanguague.system
                 ? null
                 : Locale(state.appLanguague.name),

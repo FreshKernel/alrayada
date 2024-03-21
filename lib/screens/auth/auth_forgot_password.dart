@@ -27,6 +27,8 @@ class _AuthForgotPasswordScreenState extends State<AuthForgotPasswordScreen> {
   final _emailController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
+  String? _emailError;
+
   Future<void> _onSubmit() async {
     final isValid = _formKey.currentState?.validate() ?? false;
     if (!isValid) {
@@ -60,6 +62,7 @@ class _AuthForgotPasswordScreenState extends State<AuthForgotPasswordScreen> {
               ScaffoldMessenger.of(context).showSnackBarText(
                 context.loc.authEmailNotFound,
               );
+              setState(() => _emailError = context.loc.authEmailNotFound);
               break;
             case ResetPasswordLinkAlreadySentAuthException():
               ScaffoldMessenger.of(context).showSnackBarText(
@@ -110,7 +113,7 @@ class _AuthForgotPasswordScreenState extends State<AuthForgotPasswordScreen> {
                   const SizedBox(height: 8),
                   EmailTextField(
                     controller: _emailController,
-                    customError: null,
+                    customError: _emailError,
                     textInputAction: TextInputAction.done,
                   ),
                   const SizedBox(height: 20),

@@ -9,7 +9,9 @@ sealed class SocialLogin {
   final String providerId;
 
   Map<String, Object?> toJson() {
-    throw UnimplementedError('You are using the SocialLogin');
+    throw UnimplementedError(
+      'You are using the SocialLogin instance, please implement the toJson in the child calss',
+    );
   }
 }
 
