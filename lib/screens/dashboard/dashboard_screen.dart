@@ -2,19 +2,21 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../l10n/app_localizations.dart';
 
 import '../../logic/settings/settings_cubit.dart';
 import '../../logic/settings/settings_data.dart';
 import '../onboarding/onboarding_screen.dart';
+import '../support/support_screen.dart';
 import 'dashboard_drawer.dart';
-import 'navigation_item.dart';
-import 'pages/account_page.dart';
-import 'pages/cart_page.dart';
-import 'pages/categories_page.dart';
-import 'pages/home/home_page.dart';
-import 'pages/orders/orders_page.dart';
+import 'tab_item.dart';
+import 'tabs/account_tab.dart';
+import 'tabs/cart_tab.dart';
+import 'tabs/categories_tab.dart';
+import 'tabs/home/home_tab.dart';
+import 'tabs/orders/orders_tab.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -24,10 +26,11 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  List<NavigationItem> get _items => [
-        NavigationItem(
+  List<TabItem> get _tabs => [
+        TabItem(
+          id: HomeTab.id,
           label: context.loc.home,
-          body: const HomePage(
+          body: const HomeTab(
             key: PageStorageKey('Home'),
           ),
           title: context.loc.home,
@@ -37,10 +40,35 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 : Icons.dashboard_outlined,
             semanticLabel: context.loc.home,
           ),
+          actionsBuilder: (context) => [
+            PlatformIconButton(
+              material: (context, platform) => MaterialIconButtonData(
+                tooltip: context.loc.support,
+              ),
+              onPressed: () => context.push(SupportScreen.routeName),
+              icon: Icon(
+                isCupertino(context)
+                    ? CupertinoIcons.chat_bubble_fill
+                    : Icons.chat,
+              ),
+            ),
+            PlatformIconButton(
+              material: (context, platform) => MaterialIconButtonData(
+                tooltip: context.loc.orders,
+              ),
+              onPressed: () => _navigateToTabById(CartTab.id),
+              icon: Icon(
+                isCupertino(context)
+                    ? CupertinoIcons.square_stack_3d_down_right
+                    : Icons.shopping_cart,
+              ),
+            ),
+          ],
         ),
-        NavigationItem(
+        TabItem(
+          id: CategoriesTab.id,
           label: context.loc.categories,
-          body: const CategoriesPage(
+          body: const CategoriesTab(
             key: PageStorageKey('Categories'),
           ),
           title: context.loc.categories,
@@ -51,9 +79,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
             semanticLabel: context.loc.categories,
           ),
         ),
-        NavigationItem(
+        TabItem(
+          id: CartTab.id,
           label: context.loc.shoppingCart,
-          body: const CartPage(
+          body: const CartTab(
             key: PageStorageKey('Cart'),
           ),
           title: context.loc.shoppingCart,
@@ -64,9 +93,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
             semanticLabel: context.loc.shoppingCart,
           ),
         ),
-        NavigationItem(
+        TabItem(
+          id: OrdersTab.id,
           label: context.loc.orders,
-          body: const OrdersPage(
+          body: const OrdersTab(
             key: PageStorageKey('Orders'),
           ),
           title: context.loc.orders,
@@ -77,10 +107,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
             semanticLabel: context.loc.orders,
           ),
         ),
-        NavigationItem(
+        TabItem(
+          id: AccountTab.id,
           label: context.loc.account,
-          body: const AccountPage(
-            key: PageStorageKey('Account'),
+          body: AccountTab(
+            navigateToTab: _navigateToTabById,
+            key: const PageStorageKey('Account'),
           ),
           title: context.loc.account,
           icon: Icon(
@@ -92,18 +124,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
       ];
 
-  void _navigateToNewItem(int newIndex) {
-    setState(() {
-      _currentIndex = newIndex;
-    });
+  void _navigateToTabById(String newTabId) {
+    final newIndex = _tabs.indexWhere((tab) => tab.id == newTabId);
+    _navigateToTab(newIndex);
   }
+
+  void _navigateToTab(int newIndex) => setState(() => _currentIndex = newIndex);
 
   var _currentIndex = 0;
   final _pageStorageBucket = PageStorageBucket();
 
   bool _isNavRailBar(Size size, AppLayoutMode layoutMode) {
     switch (layoutMode) {
-      //  Might want needs to be updated
       case AppLayoutMode.auto:
         return size.width >= 480;
       case AppLayoutMode.small:
@@ -141,16 +173,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
               : Scaffold(
                   drawer: const DashboardDrawer(),
                   appBar: AppBar(
-                    title: Text(_items[_currentIndex].label),
-                    actions:
-                        _items[_currentIndex].actionsBuilder?.call(context),
+                    title: Text(_tabs[_currentIndex].label),
+                    actions: _tabs[_currentIndex].actionsBuilder?.call(context),
                   ),
                   body: SafeArea(
                     child: Builder(
                       builder: (context) {
                         final bodyWidget = PageStorage(
                           bucket: _pageStorageBucket,
-                          child: _items[_currentIndex].body,
+                          child: _tabs[_currentIndex].body,
                         );
                         if (!_isNavRailBar(
                             MediaQuery.sizeOf(context), state.layoutMode)) {
@@ -159,9 +190,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         return Row(
                           children: [
                             NavigationRail(
-                              onDestinationSelected: _navigateToNewItem,
+                              onDestinationSelected: _navigateToTab,
                               labelType: NavigationRailLabelType.all,
-                              destinations: _items.map((e) {
+                              destinations: _tabs.map((e) {
                                 return e.toNavigationRailDestination();
                               }).toList(),
                               selectedIndex: _currentIndex,
@@ -182,15 +213,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       }
                       return NavigationBar(
                         selectedIndex: _currentIndex,
-                        onDestinationSelected: _navigateToNewItem,
-                        destinations: _items.map((e) {
+                        onDestinationSelected: _navigateToTab,
+                        destinations: _tabs.map((e) {
                           return e.toNavigationDestination();
                         }).toList(),
                       );
                     },
                   ),
                   floatingActionButton:
-                      _items[_currentIndex].actionButtonBuilder?.call(context),
+                      _tabs[_currentIndex].actionButtonBuilder?.call(context),
                 ),
         );
       },

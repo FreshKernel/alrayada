@@ -10,8 +10,9 @@ import 'package:flutter/widgets.dart'
         immutable;
 
 @immutable
-class NavigationItem {
-  const NavigationItem({
+class TabItem {
+  const TabItem({
+    required this.id,
     required this.label,
     required this.body,
     required this.title,
@@ -20,13 +21,14 @@ class NavigationItem {
     this.actionsBuilder,
     this.actionButtonBuilder,
   });
+  final String id;
   final String title;
   final String label;
   final Widget body;
   final Widget icon;
   final String? tooltip;
-  final NavigationItemActionsBuilder? actionsBuilder;
-  final NavigationItemActionButtonBuilder? actionButtonBuilder;
+  final TabItemActionsBuilder? actionsBuilder;
+  final TabItemActionButtonBuilder? actionButtonBuilder;
 
   BottomNavigationBarItem toBottomNavigationBarItem() =>
       BottomNavigationBarItem(
@@ -49,8 +51,12 @@ class NavigationItem {
       );
 }
 
-typedef NavigationItemActionsBuilder = List<Widget> Function(
-    BuildContext context);
+typedef TabItemActionsBuilder = List<Widget> Function(
+  BuildContext context,
+);
 
-typedef NavigationItemActionButtonBuilder = Widget Function(
-    BuildContext context);
+typedef TabItemActionButtonBuilder = Widget Function(
+  BuildContext context,
+);
+
+typedef TabItemOnNavigateToTabCallback = Function(String newTabId);

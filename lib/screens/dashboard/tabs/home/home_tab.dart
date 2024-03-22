@@ -3,14 +3,16 @@ import 'package:flutter/material.dart';
 import '../../../../widgets/image_slider_with_page_indicator.dart';
 import 'chart_list.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class HomeTab extends StatefulWidget {
+  const HomeTab({super.key});
+
+  static const id = 'homeTab';
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<HomeTab> createState() => _HomeTabState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomeTabState extends State<HomeTab> {
   final List<String> imageList = [
     'https://images.unsplash.com/photo-1522205408450-add114ad53fe?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=368f45b0888aeb0b7b08e3a1084d3ede&auto=format&fit=crop&w=1950&q=80',
     'https://images.unsplash.com/photo-1519125323398-675f0ddb6308?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=94a1e718d89ca60a6337a6008341ca50&auto=format&fit=crop&w=1950&q=80',

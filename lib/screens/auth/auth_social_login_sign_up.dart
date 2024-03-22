@@ -55,6 +55,12 @@ class _AuthSocialLoginSignUpScreenState
   var _isPrivacyPolicyAgreed = kDebugMode ? true : false;
 
   @override
+  void initState() {
+    super.initState();
+    _labOwnerNameController.text = widget.args.initialLabOwnerNameText;
+  }
+
+  @override
   void dispose() {
     _labOwnerPhoneNumberInputHandler.dispose();
     _labPhoneNumberController.dispose();

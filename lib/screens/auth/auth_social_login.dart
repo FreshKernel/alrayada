@@ -110,7 +110,7 @@ class AuthSocialLogin extends StatelessWidget {
                 );
               }
               // The Auth screen will handle switching to the Verify Email screen
-              // We want to pop only when the email is not verified
+              // We want to pop only when the email is verified
               if (userCredential.user.isEmailVerified) {
                 context.pop();
               }

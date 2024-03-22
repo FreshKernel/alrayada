@@ -3,8 +3,10 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 import '../../../l10n/app_localizations.dart';
 
-class CartPage extends StatelessWidget {
-  const CartPage({super.key});
+class CartTab extends StatelessWidget {
+  const CartTab({super.key});
+
+  static const id = 'cartTab';
 
   @override
   Widget build(BuildContext context) {

@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 
-class CategoriesPage extends StatelessWidget {
-  const CategoriesPage({super.key});
+class CategoriesTab extends StatelessWidget {
+  const CategoriesTab({super.key});
+
+  static const id = 'categoriesTab';
 
   @override
   Widget build(BuildContext context) {

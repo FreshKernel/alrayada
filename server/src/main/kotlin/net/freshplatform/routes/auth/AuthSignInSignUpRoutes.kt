@@ -292,7 +292,8 @@ fun Route.socialLogin() {
                 user.id.toString(),
                 deviceNotificationsToken
             )
-            // When the user is not verified in the database but verified in social login then we will verify him/her
+            // When the email is not verified in the database but verified
+            // in social login then we will verify in the database too
             if (!user.isEmailVerified && socialUserData.isEmailVerified) {
                 val isVerifyEmailSuccess = userDataSource.verifyEmail(user.email)
                 if (!isVerifyEmailSuccess) throw ErrorResponseException(
