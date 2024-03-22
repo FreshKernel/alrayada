@@ -78,10 +78,18 @@ class _AccountTabState extends State<AccountTab> {
       label: title,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4),
-        child: Card(
-          shape: shape,
-          child: listTile,
-        ),
+        child: isCupertino(context)
+            ? Container(
+                margin: const EdgeInsets.all(6),
+                child: listTile,
+              )
+            : Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: Card(
+                  shape: shape,
+                  child: listTile,
+                ),
+              ),
       ),
     );
   }
