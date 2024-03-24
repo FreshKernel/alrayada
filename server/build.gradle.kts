@@ -38,7 +38,7 @@ dependencies {
     implementation("io.ktor:ktor-server-auth-jvm")
     implementation("io.ktor:ktor-server-auth-jwt-jvm")
     testImplementation("io.ktor:ktor-server-tests-jvm")
-    implementation("ch.qos.logback:logback-classic:${libs.versions.logback.get()}")
+    implementation(libs.logback.classic)
 
     // Ktor Client
     implementation("io.ktor:ktor-client-core")
@@ -48,21 +48,22 @@ dependencies {
     implementation("io.ktor:ktor-serialization-kotlinx-json")
 
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:${libs.versions.kotlin.get()}")
-    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
+    implementation(libs.kotlinx.datetime)
 
-    implementation("at.favre.lib:bcrypt:0.10.2")
+    implementation(libs.bcrypt)
 
-    implementation("org.mongodb:mongodb-driver-kotlin-coroutine:4.11.0")
-    implementation("org.mongodb:bson-kotlinx:4.11.0")
+    implementation(libs.mongodb.driver.kotlin.coroutine)
+    implementation(libs.mongodb.bson.kotlinx)
 
     // Koin
-    implementation("io.insert-koin:koin-core:${libs.versions.koin.get()}")
-    implementation("io.insert-koin:koin-ktor:${libs.versions.koinKtor.get()}")
-    implementation("io.insert-koin:koin-logger-slf4j:${libs.versions.koinKtor.get()}")
+    implementation(libs.koin.core)
+    implementation(libs.koin.ktor)
+    implementation(libs.koin.logger.slf4j)
 
-    implementation("io.github.cdimascio:dotenv-kotlin:6.4.1")
+    implementation(libs.dotenv.kotlin)
 
-    implementation("com.google.api-client:google-api-client:1.32.1") // for Google sign in
+    implementation("com.google.auth:google-auth-library-oauth2-http:1.23") // For Firebase access token
+    implementation("com.google.api-client:google-api-client:2.4.0") // For Google sign in
 
     implementation("com.sun.mail:jakarta.mail:2.0.1")
     implementation ("com.auth0:jwks-rsa:0.22.1")
@@ -70,6 +71,7 @@ dependencies {
     implementation("io.github.smiley4:ktor-swagger-ui:2.7.4")
 }
 
+// For Heroku deployment
 tasks {
     create("stage").dependsOn("installDist")
 }

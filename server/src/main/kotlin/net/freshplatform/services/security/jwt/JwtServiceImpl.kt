@@ -5,7 +5,7 @@ import com.auth0.jwt.JWTVerifier
 import com.auth0.jwt.algorithms.Algorithm
 import kotlinx.datetime.Clock
 import kotlinx.datetime.toJavaInstant
-import net.freshplatform.utils.Constants
+import net.freshplatform.Constants
 import net.freshplatform.utils.getEnvironmentVariables
 import kotlin.time.Duration
 

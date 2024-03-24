@@ -1,4 +1,4 @@
-package net.freshplatform.utils
+package net.freshplatform
 
 object Constants {
     const val DATABASE_NAME = "alrayada"

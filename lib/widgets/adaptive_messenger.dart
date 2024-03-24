@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:go_router/go_router.dart';
 
 import '../l10n/app_localizations.dart';
 
@@ -13,7 +14,6 @@ class AdaptiveMessenger {
     String? title,
     bool useSnackBarInMaterial = true,
   }) async {
-    final translations = context.loc;
     if (isMaterial(context)) {
       if (useSnackBarInMaterial) {
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -45,10 +45,10 @@ class AdaptiveMessenger {
             ),
             actions: [
               Semantics(
-                label: translations.ok,
+                label: context.loc.ok,
                 child: TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: Text(translations.ok),
+                  onPressed: () => context.pop(),
+                  child: Text(context.loc.ok),
                 ),
               )
             ],
@@ -72,10 +72,10 @@ class AdaptiveMessenger {
             child: Text(message),
           ),
           cancelButton: Semantics(
-            label: translations.ok,
+            label: context.loc.ok,
             child: CupertinoActionSheetAction(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text(translations.ok),
+              onPressed: () => context.pop(),
+              child: Text(context.loc.ok),
             ),
           ),
         );

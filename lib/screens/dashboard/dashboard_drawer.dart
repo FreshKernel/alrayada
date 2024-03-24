@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../logic/auth/auth_cubit.dart';
+import '../../utils/extensions/scaffold_messenger_ext.dart';
 import '../account_data/account_data_screen.dart';
 import '../notifications/notifications_screen.dart';
 import '../settings/settings_screen.dart';
@@ -17,7 +18,7 @@ class DashboardDrawer extends StatelessWidget {
     required IconData leadingIcon,
     required String title,
     required VoidCallback onTap,
-    bool authenticationRequired = false,
+    bool isAuthRequired = false,
   }) =>
       Semantics(
         label: '$title ${context.loc.item}',
@@ -29,15 +30,12 @@ class DashboardDrawer extends StatelessWidget {
           title: Text(title),
           onTap: () {
             context.pop();
-            if (authenticationRequired) {
-              final userAuthenticatedResponse =
+            if (isAuthRequired) {
+              final userCredential =
                   context.read<AuthCubit>().state.userCredential;
-              if (userAuthenticatedResponse == null) {
-                ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(context.loc.youNeedToLoginFirst),
-                  ),
+              if (userCredential == null) {
+                ScaffoldMessenger.of(context).showSnackBarText(
+                  context.loc.youNeedToLoginFirst,
                 );
                 return;
               }
@@ -76,28 +74,28 @@ class DashboardDrawer extends StatelessWidget {
             leadingIcon: Icons.message,
             title: context.loc.support,
             onTap: () => context.push(SupportScreen.routeName),
-            authenticationRequired: true,
+            isAuthRequired: true,
           ),
           _buildItem(
             context: context,
             leadingIcon: Icons.account_circle,
             title: context.loc.account,
             onTap: () => context.push(AccountDataScreen.routeName),
-            authenticationRequired: true,
+            isAuthRequired: true,
           ),
           _buildItem(
             context: context,
             leadingIcon: Icons.notifications,
             title: context.loc.notifications,
             onTap: () => context.push(NotificationsScreen.routeName),
-            authenticationRequired: false,
+            isAuthRequired: false,
           ),
           _buildItem(
             context: context,
             leadingIcon: Icons.settings,
             title: context.loc.settings,
             onTap: () => context.push(SettingsScreen.routeName),
-            authenticationRequired: false,
+            isAuthRequired: false,
           ),
         ],
       ),

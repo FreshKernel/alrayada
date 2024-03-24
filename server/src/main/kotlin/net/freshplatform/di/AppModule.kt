@@ -8,6 +8,8 @@ import net.freshplatform.services.email_sender.DevEmailSenderService
 import net.freshplatform.services.email_sender.EmailSenderService
 import net.freshplatform.services.email_sender.JavaEmailSenderService
 import net.freshplatform.services.ktor_client.HttpService
+import net.freshplatform.services.notifications.KtorFcmNotificationsService
+import net.freshplatform.services.notifications.NotificationsService
 import net.freshplatform.services.security.hashing.BcryptHashingService
 import net.freshplatform.services.security.hashing.JavaBcryptBcryptHashingService
 import net.freshplatform.services.security.jwt.JwtService
@@ -52,6 +54,9 @@ val servicesModule = module {
     }
     single<SocialLoginService> {
         SocialLoginServiceImpl()
+    }
+    single<NotificationsService> {
+        KtorFcmNotificationsService(HttpService.client)
     }
 }
 

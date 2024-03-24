@@ -1,10 +1,17 @@
 package net.freshplatform.data.user
 
 import com.mongodb.client.model.Filters
+import com.mongodb.client.model.Projections
+import com.mongodb.client.model.Sorts
 import com.mongodb.client.model.Updates
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.singleOrNull
+import kotlinx.coroutines.flow.toList
+import kotlinx.datetime.Clock
 import net.freshplatform.services.security.token_verification.TokenVerification
+import org.bson.BsonDateTime
+import org.bson.Document
 import org.bson.conversions.Bson
 import org.bson.types.ObjectId
 
@@ -33,6 +40,18 @@ class MongoUserDataSource(
         }
     }
 
+    override suspend fun isEmailUsed(email: String): Result<Boolean> {
+        return try {
+            Result.success(
+                users.countDocuments(Filters.eq(User::email.name, email))
+                        > 0
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Result.failure(e)
+        }
+    }
+
     override suspend fun findUserById(userId: String): Result<User?> {
         return try {
             Result.success(
@@ -53,7 +72,8 @@ class MongoUserDataSource(
                 Filters.eq(User::email.name, email),
                 Updates.combine(
                     Updates.set(User::isEmailVerified.name, true),
-                    Updates.set(User::emailVerification.name, null)
+                    Updates.set(User::emailVerification.name, null),
+                    generateUpdatedAtUpdate()
                 )
             ).wasAcknowledged()
         } catch (e: Exception) {
@@ -69,7 +89,10 @@ class MongoUserDataSource(
         return try {
             users.updateOne(
                 userIdFilter(userId),
-                Updates.set(User::emailVerification.name, emailVerification)
+                Updates.combine(
+                    Updates.set(User::emailVerification.name, emailVerification),
+                    generateUpdatedAtUpdate()
+                )
             ).wasAcknowledged()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -84,7 +107,10 @@ class MongoUserDataSource(
         return try {
             users.updateOne(
                 userIdFilter(userId),
-                Updates.set(User::resetPasswordVerification.name, resetPasswordVerification)
+                Updates.combine(
+                    Updates.set(User::resetPasswordVerification.name, resetPasswordVerification),
+                    generateUpdatedAtUpdate()
+                )
             ).wasAcknowledged()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -98,7 +124,8 @@ class MongoUserDataSource(
                 userIdFilter(userId),
                 Updates.combine(
                     Updates.set(User::password.name, newPassword),
-                    Updates.set(User::resetPasswordVerification.name, null)
+                    Updates.set(User::resetPasswordVerification.name, null),
+                    generateUpdatedAtUpdate()
                 )
             ).wasAcknowledged()
         } catch (e: Exception) {
@@ -111,11 +138,58 @@ class MongoUserDataSource(
         return try {
             users.updateOne(
                 userIdFilter(userId),
-                Updates.set(User::info.name, userInfo)
+                Updates.combine(
+                    Updates.set(User::info.name, userInfo),
+                    generateUpdatedAtUpdate()
+                )
             ).wasAcknowledged()
         } catch (e: Exception) {
             e.printStackTrace()
             false
+        }
+    }
+
+    override suspend fun setAccountActivatedById(userId: String, isAccountActivated: Boolean): Boolean {
+        return try {
+            users.updateOne(
+                userIdFilter(userId),
+                Updates.combine(
+                    Updates.set(User::isAccountActivated.name, isAccountActivated),
+                    generateUpdatedAtUpdate()
+                )
+            ).wasAcknowledged()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+
+    override suspend fun isAccountActivatedById(userId: String): Result<Boolean?> {
+        return try {
+            val projection = Projections.include(User::isAccountActivated.name)
+            val result = users.find<Document>(userIdFilter(userId)).projection(projection).firstOrNull()
+                ?.getBoolean(User::isAccountActivated.name)
+            Result.success(result)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun getAllUsers(page: Int, limit: Int, searchQuery: String): Result<List<User>> {
+        return try {
+            val skip = (page - 1) * limit
+            val pattern = ".*$searchQuery.*".toRegex(RegexOption.IGNORE_CASE).toPattern()
+            val filter = Filters.regex("${User::info.name}.${UserInfo::labName.name}", pattern)
+            val users = (if (searchQuery.isBlank()) users.find() else users.find(filter))
+                .sort(Sorts.descending(User::updatedAt.name))
+                .skip(skip)
+                .limit(limit)
+                .toList()
+            Result.success(users)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Result.failure(e)
         }
     }
 
@@ -126,9 +200,9 @@ class MongoUserDataSource(
         return try {
             users.updateOne(
                 userIdFilter(userId),
-                Updates.set(
-                    User::deviceNotificationsToken.name,
-                    deviceNotificationsToken
+                Updates.combine(
+                    Updates.set(User::deviceNotificationsToken.name, deviceNotificationsToken),
+                    generateUpdatedAtUpdate()
                 )
             ).wasAcknowledged()
         } catch (e: Exception) {
@@ -152,9 +226,9 @@ class MongoUserDataSource(
         return try {
             users.updateOne(
                 userIdFilter(userId),
-                Updates.set(
-                    User::password.name,
-                    newPassword
+                Updates.combine(
+                    Updates.set(User::password.name, newPassword),
+                    generateUpdatedAtUpdate()
                 )
             ).wasAcknowledged()
         } catch (e: Exception) {
@@ -165,5 +239,9 @@ class MongoUserDataSource(
 
     private fun userIdFilter(userId: String): Bson {
         return Filters.eq("_id", ObjectId(userId))
+    }
+
+    private fun generateUpdatedAtUpdate(): Bson {
+        return Updates.set(User::updatedAt.name, BsonDateTime(Clock.System.now().toEpochMilliseconds()))
     }
 }

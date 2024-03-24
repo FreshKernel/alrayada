@@ -5,7 +5,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.gson.GsonFactory
-import net.freshplatform.utils.Constants
+import net.freshplatform.Constants
 import net.freshplatform.utils.getEnvironmentVariables
 import java.util.*
 
@@ -20,9 +20,7 @@ class SocialLoginServiceImpl : SocialLoginService {
             return when (socialLogin) {
                 is SocialLogin.Google -> {
                     val idToken: GoogleIdToken =
-                        googleIdTokenVerifier.verify(socialLogin.idToken) ?: return Result.failure(
-                            IllegalArgumentException("Invalid ID token.")
-                        )
+                        googleIdTokenVerifier.verify(socialLogin.idToken) ?: return Result.success(null)
                     val payload = idToken.payload
 
                     val pictureUrl: String = payload.getOrDefault("picture", "") as String

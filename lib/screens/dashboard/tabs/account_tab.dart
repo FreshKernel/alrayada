@@ -47,15 +47,15 @@ class _AccountTabState extends State<AccountTab> {
     required String subTitle,
     required IconData iconData,
     required VoidCallback? onTap,
-    bool shouldAuthenticated = false,
+    bool isAuthRequired = false,
   }) {
     final shape = RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(8),
     );
     final listTile = BlocBuilder<AuthCubit, AuthState>(
       builder: (context, state) {
-        return PlatformListTile(
-          onTap: shouldAuthenticated
+        return ListTile(
+          onTap: isAuthRequired
               ? (state.userCredential != null
                   ? onTap
                   : () => ScaffoldMessenger.of(context)
@@ -68,9 +68,7 @@ class _AccountTabState extends State<AccountTab> {
             semanticLabel: title,
           ),
           subtitle: Text(subTitle),
-          material: (context, platform) => MaterialListTileData(
-            shape: shape,
-          ),
+          shape: shape,
         );
       },
     );
@@ -78,18 +76,10 @@ class _AccountTabState extends State<AccountTab> {
       label: title,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4),
-        child: isCupertino(context)
-            ? Container(
-                margin: const EdgeInsets.all(6),
-                child: listTile,
-              )
-            : Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4),
-                child: Card(
-                  shape: shape,
-                  child: listTile,
-                ),
-              ),
+        child: Card(
+          shape: shape,
+          child: listTile,
+        ),
       ),
     );
   }
@@ -191,14 +181,14 @@ class _AccountTabState extends State<AccountTab> {
                     subTitle: context.loc.updateAllOfYourData,
                     iconData: PlatformIcons(context).accountCircleSolid,
                     onTap: () => context.push(AccountDataScreen.routeName),
-                    shouldAuthenticated: true,
+                    isAuthRequired: true,
                   ),
                   _buildAccountTile(
                     title: context.loc.orders,
                     subTitle: context.loc.viewAllOfYourOrders,
                     iconData: PlatformIcons(context).shoppingCart,
                     onTap: () => widget.navigateToTab(OrdersTab.id),
-                    shouldAuthenticated: true,
+                    isAuthRequired: true,
                   ),
                   _buildAccountTile(
                     title: context.loc.favorites,

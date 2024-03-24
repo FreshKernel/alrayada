@@ -1,12 +1,25 @@
 [versions]
-kotlin = "1.9.22"
+kotlin = "1.9.23"
 ktor = "2.3.9"
 koin = "3.5.3"
-koinKtor = "3.5.3"
-logback = "1.4.11"
+koin-ktor = "3.5.3"
+logback = "1.5.3"
+kotlinx-datetime = "0.5.0"
+dotenv-kotlin = "6.4.1"
+mongodb = "4.11.0"
+bcrypt = "0.10.2"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+koin-ktor = { module = "io.insert-koin:koin-ktor", version.ref = "koin-ktor" }
+koin-logger-slf4j = { module = "io.insert-koin:koin-logger-slf4j", version.ref = "koin" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
+dotenv-kotlin = { module = "io.github.cdimascio:dotenv-kotlin", version.ref = "dotenv-kotlin" }
+mongodb-driver-kotlin-coroutine = { module = "org.mongodb:mongodb-driver-kotlin-coroutine", version.ref = "mongodb" }
+mongodb-bson-kotlinx = { module = "org.mongodb:bson-kotlinx", version.ref = "mongodb" }
+bcrypt = { module = "at.favre.lib:bcrypt", version.ref = "bcrypt" }
+logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 
 [plugins]
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }

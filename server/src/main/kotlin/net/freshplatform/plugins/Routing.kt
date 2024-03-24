@@ -2,22 +2,22 @@ package net.freshplatform.plugins
 
 import io.github.smiley4.ktorswaggerui.SwaggerUI
 import io.ktor.http.*
-import io.ktor.resources.*
 import io.ktor.serialization.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.*
 import io.ktor.server.plugins.ratelimit.*
 import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.resources.*
-import io.ktor.server.resources.Resources
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
 import net.freshplatform.routes.auth.*
+import net.freshplatform.routes.auth.admin.deleteUserAccount
+import net.freshplatform.routes.auth.admin.getAllUsers
+import net.freshplatform.routes.auth.admin.sendNotificationToUser
+import net.freshplatform.routes.auth.admin.setAccountActivated
 import net.freshplatform.utils.ErrorResponse
 import net.freshplatform.utils.ErrorResponseException
-import net.freshplatform.utils.extensions.AuthorizationRequiredException
 import net.freshplatform.utils.getEnvironmentVariables
 
 fun Application.configureRouting() {
@@ -26,9 +26,12 @@ fun Application.configureRouting() {
         exception<Throwable> { call, cause ->
             cause.printStackTrace()
             if (getEnvironmentVariables().isProductionMode) {
-                call.respond(HttpStatusCode.InternalServerError, ErrorResponse("Unknown server error", "UNKNOWN_ERROR"))
+                call.respond(
+                    HttpStatusCode.InternalServerError,
+                    ErrorResponse("Unknown server error", "UNKNOWN_SERVER_ERROR")
+                )
             } else {
-                call.respond(HttpStatusCode.InternalServerError, ErrorResponse("500: $cause", "UNKNOWN_ERROR"))
+                call.respond(HttpStatusCode.InternalServerError, ErrorResponse("500: $cause", "UNKNOWN_SERVER_ERROR"))
             }
         }
         exception<SerializationException> { call, cause ->
@@ -55,18 +58,6 @@ fun Application.configureRouting() {
                 ErrorResponse("Missing parameter: ${cause.message}", "MISSING_PARAMETER"),
             )
         }
-        exception<AuthorizationRequiredException> { call, cause ->
-            call.respond(
-                HttpStatusCode.Unauthorized,
-                ErrorResponse(
-                    "You need to be authenticated to complete this action: ${cause.message}",
-                    "UNAUTHENTICATED"
-                )
-            )
-        }
-//        exception<RouteProtectedException> { _, _ ->
-//            throw ErrorResponseException(HttpStatusCode.Unauthorized, "You don't have access to this api", "ROUTE_PROTECTED")
-//        }
         exception<JsonConvertException> { _, cause ->
             throw ErrorResponseException(
                 HttpStatusCode.InternalServerError,
@@ -100,11 +91,11 @@ fun Application.configureRouting() {
 
     routing {
         get("/") {
-            call.respondText("Hello, World!")
+            call.respondText("Welcome, to our api!")
         }
 
-        rateLimit(RateLimitName("auth")) {
-            route("/auth") {
+        route("/auth") {
+            rateLimit(RateLimitName("auth")) {
                 signUpWithEmailAndPassword()
                 signInWithEmailAndPassword()
                 socialLogin()
@@ -118,15 +109,12 @@ fun Application.configureRouting() {
                 resetPassword()
                 updatePassword()
             }
-        }
-
-        get<Articles> { article ->
-            // Get all articles ...
-            call.respond("List of articles sorted starting from ${article.sort}")
+            route("/admin") {
+                getAllUsers()
+                deleteUserAccount()
+                setAccountActivated()
+                sendNotificationToUser()
+            }
         }
     }
 }
-
-@Serializable
-@Resource("/articles")
-class Articles(val sort: String? = "new")

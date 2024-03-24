@@ -50,14 +50,13 @@ fun Route.signUpWithEmailAndPassword() {
             throw ErrorResponseException(HttpStatusCode.BadRequest, error.first, error.second)
         }
 
-        val findUserByEmail = userDataSource.findUserByEmail(request.email).getOrElse {
+        val isEmailUsed = userDataSource.isEmailUsed(request.email).getOrElse {
             throw ErrorResponseException(
                 HttpStatusCode.InternalServerError,
                 "Unknown error while trying to find this user with this email",
                 "UNKNOWN_ERROR"
             )
         }
-        val isEmailUsed = findUserByEmail != null
         if (isEmailUsed) {
             throw ErrorResponseException(
                 HttpStatusCode.Conflict,
@@ -215,6 +214,7 @@ fun Route.socialLogin() {
 
         // userInfo is null for sign in, not null for sign up
         val (userInfo, deviceNotificationsToken) = when (provider) {
+            // TODO: The error handling both in here and in SocialLoginServiceImpl for both Apple and Google needs to be reviewed and fixed.
             SocialLogin.Google::class.simpleName -> {
                 val googleSocialRequest = call.receive<SocialLoginRequest<SocialLogin.Google>>()
                 socialUserData = socialLoginService.authenticateWith(googleSocialRequest.socialLogin).getOrElse {
@@ -244,7 +244,7 @@ fun Route.socialLogin() {
             }
 
             else -> throw ErrorResponseException(
-                HttpStatusCode.BadRequest, "Unsupported provider: $provider", "UNSUPPORTED"
+                HttpStatusCode.BadRequest, "Unsupported provider: $provider", "UNSUPPORTED_PROVIDER"
             )
         }
 

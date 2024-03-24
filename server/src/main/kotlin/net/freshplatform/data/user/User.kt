@@ -1,6 +1,5 @@
 package net.freshplatform.data.user
 
-
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
@@ -43,6 +42,18 @@ data class User(
         createdAt = createdAt,
         updatedAt = updatedAt
     )
+    fun hasAdminPrivileges(): Boolean {
+        // It could be IllegalArgumentException
+        // but for security reasons here will also catch any kind of exception
+        return try {
+            role == UserRole.Admin
+        } catch (e: IllegalArgumentException) {
+            false
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
 }
 
 @Serializable
