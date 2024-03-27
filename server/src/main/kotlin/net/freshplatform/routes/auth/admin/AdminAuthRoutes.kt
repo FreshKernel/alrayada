@@ -13,6 +13,15 @@ import net.freshplatform.utils.ErrorResponseException
 import net.freshplatform.utils.extensions.requireCurrentAdminUser
 import org.koin.ktor.ext.inject
 
+fun Route.adminAuthRoutes() {
+    route("/admin") {
+        getAllUsers()
+        deleteUserAccount()
+        setAccountActivated()
+        sendNotificationToUser()
+    }
+}
+
 fun Route.getAllUsers() {
     val userDataSource by inject<UserDataSource>()
     authenticate {
@@ -96,6 +105,7 @@ fun Route.setAccountActivated() {
 
             if (isAccountActivatedNew) {
                 // The admin want to activate the user account
+
                 if (currentIsAccountActivated) {
                     throw ErrorResponseException(
                         HttpStatusCode.Conflict,
@@ -117,6 +127,7 @@ fun Route.setAccountActivated() {
             }
 
             // The admin want to deactivate the user account
+
             if (!currentIsAccountActivated) {
                 throw ErrorResponseException(
                     HttpStatusCode.Conflict,

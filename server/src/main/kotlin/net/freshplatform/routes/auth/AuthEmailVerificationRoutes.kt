@@ -3,16 +3,18 @@ package net.freshplatform.routes.auth
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
+import io.ktor.server.html.*
+import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
+import kotlinx.html.*
 import net.freshplatform.data.user.UserDataSource
 import net.freshplatform.services.email_sender.EmailMessage
 import net.freshplatform.services.email_sender.EmailSenderService
 import net.freshplatform.services.security.token_verification.TokenVerificationService
 import net.freshplatform.utils.ErrorResponseException
 import net.freshplatform.utils.extensions.baseUrl
-import net.freshplatform.utils.extensions.isValidEmailAddress
 import net.freshplatform.utils.extensions.requireCurrentUser
 import org.koin.ktor.ext.inject
 
@@ -62,8 +64,8 @@ fun Route.sendEmailVerificationLink() {
             val verificationLink =
                 AuthUtils.createEmailVerificationLink(
                     baseUrl = call.request.baseUrl(),
-                    email = currentUser.email,
-                    emailVerificationToken = emailVerification.token // Use this instead of the one from currentUser
+                    userId = currentUser.id.toString(),
+                    token = emailVerification.token // Use this instead of the one from currentUser
                 )
 
             val isSendEmailSuccess = emailSenderService.sendEmail(
@@ -94,25 +96,23 @@ fun Route.sendEmailVerificationLink() {
 fun Route.verifyEmail() {
     val userDataSource by inject<UserDataSource>()
 
+    // When you change the route path, you also need to change it from `verifyEmailForm` route
     post("/verifyEmail") {
-        val token: String by call.request.queryParameters
-        val email: String by call.request.queryParameters
+        val requestBody: Map<String, String> = call.receive()
+        val token: String = requestBody["token"] ?: throw ErrorResponseException(
+            HttpStatusCode.BadRequest, "The token is required.", "MISSING_TOKEN"
+        )
+        val userId: String = requestBody["userId"] ?: throw ErrorResponseException(
+            HttpStatusCode.BadRequest, "The user id is required.", "MISSING_USER_ID"
+        )
 
-        if (!email.isValidEmailAddress()) {
-            throw ErrorResponseException(
-                HttpStatusCode.BadRequest,
-                "Please enter a valid email address",
-                "INVALID_EMAIL"
-            )
-        }
-
-        val user = userDataSource.findUserByEmail(email).getOrElse {
+        val user = userDataSource.findUserById(userId).getOrElse {
             throw ErrorResponseException(
                 HttpStatusCode.InternalServerError,
-                "Unknown error while trying to find this user with this email",
+                "Unknown error while trying to find this user with this user id",
                 "UNKNOWN_ERROR"
             )
-        } ?: throw ErrorResponseException(HttpStatusCode.NotFound, "We couldn't find this user.", "EMAIL_NOT_FOUND")
+        } ?: throw ErrorResponseException(HttpStatusCode.NotFound, "There is no user with this id", "USER_NOT_FOUND")
 
         if (user.isEmailVerified) throw ErrorResponseException(
             HttpStatusCode.Conflict,
@@ -139,7 +139,7 @@ fun Route.verifyEmail() {
             "INVALID_TOKEN"
         )
 
-        val isVerifyEmailSuccess = userDataSource.verifyEmail(email)
+        val isVerifyEmailSuccess = userDataSource.verifyUserEmailById(userId)
         if (!isVerifyEmailSuccess) throw ErrorResponseException(
             HttpStatusCode.InternalServerError,
             "Error while verify the email",
@@ -148,5 +148,111 @@ fun Route.verifyEmail() {
 
         call.respondText { "Email has been successfully verified" }
 
+    }
+}
+
+fun Route.verifyEmailForm() {
+    val verifyEmailRoutePath = "/auth/verifyEmail" // Hardcoded
+
+    // When you change the route path, you also need to change it from `AuthUtils` class
+    get("/verifyEmailForm") {
+        val token: String by call.request.queryParameters
+        val userId: String by call.request.queryParameters
+        call.respondHtml {
+            head {
+                title("Verify your email")
+                meta(charset = "UTF-8")
+                meta("viewport", "user-scalable=no, width=device-width, initial-scale=1.0")
+                meta("apple-mobile-web-app-capable", "yes")
+                style {
+                    +"""
+                        body {
+                        font-family: Arial, sans-serif;
+                        background-color: #f4f4f4;
+                        margin: 0;
+                        padding: 0;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        height: 100vh;
+                    }
+                
+                    .container {
+                        background-color: #fff;
+                        border-radius: 8px;
+                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                        padding: 20px;
+                        text-align: center;
+                    }
+                
+                    h1 {
+                        margin-top: 0;
+                        color: #333;
+                    }
+                
+                    p {
+                        margin-bottom: 20px;
+                        color: #666;
+                    }
+                
+                    button {
+                        background-color: #007bff;
+                        color: #fff;
+                        border: none;
+                        border-radius: 4px;
+                        padding: 10px 20px;
+                        font-size: 16px;
+                        cursor: pointer;
+                        transition: background-color 0.3s;
+                    }
+                
+                    button:hover {
+                        background-color: #0056b3;
+                    }
+                    """.trimIndent()
+                }
+            }
+            body {
+                div(classes = "container") {
+                    h1 { +"Verify Email" }
+                    p { +"Please click the button below to verify your email:" }
+                    form {
+                        button(type = ButtonType.submit) { +"Verify Email" }
+                    }
+                }
+                script {
+                    +"""
+                        document.querySelector('form').addEventListener('submit', async function (event) {
+                        event.preventDefault();
+                        const requestBody = {
+                            token: '$token',
+                            userId: '$userId'
+                        };
+                        try {
+                            const response = await fetch('$verifyEmailRoutePath', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(requestBody)
+                            });
+                            const responseText = await response.text();
+                            if (!response.ok) {
+                                alert(`Error while verifying the email: ${"$"}{responseText}`);
+                                console.error(responseText);
+                                return;
+                            }
+                    
+                            alert(responseText);
+                            window.location.href = 'https://www.google.com';
+                        } catch (error) {
+                            console.error(error);
+                            alert(error);
+                        }
+                    });
+                    """.trimIndent()
+                }
+            }
+        }
     }
 }

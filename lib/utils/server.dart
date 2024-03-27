@@ -2,6 +2,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart'
     show TargetPlatform, defaultTargetPlatform, kDebugMode, kIsWeb;
 
+import '../constants.dart';
 import 'env.dart';
 
 /// Configurations for the app server
@@ -10,27 +11,23 @@ class ServerConfigurations {
 
   static var baseUrl = getProductionBaseUrl();
 
-  static const _productionBaseUrl = 'https://api.alrayada.net';
-
   static String getProductionBaseUrl() {
-    return _productionBaseUrl;
+    return Constants.productionBaseUrl;
   }
-
-  static const _developmentServerPort = 8080;
 
   static Future<String> getDevelopmentBaseUrl() async {
     final deviceInfoPlugin = DeviceInfoPlugin();
     if (!kIsWeb) {
       if (defaultTargetPlatform == TargetPlatform.android &&
           !(await deviceInfoPlugin.androidInfo).isPhysicalDevice) {
-        return 'http://10.0.2.2:$_developmentServerPort';
+        return 'http://10.0.2.2:${Constants.developmentServerPort}';
       }
       if (defaultTargetPlatform == TargetPlatform.iOS &&
           !(await deviceInfoPlugin.iosInfo).isPhysicalDevice) {
-        return 'http://localhost:$_developmentServerPort';
+        return 'http://localhost:${Constants.developmentServerPort}';
       }
     }
-    return 'http://${getEnvironmentVariables().developmentIpAddress}:$_developmentServerPort';
+    return 'http://${getEnvironmentVariables().developmentIpAddress}:${Constants.developmentServerPort}';
   }
 
   /// This add the base url to the path of the route

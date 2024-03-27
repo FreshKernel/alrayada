@@ -41,8 +41,8 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
   List<Widget> get _pages => [
         OnBoardingPage(
           imagePath: Assets.lottie.onboarding.onlineShopping.path,
-          title: context.loc.secureShoppingExperienceFeature,
-          subTitle: context.loc.secureShoppingExperienceFeatureDesc,
+          title: context.loc.onlineShoppingMadeEasyFeature,
+          subTitle: context.loc.onlineShoppingMadeEasyFeatureDesc,
         ),
         OnBoardingPage(
           imagePath: Assets.lottie.onboarding.cloudSecurity.path,
@@ -57,7 +57,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
         OnBoardingPage(
           imagePath: Assets.lottie.onboarding.search.path,
           title: context.loc.easyFilteringAndSearchingFeature,
-          subTitle: context.loc.secureShoppingExperienceFeatureDesc,
+          subTitle: context.loc.easyFilteringAndSearchingFeatureDesc,
         ),
         OnBoardingPage(
           imagePath: Assets.lottie.onboarding.socialAuthentication.path,
@@ -66,8 +66,8 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
         ),
         OnBoardingPage(
           imagePath: Assets.lottie.onboarding.fastDelivery.path,
-          title: context.loc.fastShippingFeatureDesc,
-          subTitle: context.loc.favoritesWishlistFeatureDesc,
+          title: context.loc.fastShippingFeature,
+          subTitle: context.loc.fastShippingFeatureDesc,
         ),
         OnBoardingPage(
           imagePath: Assets.lottie.onboarding.support.path,

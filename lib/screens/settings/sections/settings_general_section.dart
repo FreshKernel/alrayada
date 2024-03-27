@@ -144,7 +144,7 @@ class SettingsGeneralSection extends StatelessWidget {
                 .map(
                   (e) => DropdownMenuItem<AppLayoutMode>(
                     value: e,
-                    child: Text(e.getLabel(context)),
+                    child: Text(e.getLabel(context.loc)),
                   ),
                 )
                 .toList(),

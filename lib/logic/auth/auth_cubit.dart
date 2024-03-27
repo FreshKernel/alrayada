@@ -83,11 +83,12 @@ class AuthCubit extends Cubit<AuthState> {
 
       authenticateWithSocialLogin(
         GoogleSocialLogin(
-          // TODO: This needs to be updated, this exception has nothing to do with the error
           idToken: googleAuth.idToken ??
-              (throw StateError('The google id token should not be null')),
+              (throw const InvalidSocialInfoAuthException(
+                  message: 'The google id token should not be null')),
           accessToken: googleAuth.accessToken ??
-              (throw StateError('The google access token should not be null')),
+              (throw const InvalidSocialInfoAuthException(
+                  message: 'The google access token should not be null')),
         ),
         userInfo: null,
       );
@@ -124,13 +125,13 @@ class AuthCubit extends Cubit<AuthState> {
       );
       authenticateWithSocialLogin(
         AppleSocialLogin(
-          // TODO: This needs to be updated, handle exception in ui
           identityToken: credential.identityToken ??
-              (throw StateError('The apple identity token should not be null')),
+              (throw const InvalidSocialInfoAuthException(
+                  message: 'The apple identity token should not be null')),
           authorizationCode: credential.authorizationCode,
           userIdentifier: credential.userIdentifier ??
-              (throw StateError(
-                  'The apple user identifier should not be null')),
+              (throw const InvalidSocialInfoAuthException(
+                  message: 'The apple user identifier should not be null')),
         ),
         userInfo: null,
       );
@@ -241,6 +242,10 @@ class AuthCubit extends Cubit<AuthState> {
       emit(const AuthLoggedOut());
     } catch (e) {
       // TODO: Handle this error
+      AppLogger.error(
+        'Unknown error while logging out: ${e.toString()}',
+        error: e,
+      );
     }
   }
 

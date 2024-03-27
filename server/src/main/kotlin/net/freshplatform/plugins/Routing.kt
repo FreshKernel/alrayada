@@ -11,11 +11,7 @@ import io.ktor.server.resources.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.SerializationException
-import net.freshplatform.routes.auth.*
-import net.freshplatform.routes.auth.admin.deleteUserAccount
-import net.freshplatform.routes.auth.admin.getAllUsers
-import net.freshplatform.routes.auth.admin.sendNotificationToUser
-import net.freshplatform.routes.auth.admin.setAccountActivated
+import net.freshplatform.routes.auth.authRoutes
 import net.freshplatform.utils.ErrorResponse
 import net.freshplatform.utils.ErrorResponseException
 import net.freshplatform.utils.getEnvironmentVariables
@@ -94,27 +90,6 @@ fun Application.configureRouting() {
             call.respondText("Welcome, to our api!")
         }
 
-        route("/auth") {
-            rateLimit(RateLimitName("auth")) {
-                signUpWithEmailAndPassword()
-                signInWithEmailAndPassword()
-                socialLogin()
-                sendEmailVerificationLink()
-                verifyEmail()
-                deleteSelfAccount()
-                updateDeviceNotificationsToken()
-                getUserData()
-                updateUserInfo()
-                sendResetPasswordLink()
-                resetPassword()
-                updatePassword()
-            }
-            route("/admin") {
-                getAllUsers()
-                deleteUserAccount()
-                setAccountActivated()
-                sendNotificationToUser()
-            }
-        }
+        authRoutes()
     }
 }

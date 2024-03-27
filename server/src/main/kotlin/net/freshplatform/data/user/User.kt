@@ -16,7 +16,7 @@ data class User(
     @Contextual
     val id: ObjectId? = ObjectId(),
     val email: String,
-    val password: String,
+    val password: String, // TODO: I might make this nullable in case of using social login
     val isEmailVerified: Boolean,
     val isAccountActivated: Boolean,
     val role: UserRole,

@@ -27,18 +27,21 @@ class DioService {
       InterceptorsWrapper(
         onRequest: (options, handler) async {
           final baseUrl = ServerConfigurations.baseUrl;
-          if (options.uri.host == Uri.parse(baseUrl).host &&
-              _accessToken != null) {
-            options.headers['Authorization'] = 'Bearer $_accessToken';
+          if (options.uri.host == Uri.parse(baseUrl).host) {
+            // Execute code only for the client to server requests
+            if (_accessToken != null) {
+              options.headers['Authorization'] = 'Bearer $_accessToken';
+            }
           }
           handler.next(options);
         },
         onError: (error, handler) async {
           final baseUrl = ServerConfigurations.baseUrl;
-          if (error.requestOptions.uri.host == Uri.parse(baseUrl).host &&
-              _accessToken != null &&
-              error.response?.statusCode == 401) {
-            onInvalidToken?.call();
+          if (error.requestOptions.uri.host == Uri.parse(baseUrl).host) {
+            // Execute code only for the client to server request errors
+            if (_accessToken != null && error.response?.statusCode == 401) {
+              _onInvalidToken?.call();
+            }
           }
           handler.next(error);
         },
@@ -50,12 +53,12 @@ class DioService {
   String? _accessToken;
   // ignore: unused_field, remove this in the future when implement refresh token
   String? _refreshToken;
-  VoidCallback? onInvalidToken;
+  VoidCallback? _onInvalidToken;
 
   void clearTokens() {
     _accessToken = null;
     _refreshToken = null;
-    onInvalidToken = null;
+    _onInvalidToken = null;
   }
 
   void setToken({
@@ -65,6 +68,6 @@ class DioService {
   }) {
     _accessToken = accessToken;
     _refreshToken = refreshToken;
-    this.onInvalidToken = onInvalidToken;
+    _onInvalidToken = onInvalidToken;
   }
 }

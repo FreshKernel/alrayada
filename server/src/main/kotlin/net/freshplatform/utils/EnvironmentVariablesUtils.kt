@@ -23,7 +23,8 @@ data class EnvironmentVariables(
     val telegramBotToken: String,
     val telegramProductionChatId: String,
     val telegramDevelopmentChatId: String,
-    val googleClientId: String,
+    val googleAndroidClientId: String,
+    val googleIosClientId: String,
     val firebaseProjectId: String,
     /**
      * As plain text (json)
@@ -60,7 +61,8 @@ fun getEnvironmentVariables(): EnvironmentVariables {
         telegramBotToken = getEnvironmentVariable("TELEGRAM_BOT_TOKEN"),
         telegramProductionChatId = getEnvironmentVariable("TELEGRAM_PRODUCTION_CHAT_ID"),
         telegramDevelopmentChatId = getEnvironmentVariable("TELEGRAM_DEVELOPMENT_CHAT_ID"),
-        googleClientId = getEnvironmentVariable("GOOGLE_CLIENT_ID"),
+        googleAndroidClientId = getEnvironmentVariable("GOOGLE_ANDROID_CLIENT_ID"),
+        googleIosClientId = getEnvironmentVariable("GOOGLE_IOS_CLIENT_ID"),
         firebaseProjectId = getEnvironmentVariable("FIREBASE_PROJECT_ID"),
         firebaseProjectServiceAccountKey = getEnvironmentVariable("FIREBASE_PROJECT_SERVICE_ACCOUNT_KEY"),
         zainCashMerchantId = getEnvironmentVariable("ZAIN_CASH_MERCHANT_ID"),

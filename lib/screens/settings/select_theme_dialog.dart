@@ -54,9 +54,9 @@ class _SelectThemeModeDialogState extends State<SelectThemeModeDialog> {
         child: AnimatedOpacity(
           opacity: themeMode == widget.themeMode ? 1 : 0,
           duration: const Duration(milliseconds: 300),
-          child: const Icon(
-            Icons.check_box_rounded,
-            color: Colors.green,
+          child: Checkbox.adaptive(
+            value: true,
+            onChanged: (_) {},
           ),
         ),
       ),

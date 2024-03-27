@@ -12,7 +12,7 @@ object Constants {
         const val REALM = APP_NAME
     }
 
-    object AppId {
+    object ClientAppId {
         private const val APP_ID = "net.freshplatform.alrayada"
         const val ANDROID = APP_ID
         const val IOS = APP_ID

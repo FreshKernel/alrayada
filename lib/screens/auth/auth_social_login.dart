@@ -76,18 +76,20 @@ class AuthSocialLogin extends StatelessWidget {
                   );
                   break;
                 case SocialMissingSignUpDataAuthException():
+                  // I wanted the display name from social login provider
+                  // will be as initial text when requesting user data
+                  // but I didn't want to make the code messy so we will store
+                  // in LocalStorage when calling social login and access it here
                   SharedPreferences.getInstance().then(
-                    (value) {
-                      context.push(
-                        AuthSocialLoginSignUpScreen.routeName,
-                        extra: AuthSocialLoginSignUpScreenArgs(
-                          initialLabOwnerNameText: value.getString(
-                                  AuthCubit.socialLoginDisplayNamePrefKey) ??
-                              '',
-                          socialLogin: authException.socialLogin,
-                        ),
-                      );
-                    },
+                    (value) => context.push(
+                      AuthSocialLoginSignUpScreen.routeName,
+                      extra: AuthSocialLoginSignUpScreenArgs(
+                        initialLabOwnerNameText: value.getString(
+                                AuthCubit.socialLoginDisplayNamePrefKey) ??
+                            '',
+                        socialLogin: authException.socialLogin,
+                      ),
+                    ),
                   );
                   break;
                 case TooManyRequestsAuthException():

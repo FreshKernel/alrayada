@@ -33,6 +33,6 @@ data class SocialLoginRequest<T>(
 data class SocialLoginUserData(
     val email: String,
     val isEmailVerified: Boolean,
-    val pictureUrl: String,
+    val pictureUrl: String?,
     val name: String,
 )

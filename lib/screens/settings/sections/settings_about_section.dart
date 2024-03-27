@@ -4,8 +4,8 @@ import 'package:fresh_base_package/fresh_base_package.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
+import '../../../constants.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../../utils/constants/constants.dart';
 import '../settings_section.dart';
 
 class SettingsAboutSection extends StatelessWidget {

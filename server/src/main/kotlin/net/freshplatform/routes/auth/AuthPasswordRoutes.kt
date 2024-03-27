@@ -3,9 +3,13 @@ package net.freshplatform.routes.auth
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
+import io.ktor.server.html.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.server.util.*
+import kotlinx.html.*
+import net.freshplatform.Constants
 import net.freshplatform.data.user.UserDataSource
 import net.freshplatform.services.email_sender.EmailMessage
 import net.freshplatform.services.email_sender.EmailSenderService
@@ -13,7 +17,6 @@ import net.freshplatform.services.security.hashing.BcryptHashingService
 import net.freshplatform.services.security.token_verification.TokenVerificationService
 import net.freshplatform.utils.ErrorResponseException
 import net.freshplatform.utils.extensions.baseUrl
-import net.freshplatform.utils.extensions.isValidEmailAddress
 import net.freshplatform.utils.extensions.isValidPassword
 import net.freshplatform.utils.extensions.requireCurrentUser
 import org.koin.ktor.ext.inject
@@ -71,8 +74,8 @@ fun Route.sendResetPasswordLink() {
 
         val resetLink = AuthUtils.createResetPasswordLink(
             baseUrl = call.request.baseUrl(),
-            email = user.email,
-            resetPasswordVerificationToken = resetPasswordVerification.token // Use this instead of the one from user
+            userId = user.id.toString(),
+            token = resetPasswordVerification.token // Use this instead of the one from user
         )
 
         val isSendEmailSuccess = emailSenderService.sendEmail(
@@ -104,10 +107,10 @@ fun Route.resetPassword() {
 
     post("/resetPassword") {
         val requestBody: Map<String, String> = call.receive()
-        val email: String = requestBody["email"] ?: throw ErrorResponseException(
+        val userId: String = requestBody["userId"] ?: throw ErrorResponseException(
             HttpStatusCode.BadRequest,
-            "The email is required for resetting the password",
-            "MISSING_EMAIL"
+            "The user id is required for resetting the password",
+            "MISSING_USER_ID"
         )
         val token: String = requestBody["token"] ?: throw ErrorResponseException(
             HttpStatusCode.BadRequest,
@@ -127,23 +130,16 @@ fun Route.resetPassword() {
             )
         }
 
-        if (email.isValidEmailAddress()) {
-            throw ErrorResponseException(
-                HttpStatusCode.BadRequest, "Please enter a valid email address.",
-                "INVALID_EMAIL"
-            )
-        }
-
-        val user = userDataSource.findUserByEmail(email).getOrElse {
+        val user = userDataSource.findUserById(userId).getOrElse {
             throw ErrorResponseException(
                 HttpStatusCode.InternalServerError,
-                "Unknown error while getting a user with this email.",
+                "Unknown error while getting a user with this user id.",
                 "UNKNOWN_ERROR",
             )
         } ?: throw ErrorResponseException(
             HttpStatusCode.NotFound,
-            "There is no user with this email.",
-            "EMAIL_NOT_FOUND"
+            "There is no user with this user id.",
+            "USER_NOT_FOUND"
         )
 
         val resetPasswordVerification = user.resetPasswordVerification ?: throw ErrorResponseException(
@@ -172,6 +168,136 @@ fun Route.resetPassword() {
         )
 
         call.respondText { "Your password has been successfully updated." }
+    }
+}
+
+fun Route.resetPasswordForm() {
+    val resetPasswordRoutePath = "/auth/resetPassword" // Hardcoded
+
+    get("/resetPasswordForm") {
+        val token: String by call.request.queryParameters
+        val userId: String by call.request.queryParameters
+        call.respondHtml {
+            head {
+                title("Reset password")
+                meta(charset = "UTF-8")
+                meta("viewport", "user-scalable=no, width=device-width, initial-scale=1.0")
+                meta("apple-mobile-web-app-capable", "yes")
+                style {
+                    +"""
+                        body {
+                        font-family: Arial, sans-serif;
+                        background-color: #f4f4f4;
+                        margin: 0;
+                        padding: 0;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        height: 100vh;
+                    }
+                
+                    .container {
+                        width: 300px;
+                        background-color: #fff;
+                        border-radius: 8px;
+                        padding: 20px;
+                        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                    }
+                
+                    h2 {
+                        margin-top: 0;
+                        color: #333;
+                    }
+                
+                    input {
+                        border: 2px solid #d3d3d3;
+                        background-color: #f0f0f0;
+                        border-radius: 6px;
+                        font-size: 18px;
+                        padding: 12px;
+                        transition: border-color 150ms, box-shadow 200ms;
+                        width: 90%;
+                    }
+                    
+                    input::placeholder {
+                        color: #6c757d;
+                        font-weight: normal;
+                    }
+                    
+                    input:focus {
+                        border: 3px solid #007bff;
+                        outline: none;
+                        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+                    }
+                
+                    button {
+                        width: 100%;
+                        padding: 10px;
+                        background-color: #007bff;
+                        color: #fff;
+                        border: none;
+                        border-radius: 4px;
+                        cursor: pointer;
+                        transition: background-color 0.3s ease;
+                    }
+                
+                    button:hover {
+                        background-color: #0056b3;
+                    }
+                    """.trimIndent()
+                }
+            }
+            body {
+                div(classes = "container") {
+                    h2 { +"Reset password" }
+                    form {
+                        passwordInput {
+                            placeholder = "New password"
+                            required = true
+                            pattern = Constants.Patterns.PASSWORD
+                        }
+                        div {
+                            style = "padding-top: 10px"
+                        }
+                        button(type = ButtonType.submit) { +"Update Password" }
+                    }
+                }
+                script {
+                    +"""
+                        document.querySelector('form').addEventListener('submit', async function (event) {
+                        event.preventDefault();
+                        const newPassword = document.querySelector('input[type=password]').value;
+                        const requestBody = {
+                            token: '$token',
+                            userId: '$userId',
+                            newPassword: newPassword
+                        };
+                        try {
+                            const response = await fetch('$resetPasswordRoutePath', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(requestBody)
+                            });
+                            const responseText = await response.text();
+                            if (!response.ok) {
+                                alert(`Error while verifying the email: ${"$"}{responseText}`);
+                                console.error(responseText);
+                                return;
+                            }
+                    
+                            alert(responseText);
+                            window.location.href = 'https://www.google.com';
+                        } catch (error) {
+                            console.error(error);
+                            alert(error);
+                        }
+                    });
+                    """.trimIndent()
+                }
+            }
+        }
     }
 }
 

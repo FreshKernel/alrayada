@@ -66,10 +66,10 @@ class MongoUserDataSource(
         }
     }
 
-    override suspend fun verifyEmail(email: String): Boolean {
+    override suspend fun verifyUserEmailById(userId: String): Boolean {
         return try {
             users.updateOne(
-                Filters.eq(User::email.name, email),
+                userIdFilter(userId),
                 Updates.combine(
                     Updates.set(User::isEmailVerified.name, true),
                     Updates.set(User::emailVerification.name, null),
@@ -140,6 +140,21 @@ class MongoUserDataSource(
                 userIdFilter(userId),
                 Updates.combine(
                     Updates.set(User::info.name, userInfo),
+                    generateUpdatedAtUpdate()
+                )
+            ).wasAcknowledged()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+
+    override suspend fun updateUserPictureUrlById(userId: String, newPictureUrl: String): Boolean {
+        return try {
+            users.updateOne(
+                userIdFilter(userId),
+                Updates.combine(
+                    Updates.set(User::pictureUrl.name, newPictureUrl),
                     generateUpdatedAtUpdate()
                 )
             ).wasAcknowledged()

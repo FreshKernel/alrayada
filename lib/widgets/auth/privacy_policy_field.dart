@@ -2,8 +2,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
+import '../../constants.dart';
 import '../../l10n/app_localizations.dart';
-import '../../utils/constants/constants.dart';
 
 class PrivacyPolicyCheckboxField extends StatelessWidget {
   const PrivacyPolicyCheckboxField({

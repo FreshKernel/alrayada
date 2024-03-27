@@ -4,9 +4,11 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:hydrated_bloc/hydrated_bloc.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart' show dotenv;
+import 'package:hydrated_bloc/hydrated_bloc.dart'
+    show HydratedBloc, HydratedStorage;
+import 'package:path_provider/path_provider.dart'
+    show getApplicationDocumentsDirectory;
 
 import 'data/user/auth_repository_impl.dart';
 import 'firebase_options.dart';
@@ -54,10 +56,16 @@ Future<void> main() async {
     runApp(
       MaterialApp(
         debugShowCheckedModeBanner: false,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         home: SafeArea(
           child: Scaffold(
             body: Center(
-              child: Text(e.toString()),
+              child: Builder(
+                builder: (context) {
+                  return Text(context.loc.unknownErrorWithMsg(e.toString()));
+                },
+              ),
             ),
           ),
         ),

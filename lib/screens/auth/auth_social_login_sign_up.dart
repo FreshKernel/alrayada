@@ -10,6 +10,7 @@ import '../../data/user/models/user.dart';
 import '../../gen/assets.gen.dart';
 import '../../l10n/app_localizations.dart';
 import '../../logic/auth/auth_cubit.dart';
+import '../../utils/extensions/scaffold_messenger_ext.dart';
 import '../../utils/text_input_handler.dart';
 import '../../widgets/auth/privacy_policy_field.dart';
 import '../../widgets/auth/user_info_text_inputs.dart';
@@ -72,6 +73,12 @@ class _AuthSocialLoginSignUpScreenState
   Future<void> _onSubmit() async {
     final isValid = _formKey.currentState?.validate() ?? false;
     if (!isValid) {
+      return;
+    }
+    if (!_isPrivacyPolicyAgreed) {
+      ScaffoldMessenger.of(context).showSnackBarText(
+        context.loc.pleaseAgreeToPrivacyPolicyFirst,
+      );
       return;
     }
     _formKey.currentState?.save();

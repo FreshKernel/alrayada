@@ -8,6 +8,6 @@ extension BuildContextExt on BuildContext {
   AppLocalizations get loc {
     return AppLocalizations.of(this) ??
         (throw ArgumentError(
-            'The localizations is required, add it to your app'));
+            'The localizations is required, add it to your app widget.'));
   }
 }

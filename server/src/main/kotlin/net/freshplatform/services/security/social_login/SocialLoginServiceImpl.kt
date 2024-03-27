@@ -7,12 +7,16 @@ import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.gson.GsonFactory
 import net.freshplatform.Constants
 import net.freshplatform.utils.getEnvironmentVariables
-import java.util.*
 
 class SocialLoginServiceImpl : SocialLoginService {
     private val googleIdTokenVerifier =
         GoogleIdTokenVerifier.Builder(NetHttpTransport(), GsonFactory())
-            .setAudience(Collections.singletonList(getEnvironmentVariables().googleClientId))
+            .setAudience(
+                listOf(
+                    getEnvironmentVariables().googleAndroidClientId,
+                    getEnvironmentVariables().googleIosClientId
+                )
+            )
             .build()
 
     override suspend fun authenticateWith(socialLogin: SocialLogin): Result<SocialLoginUserData?> {
@@ -23,8 +27,8 @@ class SocialLoginServiceImpl : SocialLoginService {
                         googleIdTokenVerifier.verify(socialLogin.idToken) ?: return Result.success(null)
                     val payload = idToken.payload
 
-                    val pictureUrl: String = payload.getOrDefault("picture", "") as String
-                    val name: String = payload.getOrDefault("name", "") as String
+                    val pictureUrl = payload.getOrDefault("picture", null) as String?
+                    val name = payload.getOrDefault("name", "") as String
                     Result.success(
                         SocialLoginUserData(
                             email = payload.email,
@@ -47,7 +51,7 @@ class SocialLoginServiceImpl : SocialLoginService {
                         return Result.success(null)
                     }
 
-                    if (audience != Constants.AppId.IOS && audience != Constants.AppId.APPLE_AUTH_SERVICE_ID) {
+                    if (audience != Constants.ClientAppId.IOS && audience != Constants.ClientAppId.APPLE_AUTH_SERVICE_ID) {
                         return Result.success(null)
                     }
 

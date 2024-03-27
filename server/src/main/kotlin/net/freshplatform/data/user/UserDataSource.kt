@@ -14,7 +14,7 @@ interface UserDataSource {
 
     suspend fun deleteUserById(userId: String): Boolean
     suspend fun updatePasswordById(userId: String, newPassword: String): Boolean
-    suspend fun verifyEmail(email: String): Boolean
+    suspend fun verifyUserEmailById(userId: String): Boolean
     suspend fun updateEmailVerificationStatusById(userId: String, emailVerification: TokenVerification): Boolean
     suspend fun updateResetPasswordVerificationStatusById(
         userId: String,
@@ -28,6 +28,8 @@ interface UserDataSource {
     suspend fun resetPasswordById(userId: String, newPassword: String): Boolean
 
     suspend fun updateUserInfoById(userId: String, userInfo: UserInfo): Boolean
+
+    suspend fun updateUserPictureUrlById(userId: String, newPictureUrl: String): Boolean
 
     // For admin usage only functions:
     suspend fun setAccountActivatedById(userId: String, isAccountActivated: Boolean): Boolean

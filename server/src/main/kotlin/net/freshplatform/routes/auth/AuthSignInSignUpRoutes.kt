@@ -68,7 +68,7 @@ fun Route.signUpWithEmailAndPassword() {
         val hashedPassword = bcryptHashingService.generatedSaltedHash(request.password)
 
         val user = User(
-            email = request.email.lowercase(),
+            email = request.email.trim().lowercase(),
             password = hashedPassword,
             isAccountActivated = false,
             isEmailVerified = false,
@@ -94,8 +94,8 @@ fun Route.signUpWithEmailAndPassword() {
         val verificationLink =
             AuthUtils.createEmailVerificationLink(
                 baseUrl = call.request.baseUrl(),
-                email = user.email,
-                emailVerificationToken = user.emailVerification?.token
+                userId = user.id.toString(),
+                token = user.emailVerification?.token
                     ?: throw IllegalStateException(
                         "The emailVerification is not " +
                                 "supposed to be null, make sure you set it when creating the user"
@@ -120,12 +120,12 @@ fun Route.signUpWithEmailAndPassword() {
             )
         }
 
-        val accessToken = jwtService.generateAccessToken(user.id.toString(), AuthUtils.USER_ACCESS_TOKEN_EXPIRES_IN)
+        val accessToken = jwtService.generateAccessToken(user.id.toString(), AuthUtils.USER_ACCESS_TOKEN_EXPIRES_IN).token
 
         call.respond(
             HttpStatusCode.Created,
             AuthenticatedUserResponse(
-                accessToken = accessToken.token,
+                accessToken = accessToken,
                 refreshToken = "",
                 user = user.toResponse()
             )
@@ -261,7 +261,7 @@ fun Route.socialLogin() {
                 "SOCIAL_MISSING_SIGNUP_DATA"
             )
             val newUser = User(
-                email = socialUserData.email.lowercase(),
+                email = socialUserData.email.trim().lowercase(),
                 password = "", // No password
                 isAccountActivated = false,
                 isEmailVerified = socialUserData.isEmailVerified,
@@ -295,13 +295,28 @@ fun Route.socialLogin() {
             // When the email is not verified in the database but verified
             // in social login then we will verify in the database too
             if (!user.isEmailVerified && socialUserData.isEmailVerified) {
-                val isVerifyEmailSuccess = userDataSource.verifyEmail(user.email)
+                val isVerifyEmailSuccess = userDataSource.verifyUserEmailById(user.id.toString())
                 if (!isVerifyEmailSuccess) throw ErrorResponseException(
                     HttpStatusCode.InternalServerError,
                     "Unknown error while verify the user email in the database.",
                     "UNKNOWN_ERROR"
                 )
                 user = user.copy(isEmailVerified = true)
+            }
+            // Update the user picture url when it's updated from social login provider
+            socialUserData.pictureUrl?.let {
+                if (it != user.pictureUrl) {
+                    val isUpdateSuccess = userDataSource.updateUserPictureUrlById(
+                        user.id.toString(),
+                        it
+                    )
+                    if (!isUpdateSuccess) throw ErrorResponseException(
+                        HttpStatusCode.InternalServerError,
+                        "Unknown error while updating the user picture url",
+                        "UNKNOWN_ERROR"
+                    )
+                    user = user.copy(pictureUrl = it)
+                }
             }
         }
 

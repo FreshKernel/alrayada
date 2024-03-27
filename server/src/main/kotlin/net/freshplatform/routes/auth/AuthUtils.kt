@@ -7,12 +7,14 @@ object AuthUtils {
     val RESET_PASSWORD_VERIFICATION_TOKEN_EXPIRATION = 15.minutes
     val USER_ACCESS_TOKEN_EXPIRES_IN = 10.minutes
 
-    // TODO: Those two needs to be updated
+    // TODO: Those two needs to not hardcode things, solve it it the following routes:
+    //  verifyEmail, resetPassword, verifyEmailForm and resetPasswordForm
 
-    fun createEmailVerificationLink(baseUrl: String, email: String, emailVerificationToken: String): String {
-        return "${baseUrl}/auth/verifyEmail?email=${email}&token=${emailVerificationToken}"
+    fun createEmailVerificationLink(baseUrl: String, userId: String, token: String): String {
+        return "${baseUrl}/auth/verifyEmailForm?userId=${userId}&token=${token}" // Hardcoded
     }
-    fun createResetPasswordLink(baseUrl: String, email: String, resetPasswordVerificationToken: String): String {
-        return "${baseUrl}/auth/resetPassword?email=${email}&token=${resetPasswordVerificationToken}"
+
+    fun createResetPasswordLink(baseUrl: String, userId: String, token: String): String {
+        return "${baseUrl}/auth/resetPasswordForm?userId=${userId}&token=${token}" // Hardcoded
     }
 }

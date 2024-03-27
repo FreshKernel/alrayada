@@ -1,6 +1,6 @@
 import 'dart:math' as math show Random;
 
-import 'package:flutter/material.dart' show BuildContext, ThemeMode;
+import 'package:flutter/material.dart' show ThemeMode;
 
 import '../../l10n/app_localizations.dart';
 
@@ -64,11 +64,11 @@ enum AppLayoutMode {
   small,
   large;
 
-  String getLabel(BuildContext context) {
+  String getLabel(AppLocalizations loc) {
     return switch (this) {
-      AppLayoutMode.auto => context.loc.auto,
-      AppLayoutMode.small => context.loc.small,
-      AppLayoutMode.large => context.loc.large,
+      AppLayoutMode.auto => loc.auto,
+      AppLayoutMode.small => loc.small,
+      AppLayoutMode.large => loc.large,
     };
   }
 }

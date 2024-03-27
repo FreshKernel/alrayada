@@ -9,10 +9,10 @@ import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
+import '../../../constants.dart';
 import '../../../gen/assets.gen.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../logic/auth/auth_cubit.dart';
-import '../../../utils/constants/constants.dart';
 import '../../../utils/extensions/scaffold_messenger_ext.dart';
 import '../../../utils/server.dart';
 import '../../account_data/account_data_screen.dart';

@@ -37,6 +37,8 @@ dependencies {
     implementation("io.ktor:ktor-server-rate-limit-jvm")
     implementation("io.ktor:ktor-server-auth-jvm")
     implementation("io.ktor:ktor-server-auth-jwt-jvm")
+    implementation("io.ktor:ktor-server-html-builder-jvm")
+//    implementation("io.ktor:ktor-server-request-validation-jvm")
     testImplementation("io.ktor:ktor-server-tests-jvm")
     implementation(libs.logback.classic)
 
@@ -62,7 +64,7 @@ dependencies {
 
     implementation(libs.dotenv.kotlin)
 
-    implementation("com.google.auth:google-auth-library-oauth2-http:1.23") // For Firebase access token
+    implementation("com.google.auth:google-auth-library-oauth2-http:1.23") // For Firebase Cloud Messaging access token
     implementation("com.google.api-client:google-api-client:2.4.0") // For Google sign in
 
     implementation("com.sun.mail:jakarta.mail:2.0.1")
