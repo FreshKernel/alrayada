@@ -8,97 +8,101 @@ import '../../utils/extensions/scaffold_messenger_ext.dart';
 import '../account_data/account_data_screen.dart';
 import '../notifications/notifications_screen.dart';
 import '../settings/settings_screen.dart';
-import '../support/support_screen.dart';
+import '../live_chat/live_chat_screen.dart';
+
+@immutable
+class DrawerItem {
+  const DrawerItem({
+    required this.icon,
+    required this.title,
+    required this.onTap,
+    this.isAuthRequired = false,
+  });
+
+  final IconData icon;
+  final String title;
+  final VoidCallback onTap;
+  final bool isAuthRequired;
+}
 
 class DashboardDrawer extends StatelessWidget {
   const DashboardDrawer({super.key});
 
-  Widget _buildItem({
-    required BuildContext context,
-    required IconData leadingIcon,
-    required String title,
-    required VoidCallback onTap,
-    bool isAuthRequired = false,
-  }) =>
-      Semantics(
-        label: '$title ${context.loc.item}',
-        child: ListTile(
-          leading: Icon(
-            leadingIcon,
-            semanticLabel: title,
-          ),
-          title: Text(title),
-          onTap: () {
-            context.pop();
-            if (isAuthRequired) {
-              final userCredential =
-                  context.read<AuthCubit>().state.userCredential;
-              if (userCredential == null) {
-                ScaffoldMessenger.of(context).showSnackBarText(
-                  context.loc.youNeedToLoginFirst,
-                );
-                return;
-              }
-            }
-            onTap();
-          },
+  List<DrawerItem> getNavigationItems(BuildContext context) => [
+        DrawerItem(
+          icon: Icons.message,
+          title: context.loc.support,
+          onTap: () => context.push(LiveChatScreen.routeName),
+          isAuthRequired: true,
         ),
-      );
+        DrawerItem(
+          icon: Icons.account_circle,
+          title: context.loc.account,
+          onTap: () => context.push(AccountDataScreen.routeName),
+          isAuthRequired: true,
+        ),
+        DrawerItem(
+          icon: Icons.notifications,
+          title: context.loc.notifications,
+          onTap: () => context.push(NotificationsScreen.routeName),
+          isAuthRequired: false,
+        ),
+        DrawerItem(
+          icon: Icons.settings,
+          title: context.loc.settings,
+          onTap: () => context.push(SettingsScreen.routeName),
+          isAuthRequired: false,
+        ),
+      ];
 
   @override
   Widget build(BuildContext context) {
-    return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero, // Required
-        children: [
-          BlocBuilder<AuthCubit, AuthState>(
-            builder: (context, state) {
-              final user = state.userCredential;
-              return UserAccountsDrawerHeader(
-                decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor,
-                ),
-                currentAccountPicture: const FlutterLogo(),
-                accountName: Text(
-                  user != null ? user.user.info.labName : context.loc.guestUser,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                accountEmail: user != null
-                    ? Text(user.user.info.labOwnerName)
-                    : const SizedBox.shrink(),
-              );
-            },
+    final items = getNavigationItems(context);
+    return NavigationDrawer(
+      selectedIndex: -1,
+      onDestinationSelected: (value) {
+        final item = items[value];
+        context.pop();
+        if (item.isAuthRequired) {
+          final userCredential = context.read<AuthCubit>().state.userCredential;
+          if (userCredential == null) {
+            ScaffoldMessenger.of(context).showSnackBarText(
+              context.loc.youNeedToLoginFirst,
+            );
+            return;
+          }
+        }
+        item.onTap();
+      },
+      children: [
+        BlocBuilder<AuthCubit, AuthState>(
+          builder: (context, state) {
+            final user = state.userCredential;
+            return UserAccountsDrawerHeader(
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor,
+              ),
+              currentAccountPicture: const FlutterLogo(),
+              accountName: Text(
+                user != null ? user.user.info.labName : context.loc.guestUser,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              accountEmail: user != null
+                  ? Text(user.user.info.labOwnerName)
+                  : const SizedBox.shrink(),
+            );
+          },
+        ),
+        ...items.map(
+          (e) => NavigationDrawerDestination(
+            icon: Icon(
+              e.icon,
+              semanticLabel: e.title,
+            ),
+            label: Text(e.title),
           ),
-          _buildItem(
-            context: context,
-            leadingIcon: Icons.message,
-            title: context.loc.support,
-            onTap: () => context.push(SupportScreen.routeName),
-            isAuthRequired: true,
-          ),
-          _buildItem(
-            context: context,
-            leadingIcon: Icons.account_circle,
-            title: context.loc.account,
-            onTap: () => context.push(AccountDataScreen.routeName),
-            isAuthRequired: true,
-          ),
-          _buildItem(
-            context: context,
-            leadingIcon: Icons.notifications,
-            title: context.loc.notifications,
-            onTap: () => context.push(NotificationsScreen.routeName),
-            isAuthRequired: false,
-          ),
-          _buildItem(
-            context: context,
-            leadingIcon: Icons.settings,
-            title: context.loc.settings,
-            onTap: () => context.push(SettingsScreen.routeName),
-            isAuthRequired: false,
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

@@ -10,7 +10,7 @@ sealed class RoutesConstants {
   static const offersRoutes = OffersRoutes._();
   static const ordersRoutes = OrdersRoutes._();
 
-  static const appSupportRoutes = AppSupportRoutes._();
+  static const liveChatRoutes = LiveChatRoutes._();
 }
 
 class AuthRoutes extends RoutesConstants {
@@ -36,12 +36,11 @@ class AuthRoutes extends RoutesConstants {
 
 class AuthAdminRoutes extends RoutesConstants {
   const AuthAdminRoutes._();
-  static const root = '${AuthRoutes.root}admin';
-  final getUsers = root;
-  final activateUserAccount = '$root/activateAccount';
-  final deactivateUserAccount = '$root/deactivateAccount';
+  static const root = '${AuthRoutes.root}/admin';
+  final getAllUsers = '$root/users';
   final deleteUser = '$root/deleteUser';
-  final sendNotificationToUser = '$root/sendNotification';
+  final setAccountActivated = '$root/setAccountActivated';
+  final sendNotificationToUser = '$root/sendNotificationToUser';
 }
 
 class ProductsRoutes extends RoutesConstants {
@@ -107,24 +106,25 @@ class OrdersAdminRoutes extends RoutesConstants {
   final rejectOrder = '$root/rejectOrder';
 }
 
-class AppSupportRoutes extends RoutesConstants {
-  const AppSupportRoutes._();
-  static const root = 'support/';
-  final userChat = root;
-  final adminRoutes = const AppSupportAdminRoutes._();
+class LiveChatRoutes extends RoutesConstants {
+  const LiveChatRoutes._();
+  static const root = 'liveChat';
+  final userLiveChat = '$root/';
+  final getMessages = '$root/messages';
+  final adminRoutes = const AdminLiveChatRoutes._();
 }
 
-class AppSupportAdminRoutes extends RoutesConstants {
-  const AppSupportAdminRoutes._();
-  static const root = '${AppSupportRoutes.root}admin/';
+class AdminLiveChatRoutes extends RoutesConstants {
+  const AdminLiveChatRoutes._();
+  static const root = '${LiveChatRoutes.root}/admin';
 
   /// userRoomId by default is the uuid of the user
   String chatWithUser(String userRoomId) {
-    return '${root}chat/$userRoomId';
+    return '$root/chat/$userRoomId';
   }
 
   final getRooms = '${root}rooms';
   String deleteRoom(String chatRoomId) {
-    return '${root}rooms/$chatRoomId';
+    return '$root/rooms/$chatRoomId';
   }
 }

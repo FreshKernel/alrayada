@@ -36,7 +36,15 @@ class _HomeTabState extends State<HomeTab> {
                 )
                 .toList(),
           ),
-          const ChartList(),
+          const SizedBox(
+            height: 200, // Important
+            child: ChartList(
+              monthlyTotals: [
+                MonthlyTotal(month: 1, amount: 500),
+                MonthlyTotal(month: 8, amount: 200),
+              ],
+            ),
+          ),
         ],
       ),
     );

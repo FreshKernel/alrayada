@@ -283,7 +283,8 @@ class AuthRepositoryImpl extends AuthRepository {
     try {
       await _dio.delete(
         ServerConfigurations.getRequestUrl(
-            RoutesConstants.authRoutes.deleteSelfAccount),
+          RoutesConstants.authRoutes.deleteSelfAccount,
+        ),
       );
       await logout();
     } catch (e) {

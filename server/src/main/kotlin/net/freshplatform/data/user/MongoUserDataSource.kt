@@ -5,7 +5,6 @@ import com.mongodb.client.model.Projections
 import com.mongodb.client.model.Sorts
 import com.mongodb.client.model.Updates
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.singleOrNull
 import kotlinx.coroutines.flow.toList
 import kotlinx.datetime.Clock
@@ -182,7 +181,7 @@ class MongoUserDataSource(
     override suspend fun isAccountActivatedById(userId: String): Result<Boolean?> {
         return try {
             val projection = Projections.include(User::isAccountActivated.name)
-            val result = users.find<Document>(userIdFilter(userId)).projection(projection).firstOrNull()
+            val result = users.find<Document>(userIdFilter(userId)).projection(projection).singleOrNull()
                 ?.getBoolean(User::isAccountActivated.name)
             Result.success(result)
         } catch (e: Exception) {

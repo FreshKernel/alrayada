@@ -40,24 +40,19 @@ class JavaEmailSenderService : EmailSenderService {
                 Transport.send(mimeMessage)
                 true
             } catch (e: AuthenticationFailedException) {
-                println("Authentication with email didn't success!")
                 e.printStackTrace()
                 false
             } catch (e: MessagingException) {
-                println("Send failed, exception: $e")
                 e.printStackTrace()
                 false
             } catch (e: MailConnectException) {
-                println("Email send failed, exception: $e")
                 e.printStackTrace()
                 false
             } catch (e: java.net.ConnectException) {
-                println("Connection failed: $e")
                 e.printStackTrace()
                 false
             } catch (e: Exception) {
                 e.printStackTrace()
-                println("Unhandled exception while send email ${e.javaClass.name} from ${e.javaClass.packageName}")
                 false
             }
         }

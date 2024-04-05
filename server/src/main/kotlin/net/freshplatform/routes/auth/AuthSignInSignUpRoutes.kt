@@ -124,7 +124,7 @@ fun Route.signUpWithEmailAndPassword() {
 
         call.respond(
             HttpStatusCode.Created,
-            AuthenticatedUserResponse(
+            UserCredential(
                 accessToken = accessToken,
                 refreshToken = "",
                 user = user.toResponse()
@@ -193,7 +193,7 @@ fun Route.signInWithEmailAndPassword() {
             jwtService.generateAccessToken(userId = user.id.toString(), AuthUtils.USER_ACCESS_TOKEN_EXPIRES_IN)
 
         call.respond(
-            AuthenticatedUserResponse(
+            UserCredential(
                 accessToken = accessToken.token,
                 refreshToken = "",
                 user = user.toResponse()
@@ -304,18 +304,18 @@ fun Route.socialLogin() {
                 user = user.copy(isEmailVerified = true)
             }
             // Update the user picture url when it's updated from social login provider
-            socialUserData.pictureUrl?.let {
-                if (it != user.pictureUrl) {
+            socialUserData.pictureUrl?.let { pictureUrl ->
+                if (pictureUrl != user.pictureUrl) {
                     val isUpdateSuccess = userDataSource.updateUserPictureUrlById(
                         user.id.toString(),
-                        it
+                        pictureUrl
                     )
                     if (!isUpdateSuccess) throw ErrorResponseException(
                         HttpStatusCode.InternalServerError,
                         "Unknown error while updating the user picture url",
                         "UNKNOWN_ERROR"
                     )
-                    user = user.copy(pictureUrl = it)
+                    user = user.copy(pictureUrl = pictureUrl)
                 }
             }
         }
@@ -325,7 +325,7 @@ fun Route.socialLogin() {
 
         call.respond(
             if (isSignIn) HttpStatusCode.OK else HttpStatusCode.Created,
-            AuthenticatedUserResponse(
+            UserCredential(
                 accessToken = accessToken,
                 refreshToken = "",
                 user = user.toResponse(),

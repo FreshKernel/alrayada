@@ -9,7 +9,6 @@ import '../../../data/user/models/user.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../logic/settings/settings_cubit.dart';
 import '../../adaptive_messenger.dart';
-import 'city_picker_utils.dart';
 
 class CityPickerFormField extends StatefulWidget {
   const CityPickerFormField({
@@ -72,9 +71,8 @@ class _CityPickerFormFieldState extends State<CityPickerFormField> {
             Expanded(
               child: Text(
                 context.loc.selectedCity(
-                  CityPickerUtils.getTranslatedCityName(
+                  _selectedCity.getTranslatedCityName(
                     localizations: context.loc,
-                    city: _selectedCity,
                   ),
                 ),
               ),
@@ -132,10 +130,9 @@ class _CityPickerFormFieldState extends State<CityPickerFormField> {
                               (e) => DropdownMenuItem<IraqGovernorate>(
                                 value: e,
                                 child: Center(
-                                  child: Text(
-                                      CityPickerUtils.getTranslatedCityName(
+                                  child:
+                                      Text(_selectedCity.getTranslatedCityName(
                                     localizations: context.loc,
-                                    city: e,
                                   )),
                                 ),
                               ),
@@ -165,9 +162,8 @@ class _CityPickerFormFieldState extends State<CityPickerFormField> {
           .map(
             (e) => DropdownMenuItem<IraqGovernorate>(
               value: e,
-              child: Text(CityPickerUtils.getTranslatedCityName(
+              child: Text(_selectedCity.getTranslatedCityName(
                 localizations: context.loc,
-                city: e,
               )),
             ),
           )

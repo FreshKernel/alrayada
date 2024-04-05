@@ -277,5 +277,16 @@
    "signInWithAppleIsNotSupportedOnYourDevice": "تسجيل الدخول مع التفاح غير مدعوم علي جهازك",
    "tooManyRequestsPleaseTryAgainLater": "هنالك طلبات كثيرة، الرجاء المحاولة لاحقا",
    "yourEmailIsNotVerified": "بريدك الإلكتروني غير مؤكد.",
-   "enterSignUpDataDesc": "افتح الباب أمام عالم من الاحتمالات! يرجى تزويدنا بالتفاصيل الخاصة بك لبدء رحلتك معنا."
+   "enterSignUpDataDesc": "افتح الباب أمام عالم من الاحتمالات! يرجى تزويدنا بالتفاصيل الخاصة بك لبدء رحلتك معنا.",
+   "adminDashboard": "لوحة تحكم المشرف",
+   "manageEverythingInOnePlace": "إدارة كل شيء في مكان واحد",
+   "users": "المستخدمين",
+   "activate": "تفعيل",
+   "deactivate": "إلغاء التفعيل",
+   "sendNotification": "إرسال الإخطار",
+   "chat": "محادثة",
+   "title": "العنوان",
+   "thisFieldCantBeEmpty": "لا يمكن أن يكون هذا الحقل فارغًا",
+   "notificationHasBeenSuccessfullySent": "تم إرسال الإشعار بنجاح",
+   "admin": "مسؤول"
 }

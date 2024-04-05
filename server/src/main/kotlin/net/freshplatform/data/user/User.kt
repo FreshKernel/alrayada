@@ -14,7 +14,7 @@ import org.bson.types.ObjectId
 data class User(
     @SerialName("_id")
     @Contextual
-    val id: ObjectId? = ObjectId(),
+    val id: ObjectId = ObjectId(),
     val email: String,
     val password: String, // TODO: I might make this nullable in case of using social login
     val isEmailVerified: Boolean,
@@ -58,8 +58,8 @@ data class User(
 
 @Serializable
 data class UserDeviceNotificationsToken(
-    val firebase: String = "",
-    val oneSignal: String = ""
+    val firebase: String,
+    val oneSignal: String
 )
 
 @Serializable
@@ -142,7 +142,7 @@ data class UserResponse(
 )
 
 @Serializable
-data class AuthenticatedUserResponse(
+data class UserCredential(
     val accessToken: String,
     val refreshToken: String,
     val user: UserResponse

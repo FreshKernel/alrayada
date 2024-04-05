@@ -31,8 +31,9 @@ class SocialLoginServiceImpl : SocialLoginService {
                     val name = payload.getOrDefault("name", "") as String
                     Result.success(
                         SocialLoginUserData(
-                            email = payload.email,
-                            isEmailVerified = payload.emailVerified,
+                            email = payload.email ?: return Result.failure(NullPointerException("The email is null")),
+                            isEmailVerified = payload.emailVerified
+                                ?: return Result.failure(NullPointerException("The is email verified is null")),
                             pictureUrl = pictureUrl,
                             name = name,
                         )
@@ -57,8 +58,11 @@ class SocialLoginServiceImpl : SocialLoginService {
 
                     return Result.success(
                         SocialLoginUserData(
-                            email = validatedJwt.getClaim("email").asString(),
-                            isEmailVerified = validatedJwt.getClaim("email_verified").asBoolean(),
+                            email = validatedJwt.getClaim("email").asString() ?: return Result.failure(
+                                NullPointerException("The email is null")
+                            ),
+                            isEmailVerified = validatedJwt.getClaim("email_verified").asBoolean()
+                                ?: return Result.failure(NullPointerException("The is email verified is null")),
                             pictureUrl = "",
                             name = ""
                         )

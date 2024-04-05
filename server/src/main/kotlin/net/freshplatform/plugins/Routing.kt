@@ -12,6 +12,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.SerializationException
 import net.freshplatform.routes.auth.authRoutes
+import net.freshplatform.routes.live_chat.liveChatRoutes
 import net.freshplatform.utils.ErrorResponse
 import net.freshplatform.utils.ErrorResponseException
 import net.freshplatform.utils.getEnvironmentVariables
@@ -19,6 +20,9 @@ import net.freshplatform.utils.getEnvironmentVariables
 fun Application.configureRouting() {
 
     install(StatusPages) {
+        status(HttpStatusCode.NotFound) { call, status ->
+            call.respondText(text = "404: Page Not Found", status = status)
+        }
         exception<Throwable> { call, cause ->
             cause.printStackTrace()
             if (getEnvironmentVariables().isProductionMode) {
@@ -91,5 +95,6 @@ fun Application.configureRouting() {
         }
 
         authRoutes()
+        liveChatRoutes()
     }
 }

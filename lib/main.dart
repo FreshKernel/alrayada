@@ -10,11 +10,15 @@ import 'package:hydrated_bloc/hydrated_bloc.dart'
 import 'package:path_provider/path_provider.dart'
     show getApplicationDocumentsDirectory;
 
+import 'data/live_chat/live_chat_repository_impl.dart';
+import 'data/user/admin/admin_auth_repository_impl.dart';
 import 'data/user/auth_repository_impl.dart';
 import 'firebase_options.dart';
 import 'l10n/app_localizations.dart';
+import 'logic/auth/admin/admin_auth_cubit.dart';
 import 'logic/auth/auth_cubit.dart';
 import 'logic/connection/connection_cubit.dart';
+import 'logic/live_chat/live_chat_cubit.dart';
 import 'logic/settings/settings_cubit.dart';
 import 'logic/settings/settings_data.dart';
 import 'screens/app_router.dart';
@@ -93,6 +97,17 @@ class MyApp extends StatelessWidget {
           lazy: false,
           create: (context) => AuthCubit(
             authRepository: AuthRepositoryImpl(),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => AdminAuthCubit(
+            adminAuthRepository: AdminAuthRepositoryImpl(),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => LiveChatCubit(
+            liveChatRepository: LiveChatRepositoryImpl(),
+            authCubit: context.read<AuthCubit>(),
           ),
         ),
       ],

@@ -31,7 +31,13 @@ class ServerConfigurations {
   }
 
   /// This add the base url to the path of the route
-  static String getRequestUrl(String path) {
+  static String getRequestUrl(
+    String path, {
+    bool isWebSocket = false,
+  }) {
+    if (isWebSocket) {
+      return '${baseUrl.replaceFirst('http', 'ws').replaceFirst('https', 'wss')}/$path';
+    }
     return '$baseUrl/$path';
   }
 

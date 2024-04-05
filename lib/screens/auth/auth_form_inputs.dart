@@ -211,7 +211,7 @@ class _AuthFormInputsState extends State<AuthFormInputs> {
       ),
       SizedBox(
         width: double.infinity,
-        child: PlatformElevatedButton(
+        child: FilledButton(
           onPressed: _onSubmit,
           child: Text(_isLogin ? context.loc.signIn : context.loc.signUp),
         ),

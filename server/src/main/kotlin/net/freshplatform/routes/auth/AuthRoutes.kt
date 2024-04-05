@@ -33,7 +33,7 @@ fun Route.authRoutes() {
             resetPasswordForm()
             updatePassword()
         }
-       adminAuthRoutes()
+        adminAuthRoutes()
     }
 }
 

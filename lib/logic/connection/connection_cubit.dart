@@ -11,14 +11,14 @@ class ConnectionCubit extends Cubit<ConnState> {
   ConnectionCubit({required this.connectivity}) : super(ConnState.initial()) {
     _connectionSubscription =
         Connectivity().onConnectivityChanged.listen((connectivityResult) {
-      if (connectivityResult == ConnectivityResult.none) {
+      if (connectivityResult.contains(ConnectivityResult.none)) {
         emit(ConnStateDisconnected(connectivityResult: connectivityResult));
         return;
       }
       emit(ConnStateConnected(connectivityResult: connectivityResult));
     });
   }
-  late StreamSubscription<ConnectivityResult> _connectionSubscription;
+  late StreamSubscription<List<ConnectivityResult>> _connectionSubscription;
   final Connectivity connectivity;
 
   @override

@@ -7,6 +7,11 @@ sealed class AuthState extends Equatable {
 
   final UserCredential? userCredential;
 
+  UserCredential get requireUserCredential {
+    return userCredential ??
+        (throw StateError('You need to be authenticated.'));
+  }
+
   @override
   List<Object?> get props => [userCredential];
 }

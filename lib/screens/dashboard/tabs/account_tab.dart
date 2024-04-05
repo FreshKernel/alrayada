@@ -10,12 +10,14 @@ import 'package:lottie/lottie.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../../constants.dart';
+import '../../../data/user/models/user.dart';
 import '../../../gen/assets.gen.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../logic/auth/auth_cubit.dart';
 import '../../../utils/extensions/scaffold_messenger_ext.dart';
 import '../../../utils/server.dart';
 import '../../account_data/account_data_screen.dart';
+import '../../admin/admin_dashboard_screen.dart';
 import '../../auth/auth_screen.dart';
 import '../../settings/settings_screen.dart';
 import '../tab_item.dart';
@@ -182,6 +184,22 @@ class _AccountTabState extends State<AccountTab> {
                     iconData: PlatformIcons(context).accountCircleSolid,
                     onTap: () => context.push(AccountDataScreen.routeName),
                     isAuthRequired: true,
+                  ),
+                  BlocBuilder<AuthCubit, AuthState>(
+                    builder: (context, state) {
+                      if (state.userCredential?.user.role != UserRole.admin) {
+                        return const SizedBox.shrink();
+                      }
+                      return _buildAccountTile(
+                        title: context.loc.adminDashboard,
+                        subTitle: context.loc.manageEverythingInOnePlace,
+                        iconData: isCupertino(context)
+                            ? CupertinoIcons.square_grid_2x2_fill
+                            : Icons.dashboard,
+                        onTap: () =>
+                            context.push(AdminDashboardScreen.routeName),
+                      );
+                    },
                   ),
                   _buildAccountTile(
                     title: context.loc.orders,

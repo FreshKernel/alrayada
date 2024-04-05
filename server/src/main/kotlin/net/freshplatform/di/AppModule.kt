@@ -1,6 +1,8 @@
 package net.freshplatform.di
 
 import io.ktor.server.application.*
+import net.freshplatform.data.live_chat.LiveChatDataSource
+import net.freshplatform.data.live_chat.MongoLiveChatDataSource
 import net.freshplatform.data.user.MongoUserDataSource
 import net.freshplatform.data.user.UserDataSource
 import net.freshplatform.plugins.databaseModule
@@ -63,5 +65,8 @@ val servicesModule = module {
 val dataSourcesModule = module {
     single<UserDataSource> {
         MongoUserDataSource(get())
+    }
+    single<LiveChatDataSource> {
+        MongoLiveChatDataSource(get())
     }
 }

@@ -6,10 +6,12 @@ import 'package:go_router/go_router.dart';
 
 import '../../l10n/app_localizations.dart';
 
+import '../../logic/auth/auth_cubit.dart';
 import '../../logic/settings/settings_cubit.dart';
-import '../../logic/settings/settings_data.dart';
+import '../../utils/extensions/scaffold_messenger_ext.dart';
+import '../../widgets/responsive_navbar.dart';
 import '../onboarding/onboarding_screen.dart';
-import '../support/support_screen.dart';
+import '../live_chat/live_chat_screen.dart';
 import 'dashboard_drawer.dart';
 import 'tab_item.dart';
 import 'tabs/account_tab.dart';
@@ -26,12 +28,14 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+  /// The [PageStorageKey] is used to save the scroll state, the value
+  /// has to be unique but it doesn't has to be the id of the tab in order to work
   List<TabItem> get _tabs => [
         TabItem(
           id: HomeTab.id,
           label: context.loc.home,
           body: const HomeTab(
-            key: PageStorageKey('Home'),
+            key: PageStorageKey(HomeTab.id),
           ),
           title: context.loc.home,
           icon: Icon(
@@ -40,12 +44,28 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 : Icons.dashboard_outlined,
             semanticLabel: context.loc.home,
           ),
+          actionButtonBuilder: (context) => FloatingActionButton(
+            onPressed: () {
+              if (context.read<AuthCubit>().state.userCredential == null) {
+                ScaffoldMessenger.of(context).showSnackBarText(
+                  context.loc.youNeedToLoginFirst,
+                );
+                return;
+              }
+              context.push(LiveChatScreen.routeName);
+            },
+            child: Icon(
+              isCupertino(context)
+                  ? CupertinoIcons.chat_bubble_fill
+                  : Icons.chat,
+            ),
+          ),
           actionsBuilder: (context) => [
             PlatformIconButton(
               material: (context, platform) => MaterialIconButtonData(
                 tooltip: context.loc.support,
               ),
-              onPressed: () => context.push(SupportScreen.routeName),
+              onPressed: () => context.push(LiveChatScreen.routeName),
               icon: Icon(
                 isCupertino(context)
                     ? CupertinoIcons.chat_bubble_fill
@@ -69,7 +89,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           id: CategoriesTab.id,
           label: context.loc.categories,
           body: const CategoriesTab(
-            key: PageStorageKey('Categories'),
+            key: PageStorageKey(CategoriesTab.id),
           ),
           title: context.loc.categories,
           icon: Icon(
@@ -83,7 +103,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           id: CartTab.id,
           label: context.loc.shoppingCart,
           body: const CartTab(
-            key: PageStorageKey('Cart'),
+            key: PageStorageKey(CartTab.id),
           ),
           title: context.loc.shoppingCart,
           icon: Icon(
@@ -97,7 +117,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           id: OrdersTab.id,
           label: context.loc.orders,
           body: const OrdersTab(
-            key: PageStorageKey('Orders'),
+            key: PageStorageKey(OrdersTab.id),
           ),
           title: context.loc.orders,
           icon: Icon(
@@ -112,7 +132,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           label: context.loc.account,
           body: AccountTab(
             navigateToTab: _navigateToTabById,
-            key: const PageStorageKey('Account'),
+            key: const PageStorageKey(AccountTab.id),
           ),
           title: context.loc.account,
           icon: Icon(
@@ -134,24 +154,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
   var _currentIndex = 0;
   final _pageStorageBucket = PageStorageBucket();
 
-  bool _isNavRailBar(Size size, AppLayoutMode layoutMode) {
-    switch (layoutMode) {
-      case AppLayoutMode.auto:
-        return size.width >= 480;
-      case AppLayoutMode.small:
-        return false;
-      case AppLayoutMode.large:
-        return true;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SettingsCubit, SettingsState>(
-      buildWhen: (previous, current) =>
-          previous.layoutMode != current.layoutMode ||
-          previous.showOnBoardingScreen != current.showOnBoardingScreen,
-      builder: (context, state) {
+    return BlocSelector<SettingsCubit, SettingsState, bool>(
+      selector: (state) => state.showOnBoardingScreen,
+      builder: (context, showOnBoardingScreen) {
         return AnimatedSwitcher(
           duration: const Duration(milliseconds: 330),
           transitionBuilder: (child, animation) {
@@ -168,60 +175,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
               child: child,
             );
           },
-          child: state.showOnBoardingScreen
+          child: showOnBoardingScreen
               ? const OnBoardingScreen()
-              : Scaffold(
+              : ResponsiveNavbar(
+                  tabs: _tabs,
+                  currentIndex: _currentIndex,
+                  onDestinationSelected: _navigateToTab,
                   drawer: const DashboardDrawer(),
-                  appBar: AppBar(
-                    title: Text(_tabs[_currentIndex].label),
-                    actions: _tabs[_currentIndex].actionsBuilder?.call(context),
-                  ),
-                  body: SafeArea(
-                    child: Builder(
-                      builder: (context) {
-                        final bodyWidget = PageStorage(
-                          bucket: _pageStorageBucket,
-                          child: _tabs[_currentIndex].body,
-                        );
-                        if (!_isNavRailBar(
-                            MediaQuery.sizeOf(context), state.layoutMode)) {
-                          return bodyWidget;
-                        }
-                        return Row(
-                          children: [
-                            NavigationRail(
-                              onDestinationSelected: _navigateToTab,
-                              labelType: NavigationRailLabelType.all,
-                              destinations: _tabs.map((e) {
-                                return e.toNavigationRailDestination();
-                              }).toList(),
-                              selectedIndex: _currentIndex,
-                            ),
-                            Expanded(
-                              child: widget,
-                            )
-                          ],
-                        );
-                      },
-                    ),
-                  ),
-                  bottomNavigationBar: Builder(
-                    builder: (context) {
-                      if (_isNavRailBar(
-                          MediaQuery.sizeOf(context), state.layoutMode)) {
-                        return const SizedBox.shrink();
-                      }
-                      return NavigationBar(
-                        selectedIndex: _currentIndex,
-                        onDestinationSelected: _navigateToTab,
-                        destinations: _tabs.map((e) {
-                          return e.toNavigationDestination();
-                        }).toList(),
-                      );
-                    },
-                  ),
-                  floatingActionButton:
-                      _tabs[_currentIndex].actionButtonBuilder?.call(context),
+                  pageStorageBucket: _pageStorageBucket,
                 ),
         );
       },

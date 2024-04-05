@@ -385,5 +385,16 @@
    "signInWithAppleIsNotSupportedOnYourDevice": "Sign in with Apple is not supported on your device.",
    "tooManyRequestsPleaseTryAgainLater": "Too many requests, please try again later",
    "yourEmailIsNotVerified": "Your email is not verified.",
-   "enterSignUpDataDesc": "Unlock the door to a world of possibilities! Kindly furnish us with your details to embark on your journey with us."
+   "enterSignUpDataDesc": "Unlock the door to a world of possibilities! Kindly furnish us with your details to embark on your journey with us.",
+   "adminDashboard": "Admin dashboard",
+   "manageEverythingInOnePlace": "Manage everything in one place",
+   "users": "Users",
+   "activate": "Activate",
+   "deactivate": "Deactivate",
+   "sendNotification": "Send notification",
+   "chat": "Chat",
+   "title": "Title",
+   "thisFieldCantBeEmpty": "This field can't be empty",
+   "notificationHasBeenSuccessfullySent": "Notification has been successfully sent",
+   "admin": "Admin"
 }

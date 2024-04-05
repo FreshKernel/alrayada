@@ -3,10 +3,11 @@ part of 'connection_cubit.dart';
 @immutable
 sealed class ConnState extends Equatable {
   const ConnState({required this.connectivityResult});
-  factory ConnState.initial() =>
-      const ConnStateDisconnected(connectivityResult: ConnectivityResult.none);
+  factory ConnState.initial() => const ConnStateDisconnected(
+        connectivityResult: [ConnectivityResult.none],
+      );
 
-  final ConnectivityResult connectivityResult;
+  final List<ConnectivityResult> connectivityResult;
 }
 
 class ConnStateConnected extends ConnState {
