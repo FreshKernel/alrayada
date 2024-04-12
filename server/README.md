@@ -8,7 +8,7 @@ A server application for the client app
 2. Provide the values, if you can't understand some of the variables, go to
    this [file](./src/main/kotlin/net/freshplatform/utils/EnvironmentVariablesUtils.kt)
 3. Change the values in the [Constants](./src/main/kotlin/net/freshplatform/Constants.kt) file
-4. Run or package the app, for more info visit the [official Ktor docs](https://ktor.io/docs/)
+4. Run or package the app, for more info visit the official [Ktor Documentation](https://ktor.io/docs/)
 
 ## Third party Apis
 
@@ -24,3 +24,5 @@ A server application for the client app
    route, by getting only what we need (userDeviceNotifications property in this case), there is no need to get the
    whole user, take a look
    at the usages of findUserById() and findUserByEmail()
+2. Try to not use `unsafe {}` in Html builders
+3. Fix the Live chat sorting issue

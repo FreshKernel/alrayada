@@ -249,29 +249,27 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  // Future<void> updateUserInfo(
-  //   UserInfo userInfo,
-  // ) async {
-  //   final userCredential = state.userCredential;
-  //   if (userCredential == null) {
-  //     return;
-  //   }
-  //   try {
-  //     await authRepository.updateUserInfo(userInfo);
-  //     emit(
-  //       state.copyWith(
-  //         userCredential: userCredential.copyWith(
-  //           user: userCredential.user.copyWith(
-  //             info: userInfo,
-  //           ),
-  //         ),
-  //       ),
-  //     );
-  //   } on AuthException catch (e) {
-  //     emit(state.copyWith(exception: e));
-  //   }
-  // }
+  Future<void> updateUserInfo(
+    UserInfo userInfo,
+  ) async {
+    try {
+      emit(AuthUpdateUserInProgress(userCredential: state.userCredential));
+      await authRepository.updateUserInfo(userInfo);
+      emit(
+        AuthUpdateUserSuccess(
+          userCredential: state.requireUserCredential.copyWith(
+            user: state.requireUserCredential.user.copyWith(
+              info: userInfo,
+            ),
+          ),
+        ),
+      );
+    } on AuthException catch (e) {
+      emit(AuthUpdateUserFailure(e, userCredential: state.userCredential));
+    }
+  }
 
+  /// For forgot password screen
   Future<void> sendResetPasswordLink({required String email}) async {
     try {
       emit(const AuthForgotPasswordInProgress());
@@ -283,20 +281,31 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> sendEmailVerificationLink() async {
-    final savedUserCredential = await authRepository.fetchSavedUserCredential();
     try {
       emit(AuthResendEmailVerificationInProgress(
-        userCredential: savedUserCredential,
+        userCredential: state.userCredential,
       ));
       await authRepository.sendEmailVerificationLink();
       emit(
-        AuthResendEmailVerificationSuccess(userCredential: savedUserCredential),
+        AuthResendEmailVerificationSuccess(
+            userCredential: state.userCredential),
       );
     } on AuthException catch (e) {
       emit(AuthResendEmailVerificationFailure(
         e,
-        userCredential: savedUserCredential,
+        userCredential: state.userCredential,
       ));
+    }
+  }
+
+  Future<void> deleteAccount() async {
+    try {
+      emit(AuthDeleteInProgress(userCredential: state.userCredential));
+      await authRepository.deleteAccount();
+      // No need to logout as it do that internally by clearing the local data
+      emit(const AuthDeleteSuccess());
+    } on AuthException catch (e) {
+      emit(AuthDeleteFailure(e, userCredential: state.userCredential));
     }
   }
 }

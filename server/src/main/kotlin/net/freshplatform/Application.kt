@@ -12,7 +12,7 @@ fun main() {
         Netty,
         port = getEnvironmentVariables().serverPort,
         module = Application::module,
-        watchPaths = listOf("classes", "resources")
+        watchPaths = listOf("classes")
     )
         .start(wait = true)
 }

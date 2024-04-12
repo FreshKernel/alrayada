@@ -1,15 +1,46 @@
 part of 'live_chat_cubit.dart';
 
-@immutable
-sealed class LiveChatState extends Equatable {
-  const LiveChatState({
+class LiveChatMessagesState extends Equatable {
+  const LiveChatMessagesState({
     this.messages = const [],
+    this.page = 1,
+    this.hasReachedLastPage = false,
   });
 
   final List<ChatMessage> messages;
+  final int page;
+  final bool hasReachedLastPage;
 
   @override
-  List<Object?> get props => [messages];
+  List<Object?> get props => [
+        messages,
+        page,
+        hasReachedLastPage,
+      ];
+
+  LiveChatMessagesState copyWith({
+    List<ChatMessage>? messages,
+    int? page,
+    bool? hasReachedLastPage,
+  }) {
+    return LiveChatMessagesState(
+      messages: messages ?? this.messages,
+      page: page ?? this.page,
+      hasReachedLastPage: hasReachedLastPage ?? this.hasReachedLastPage,
+    );
+  }
+}
+
+@immutable
+sealed class LiveChatState extends Equatable {
+  const LiveChatState({
+    this.messagesState = const LiveChatMessagesState(),
+  });
+
+  final LiveChatMessagesState messagesState;
+
+  @override
+  List<Object?> get props => [messagesState];
 }
 
 class LiveChatInitial extends LiveChatState {
@@ -19,15 +50,16 @@ class LiveChatInitial extends LiveChatState {
 // Send message
 
 class LiveChatSendMessageInProgress extends LiveChatState {
-  const LiveChatSendMessageInProgress({required super.messages});
+  const LiveChatSendMessageInProgress({required super.messagesState});
 }
 
 class LiveChatSendMessageSuccess extends LiveChatState {
-  const LiveChatSendMessageSuccess({required super.messages});
+  const LiveChatSendMessageSuccess({required super.messagesState});
 }
 
 class LiveChatSendMessageFailure extends LiveChatState {
-  const LiveChatSendMessageFailure(this.exception, {required super.messages});
+  const LiveChatSendMessageFailure(this.exception,
+      {required super.messagesState});
 
   final LiveChatException exception;
 
@@ -42,7 +74,7 @@ class LiveChatConnectInProgress extends LiveChatState {
 }
 
 class LiveChatConnectSuccess extends LiveChatState {
-  const LiveChatConnectSuccess({required super.messages});
+  const LiveChatConnectSuccess({required super.messagesState});
 }
 
 class LiveChatConnectFailure extends LiveChatState {
@@ -52,6 +84,10 @@ class LiveChatConnectFailure extends LiveChatState {
 
   @override
   List<Object?> get props => [exception, ...super.props];
+}
+
+class LiveChatLoadMoreInProgress extends LiveChatState {
+  const LiveChatLoadMoreInProgress({required super.messagesState});
 }
 
 // Disconnect
@@ -76,5 +112,5 @@ class LiveChatDisconnectFailure extends LiveChatState {
 // Message events
 
 class LiveChatNewMessageReceived extends LiveChatState {
-  const LiveChatNewMessageReceived({required super.messages});
+  const LiveChatNewMessageReceived({required super.messagesState});
 }

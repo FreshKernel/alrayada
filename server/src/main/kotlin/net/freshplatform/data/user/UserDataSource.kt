@@ -7,6 +7,7 @@ interface UserDataSource {
     suspend fun findUserByEmail(email: String): Result<User?>
     suspend fun isEmailUsed(email: String): Result<Boolean>
     suspend fun findUserById(userId: String): Result<User?>
+    suspend fun findUserDeviceNotificationsTokenById(userId: String): Result<UserDeviceNotificationsToken?>
     suspend fun updateDeviceNotificationsTokenById(
         userId: String,
         deviceNotificationsToken: UserDeviceNotificationsToken
@@ -23,7 +24,7 @@ interface UserDataSource {
 
     /**
      * The main difference between [updatePasswordById] and [resetPasswordById] is
-     * that [resetPasswordById] update the password and set the reset password verification to null
+     * that [resetPasswordById] update the password and set the [User.resetPasswordVerification] to null
      * */
     suspend fun resetPasswordById(userId: String, newPassword: String): Boolean
 

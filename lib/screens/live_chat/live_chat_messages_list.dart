@@ -40,19 +40,27 @@ class LiveChatMessagesList extends StatelessWidget {
             onTryAgain: () => context.read<LiveChatCubit>().connect(),
           );
         }
-        final messages = state.messages;
-        return ScrollEdgeDetector(
-          onTop: () {},
-          child: ListView.builder(
-            controller: scrollController,
-            itemCount: messages.length,
-            itemBuilder: (context, index) {
-              final message = messages[index];
-              return LiveChatMessageTile(
-                message: message,
-              );
-            },
-          ),
+        final messages = state.messagesState.messages;
+        return Column(
+          children: [
+            if (state is LiveChatLoadMoreInProgress)
+              const LinearProgressIndicator(),
+            Expanded(
+              child: ScrollEdgeDetector(
+                onTop: () => context.read<LiveChatCubit>().loadMoreMessages(),
+                child: ListView.builder(
+                  controller: scrollController,
+                  itemCount: messages.length,
+                  itemBuilder: (context, index) {
+                    final message = messages[index];
+                    return LiveChatMessageTile(
+                      message: message,
+                    );
+                  },
+                ),
+              ),
+            ),
+          ],
         );
       },
     );

@@ -138,6 +138,7 @@ class _AuthSocialLoginSignUpScreenState
                       initialCity: _labCity,
                       onSaved: (newValue) =>
                           _labCity = newValue ?? IraqGovernorate.defaultCity,
+                      loadCachedCity: true,
                     ),
                   ),
                   PrivacyPolicyCheckboxField(

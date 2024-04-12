@@ -56,7 +56,7 @@ class _SendNotificationToUserDialogState
           context.pop();
         }
       },
-      child: AlertDialog.adaptive(
+      child: AlertDialog(
         title: Text(context.loc.sendNotification),
         icon: Icon(isCupertino(context)
             ? CupertinoIcons.bell

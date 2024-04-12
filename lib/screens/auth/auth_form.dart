@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../l10n/app_localizations.dart';
-import '../../logic/connection/connection_cubit.dart';
+import '../../logic/connectivity/connectivity_cubit.dart';
 import '../../widgets/errors/w_internet_error.dart';
 import 'auth_form_inputs.dart';
 
@@ -42,9 +42,9 @@ class _AuthFormState extends State<AuthenticationForm> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ConnectionCubit, ConnState>(
+    return BlocBuilder<ConnectivityCubit, ConnectivityState>(
       builder: (context, state) {
-        if (state is ConnStateDisconnected) {
+        if (state is ConnectivityDisconnected) {
           return const InternetError(
             onTryAgain: null,
           );

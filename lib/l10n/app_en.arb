@@ -1,5 +1,6 @@
 {
    "@@locale":"en",
+   "appName":"Alrayada",
    "categories":"Categories",
    "shoppingCart":"Cart",
    "home":"Home",
@@ -74,6 +75,7 @@
    "currentPassword":"Current password",
    "newPassword":"New password",
    "accountData":"Account data",
+   "profile": "Profile",
    "updateAllOfYourData":"Update all of your data",
    "orders":"Orders",
    "viewAllOfYourOrders":"View all of your orders, you can cancel any order that hasn't approved or rejected yet",
@@ -303,7 +305,6 @@
    "paymentMethod":"Payment method",
    "payOrderMsg":"Pay",
    "orderHasPaidMsg":"Thank you for your payment! Your order status has been changed to process.",
-   "appName":"Alrayada",
    "productImages":"Product images",
    "product":"Product",
    "categoryImages":"Category images",

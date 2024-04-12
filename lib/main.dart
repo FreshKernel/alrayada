@@ -17,7 +17,7 @@ import 'firebase_options.dart';
 import 'l10n/app_localizations.dart';
 import 'logic/auth/admin/admin_auth_cubit.dart';
 import 'logic/auth/auth_cubit.dart';
-import 'logic/connection/connection_cubit.dart';
+import 'logic/connectivity/connectivity_cubit.dart';
 import 'logic/live_chat/live_chat_cubit.dart';
 import 'logic/settings/settings_cubit.dart';
 import 'logic/settings/settings_data.dart';
@@ -86,7 +86,7 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => ConnectionCubit(
+          create: (context) => ConnectivityCubit(
             connectivity: Connectivity(),
           ),
         ),

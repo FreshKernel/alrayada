@@ -49,7 +49,7 @@ dependencies {
     implementation("io.ktor:ktor-client-logging")
     implementation("io.ktor:ktor-serialization-kotlinx-json")
 
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:${libs.versions.kotlin.get()}")
+    implementation(libs.kotlin.test.junit)
     implementation(libs.kotlinx.datetime)
 
     implementation(libs.bcrypt)
@@ -64,11 +64,11 @@ dependencies {
 
     implementation(libs.dotenv.kotlin)
 
-    implementation("com.google.auth:google-auth-library-oauth2-http:1.23") // For Firebase Cloud Messaging access token
-    implementation("com.google.api-client:google-api-client:2.4.0") // For Google sign in
+    implementation(libs.google.auth.library.oauth2.http) // For Firebase Cloud Messaging access token
+    implementation(libs.google.api.client) // For Google sign in
 
     implementation("com.sun.mail:jakarta.mail:2.0.1")
-    implementation ("com.auth0:jwks-rsa:0.22.1")
+    implementation("com.auth0:jwks-rsa:0.22.1")
 
     implementation("io.github.smiley4:ktor-swagger-ui:2.7.4")
 }

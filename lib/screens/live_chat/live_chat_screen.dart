@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../l10n/app_localizations.dart';
-import '../../logic/auth/auth_cubit.dart';
+import '../../logic/connectivity/connectivity_cubit.dart';
 import '../../logic/live_chat/live_chat_cubit.dart';
+import '../../widgets/errors/w_internet_error.dart';
 import 'live_chat_messages_list.dart';
 import 'live_chat_new_message.dart';
 
@@ -40,17 +41,24 @@ class _LiveChatScreenState extends State<LiveChatScreen> {
       appBar: AppBar(
         title: Text(context.loc.support),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: LiveChatMessagesList(
-              scrollController: _scrollController,
-            ),
-          ),
-          LiveChatNewMessage(
-            scrollController: _scrollController,
-          )
-        ],
+      body: BlocBuilder<ConnectivityCubit, ConnectivityState>(
+        builder: (context, state) {
+          if (state is ConnectivityDisconnected) {
+            return const InternetError(onTryAgain: null);
+          }
+          return Column(
+            children: [
+              Expanded(
+                child: LiveChatMessagesList(
+                  scrollController: _scrollController,
+                ),
+              ),
+              LiveChatNewMessage(
+                scrollController: _scrollController,
+              )
+            ],
+          );
+        },
       ),
     );
   }

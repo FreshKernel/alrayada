@@ -16,7 +16,7 @@ data class User(
     @Contextual
     val id: ObjectId = ObjectId(),
     val email: String,
-    val password: String, // TODO: I might make this nullable in case of using social login
+    val password: String,
     val isEmailVerified: Boolean,
     val isAccountActivated: Boolean,
     val role: UserRole,
@@ -30,6 +30,10 @@ data class User(
     @Serializable(with = InstantAsBsonDateTime::class)
     val updatedAt: Instant,
 ) {
+    companion object {
+        const val SOCIAL_LOGIN_EMPTY_PASSWORD = ""
+    }
+
     fun toResponse() = UserResponse(
         userId = id.toString(),
         email = email,
@@ -42,6 +46,7 @@ data class User(
         createdAt = createdAt,
         updatedAt = updatedAt
     )
+
     fun hasAdminPrivileges(): Boolean {
         // It could be IllegalArgumentException
         // but for security reasons here will also catch any kind of exception

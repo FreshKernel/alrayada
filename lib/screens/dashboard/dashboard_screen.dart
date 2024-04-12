@@ -5,13 +5,12 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../l10n/app_localizations.dart';
-
 import '../../logic/auth/auth_cubit.dart';
 import '../../logic/settings/settings_cubit.dart';
 import '../../utils/extensions/scaffold_messenger_ext.dart';
 import '../../widgets/responsive_navbar.dart';
-import '../onboarding/onboarding_screen.dart';
 import '../live_chat/live_chat_screen.dart';
+import '../onboarding/onboarding_screen.dart';
 import 'dashboard_drawer.dart';
 import 'tab_item.dart';
 import 'tabs/account_tab.dart';

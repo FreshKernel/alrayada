@@ -31,25 +31,14 @@ class AdaptiveMessenger {
         await showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: title != null
-                ? Semantics(
-                    label: title,
-                    child: Text(title),
-                  )
-                : null,
-            content: Semantics(
-              label: message,
-              child: Text(
-                message,
-              ),
+            title: title != null ? Text(title) : null,
+            content: Text(
+              message,
             ),
             actions: [
-              Semantics(
-                label: context.loc.ok,
-                child: TextButton(
-                  onPressed: () => context.pop(),
-                  child: Text(context.loc.ok),
-                ),
+              TextButton(
+                onPressed: () => context.pop(),
+                child: Text(context.loc.ok),
               )
             ],
           ),

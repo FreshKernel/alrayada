@@ -27,7 +27,7 @@ class AuthRoutes extends RoutesConstants {
   final sendEmailVerificationLink = '$root/sendEmailVerificationLink';
   final sendResetPasswordLink = '$root/sendResetPasswordLink';
 
-  final deleteSelfAccount = '$root/deleteSelfAccount';
+  final deleteAccount = '$root/deleteAccount';
   final updatePassword = '$root/updatePassword';
   final updateDeviceNotificationsToken = '$root/updateDeviceNotificationsToken';
 

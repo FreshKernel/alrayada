@@ -21,12 +21,14 @@ class LiveChatCubit extends Cubit<LiveChatState> {
   final AuthCubit authCubit;
   late StreamSubscription<ChatMessage> _connectionSubscription;
 
+  static const int _limit = 15;
+
   Future<void> connect() async {
     try {
       emit(const LiveChatConnectInProgress());
       final currentMessages = await liveChatRepository.loadMessages(
         page: 1,
-        limit: 10,
+        limit: _limit,
       );
       await liveChatRepository.connect(
         accessToken: authCubit.state.requireUserCredential.accessToken,
@@ -34,11 +36,15 @@ class LiveChatCubit extends Cubit<LiveChatState> {
       _connectionSubscription =
           liveChatRepository.incomingMessages().listen((message) {
         emit(LiveChatNewMessageReceived(
-          messages: [...state.messages, message],
+          messagesState: LiveChatMessagesState(
+            messages: [...state.messagesState.messages, message],
+          ),
         ));
       });
       emit(LiveChatConnectSuccess(
-        messages: currentMessages,
+        messagesState: LiveChatMessagesState(
+          messages: currentMessages,
+        ),
       ));
     } on LiveChatException catch (e) {
       emit(LiveChatConnectFailure(e));
@@ -58,11 +64,50 @@ class LiveChatCubit extends Cubit<LiveChatState> {
 
   Future<void> sendMessage({required String text}) async {
     try {
-      emit(LiveChatSendMessageInProgress(messages: state.messages));
+      emit(
+        LiveChatSendMessageInProgress(
+          messagesState: state.messagesState,
+        ),
+      );
       await liveChatRepository.sendMessage(text: text);
-      emit(LiveChatSendMessageSuccess(messages: state.messages));
+      emit(LiveChatSendMessageSuccess(
+        messagesState: state.messagesState,
+      ));
     } on LiveChatException catch (e) {
-      emit(LiveChatSendMessageFailure(e, messages: state.messages));
+      emit(LiveChatSendMessageFailure(e, messagesState: state.messagesState));
+    }
+  }
+
+  Future<void> loadMoreMessages() async {
+    if (state.messagesState.hasReachedLastPage) {
+      return;
+    }
+    if (state is LiveChatLoadMoreInProgress) {
+      // In case if the function called more than once
+      return;
+    }
+    try {
+      emit(LiveChatLoadMoreInProgress(
+        messagesState: state.messagesState.copyWith(
+          page: state.messagesState.page + 1,
+        ),
+      ));
+      final moreMessages = await liveChatRepository.loadMessages(
+        page: state.messagesState.page,
+        limit: _limit,
+      );
+      emit(LiveChatConnectSuccess(
+        messagesState: state.messagesState.copyWith(
+          messages: [
+            // TODO: At the moment the messages is not sorted as it should from the backend side
+            ...moreMessages,
+            ...state.messagesState.messages,
+          ],
+          hasReachedLastPage: moreMessages.isEmpty,
+        ),
+      ));
+    } on LiveChatException catch (e) {
+      emit(LiveChatConnectFailure(e));
     }
   }
 

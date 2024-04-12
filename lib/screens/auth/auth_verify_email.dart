@@ -8,7 +8,7 @@ import '../../data/user/auth_exceptions.dart';
 import '../../gen/assets.gen.dart';
 import '../../l10n/app_localizations.dart';
 import '../../logic/auth/auth_cubit.dart';
-import '../../logic/connection/connection_cubit.dart';
+import '../../logic/connectivity/connectivity_cubit.dart';
 import '../../utils/extensions/scaffold_messenger_ext.dart';
 import '../../widgets/errors/w_internet_error.dart';
 
@@ -28,9 +28,9 @@ class AuthVerifyEmailScreen extends StatelessWidget {
           )
         ],
       ),
-      body: BlocBuilder<ConnectionCubit, ConnState>(
+      body: BlocBuilder<ConnectivityCubit, ConnectivityState>(
         builder: (context, state) {
-          if (state is ConnStateDisconnected) {
+          if (state is ConnectivityDisconnected) {
             return const InternetError(
               onTryAgain: null,
             );

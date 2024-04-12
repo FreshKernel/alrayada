@@ -5,10 +5,10 @@ import 'package:go_router/go_router.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../logic/auth/auth_cubit.dart';
 import '../../utils/extensions/scaffold_messenger_ext.dart';
-import '../account_data/account_data_screen.dart';
-import '../notifications/notifications_screen.dart';
-import '../settings/settings_screen.dart';
 import '../live_chat/live_chat_screen.dart';
+import '../notifications/notifications_screen.dart';
+import '../profile/profile_screen.dart';
+import '../settings/settings_screen.dart';
 
 @immutable
 class DrawerItem {
@@ -38,7 +38,7 @@ class DashboardDrawer extends StatelessWidget {
         DrawerItem(
           icon: Icons.account_circle,
           title: context.loc.account,
-          onTap: () => context.push(AccountDataScreen.routeName),
+          onTap: () => context.push(ProfileScreen.routeName),
           isAuthRequired: true,
         ),
         DrawerItem(

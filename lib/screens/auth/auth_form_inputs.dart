@@ -124,6 +124,7 @@ class _AuthFormInputsState extends State<AuthFormInputs> {
         return;
       }
     }
+    // Important, otherwise the selected city won't saved
     _formKey.currentState?.save();
 
     if (_isLogin) {
@@ -166,6 +167,7 @@ class _AuthFormInputsState extends State<AuthFormInputs> {
           initialCity: _labCity,
           onSaved: (newValue) =>
               _labCity = newValue ?? IraqGovernorate.defaultCity,
+          loadCachedCity: true,
         ),
       ),
       const SizedBox(height: 8),

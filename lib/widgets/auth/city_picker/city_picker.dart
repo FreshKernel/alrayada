@@ -14,11 +14,16 @@ class CityPickerFormField extends StatefulWidget {
   const CityPickerFormField({
     required this.onSaved,
     required this.initialCity,
+    required this.loadCachedCity,
     super.key,
   });
 
   final FormFieldSetter<IraqGovernorate> onSaved;
   final IraqGovernorate initialCity;
+
+  /// After loading the [initialCity] should we use the last city located by Gps?
+  /// true for sign in screeen, false for profile screen
+  final bool loadCachedCity;
 
   @override
   State<CityPickerFormField> createState() => _CityPickerFormFieldState();
@@ -32,6 +37,9 @@ class _CityPickerFormFieldState extends State<CityPickerFormField> {
   void initState() {
     super.initState();
     _selectedCity = widget.initialCity;
+    if (!widget.loadCachedCity) {
+      return;
+    }
     GeoLocationService.instance.getCachedLocation().then((geoLocation) {
       if (geoLocation == null) return;
       setState(() {
@@ -130,8 +138,7 @@ class _CityPickerFormFieldState extends State<CityPickerFormField> {
                               (e) => DropdownMenuItem<IraqGovernorate>(
                                 value: e,
                                 child: Center(
-                                  child:
-                                      Text(_selectedCity.getTranslatedCityName(
+                                  child: Text(e.getTranslatedCityName(
                                     localizations: context.loc,
                                   )),
                                 ),
@@ -162,7 +169,7 @@ class _CityPickerFormFieldState extends State<CityPickerFormField> {
           .map(
             (e) => DropdownMenuItem<IraqGovernorate>(
               value: e,
-              child: Text(_selectedCity.getTranslatedCityName(
+              child: Text(e.getTranslatedCityName(
                 localizations: context.loc,
               )),
             ),

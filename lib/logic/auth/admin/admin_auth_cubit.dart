@@ -39,20 +39,20 @@ class AdminAuthCubit extends Cubit<AdminAuthState> {
   }
 
   Future<void> loadMoreUsers() async {
+    if (state.usersState.hasReachedLastPage) {
+      return;
+    }
+    if (state is AdminAuthLoadMoreInProgress) {
+      // In case if the function called more than once
+      return;
+    }
     try {
-      if (state.usersState.hasReachedLastPage) {
-        return;
-      }
-      if (state is AdminAuthLoadMoreInProgress) {
-        // In case if the function called more than once
-        return;
-      }
       emit(AdminAuthLoadMoreInProgress(
         usersState: state.usersState.copyWith(
           page: state.usersState.page + 1,
         ),
       ));
-      final users = await adminAuthRepository.getAllUsers(
+      final moreUsers = await adminAuthRepository.getAllUsers(
         searchQuery: state.usersState.searchQuery,
         page: state.usersState.page,
         limit: _limit,
@@ -61,9 +61,9 @@ class AdminAuthCubit extends Cubit<AdminAuthState> {
         usersState: state.usersState.copyWith(
           users: [
             ...state.usersState.users,
-            ...users,
+            ...moreUsers,
           ],
-          hasReachedLastPage: users.isEmpty,
+          hasReachedLastPage: moreUsers.isEmpty,
         ),
       ));
     } on AdminAuthException catch (e) {

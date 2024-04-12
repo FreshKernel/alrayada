@@ -64,7 +64,7 @@ fun Route.loadMessages() {
             val page: Int by call.request.queryParameters
             val limit: Int by call.request.queryParameters
 
-            val messages = liveChatDataSource.getAllMessagesByUserId(user.id.toString(), page, limit).getOrElse {
+            val messages = liveChatDataSource.getAllMessagesByClientUserId(user.id.toString(), page, limit).getOrElse {
                 throw ErrorResponseException(
                     HttpStatusCode.InternalServerError,
                     "Unknown error while getting the messages.",

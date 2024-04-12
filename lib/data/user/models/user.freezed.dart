@@ -604,7 +604,7 @@ UserDeviceNotificationsToken _$UserDeviceNotificationsTokenFromJson(
 /// @nodoc
 mixin _$UserDeviceNotificationsToken {
   String get firebase => throw _privateConstructorUsedError;
-  dynamic get oneSignal => throw _privateConstructorUsedError;
+  String get oneSignal => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -620,7 +620,7 @@ abstract class $UserDeviceNotificationsTokenCopyWith<$Res> {
       _$UserDeviceNotificationsTokenCopyWithImpl<$Res,
           UserDeviceNotificationsToken>;
   @useResult
-  $Res call({String firebase, dynamic oneSignal});
+  $Res call({String firebase, String oneSignal});
 }
 
 /// @nodoc
@@ -638,17 +638,17 @@ class _$UserDeviceNotificationsTokenCopyWithImpl<$Res,
   @override
   $Res call({
     Object? firebase = null,
-    Object? oneSignal = freezed,
+    Object? oneSignal = null,
   }) {
     return _then(_value.copyWith(
       firebase: null == firebase
           ? _value.firebase
           : firebase // ignore: cast_nullable_to_non_nullable
               as String,
-      oneSignal: freezed == oneSignal
+      oneSignal: null == oneSignal
           ? _value.oneSignal
           : oneSignal // ignore: cast_nullable_to_non_nullable
-              as dynamic,
+              as String,
     ) as $Val);
   }
 }
@@ -662,7 +662,7 @@ abstract class _$$UserDeviceNotificationsTokenImplCopyWith<$Res>
       __$$UserDeviceNotificationsTokenImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String firebase, dynamic oneSignal});
+  $Res call({String firebase, String oneSignal});
 }
 
 /// @nodoc
@@ -679,14 +679,17 @@ class __$$UserDeviceNotificationsTokenImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? firebase = null,
-    Object? oneSignal = freezed,
+    Object? oneSignal = null,
   }) {
     return _then(_$UserDeviceNotificationsTokenImpl(
       firebase: null == firebase
           ? _value.firebase
           : firebase // ignore: cast_nullable_to_non_nullable
               as String,
-      oneSignal: freezed == oneSignal ? _value.oneSignal! : oneSignal,
+      oneSignal: null == oneSignal
+          ? _value.oneSignal
+          : oneSignal // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -707,7 +710,7 @@ class _$UserDeviceNotificationsTokenImpl
   final String firebase;
   @override
   @JsonKey()
-  final dynamic oneSignal;
+  final String oneSignal;
 
   @override
   String toString() {
@@ -721,13 +724,13 @@ class _$UserDeviceNotificationsTokenImpl
             other is _$UserDeviceNotificationsTokenImpl &&
             (identical(other.firebase, firebase) ||
                 other.firebase == firebase) &&
-            const DeepCollectionEquality().equals(other.oneSignal, oneSignal));
+            (identical(other.oneSignal, oneSignal) ||
+                other.oneSignal == oneSignal));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, firebase, const DeepCollectionEquality().hash(oneSignal));
+  int get hashCode => Object.hash(runtimeType, firebase, oneSignal);
 
   @JsonKey(ignore: true)
   @override
@@ -749,7 +752,7 @@ abstract class _UserDeviceNotificationsToken
     implements UserDeviceNotificationsToken {
   const factory _UserDeviceNotificationsToken(
       {final String firebase,
-      final dynamic oneSignal}) = _$UserDeviceNotificationsTokenImpl;
+      final String oneSignal}) = _$UserDeviceNotificationsTokenImpl;
 
   factory _UserDeviceNotificationsToken.fromJson(Map<String, dynamic> json) =
       _$UserDeviceNotificationsTokenImpl.fromJson;
@@ -757,7 +760,7 @@ abstract class _UserDeviceNotificationsToken
   @override
   String get firebase;
   @override
-  dynamic get oneSignal;
+  String get oneSignal;
   @override
   @JsonKey(ignore: true)
   _$$UserDeviceNotificationsTokenImplCopyWith<

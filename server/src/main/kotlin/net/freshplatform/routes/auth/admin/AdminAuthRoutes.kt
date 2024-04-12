@@ -74,6 +74,7 @@ fun Route.deleteUserAccount() {
 
 fun Route.setAccountActivated() {
     val userDataSource by inject<UserDataSource>()
+    val notificationsService by inject<NotificationsService>()
     authenticate {
         patch("/setAccountActivated") {
             call.requireCurrentAdminUser() // Important
@@ -124,6 +125,14 @@ fun Route.setAccountActivated() {
                 }
 
                 call.respondText { "User account has been successfully activated." }
+
+                userDataSource.findUserDeviceNotificationsTokenById(userId).getOrNull()?.let {
+                    notificationsService.sendToDevice(
+                        title = "Account activated!",
+                        body = "Your account has been activated.",
+                        deviceNotificationsToken = it
+                    )
+                }
                 return@patch
             }
 

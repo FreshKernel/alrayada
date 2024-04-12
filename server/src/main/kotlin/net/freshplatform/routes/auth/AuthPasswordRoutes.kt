@@ -184,7 +184,8 @@ fun Route.resetPasswordForm() {
                 meta("viewport", "user-scalable=no, width=device-width, initial-scale=1.0")
                 meta("apple-mobile-web-app-capable", "yes")
                 style {
-                    +"""
+                    unsafe {
+                        +"""
                         body {
                         font-family: Arial, sans-serif;
                         background-color: #f4f4f4;
@@ -245,6 +246,7 @@ fun Route.resetPasswordForm() {
                         background-color: #0056b3;
                     }
                     """.trimIndent()
+                    }
                 }
             }
             body {
@@ -263,7 +265,8 @@ fun Route.resetPasswordForm() {
                     }
                 }
                 script {
-                    +"""
+                    unsafe {
+                        +"""
                         document.querySelector('form').addEventListener('submit', async function (event) {
                         event.preventDefault();
                         const newPassword = document.querySelector('input[type=password]').value;
@@ -295,6 +298,7 @@ fun Route.resetPasswordForm() {
                         }
                     });
                     """.trimIndent()
+                    }
                 }
             }
         }

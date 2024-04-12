@@ -81,7 +81,7 @@ _$UserDeviceNotificationsTokenImpl _$$UserDeviceNotificationsTokenImplFromJson(
         Map<String, dynamic> json) =>
     _$UserDeviceNotificationsTokenImpl(
       firebase: json['firebase'] as String? ?? '',
-      oneSignal: json['oneSignal'] ?? '',
+      oneSignal: json['oneSignal'] as String? ?? '',
     );
 
 Map<String, dynamic> _$$UserDeviceNotificationsTokenImplToJson(

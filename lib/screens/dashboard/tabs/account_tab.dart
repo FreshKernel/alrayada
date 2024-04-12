@@ -16,9 +16,9 @@ import '../../../l10n/app_localizations.dart';
 import '../../../logic/auth/auth_cubit.dart';
 import '../../../utils/extensions/scaffold_messenger_ext.dart';
 import '../../../utils/server.dart';
-import '../../account_data/account_data_screen.dart';
 import '../../admin/admin_dashboard_screen.dart';
 import '../../auth/auth_screen.dart';
+import '../../profile/profile_screen.dart';
 import '../../settings/settings_screen.dart';
 import '../tab_item.dart';
 import 'orders/orders_tab.dart';
@@ -182,7 +182,7 @@ class _AccountTabState extends State<AccountTab> {
                     title: context.loc.accountData,
                     subTitle: context.loc.updateAllOfYourData,
                     iconData: PlatformIcons(context).accountCircleSolid,
-                    onTap: () => context.push(AccountDataScreen.routeName),
+                    onTap: () => context.push(ProfileScreen.routeName),
                     isAuthRequired: true,
                   ),
                   BlocBuilder<AuthCubit, AuthState>(

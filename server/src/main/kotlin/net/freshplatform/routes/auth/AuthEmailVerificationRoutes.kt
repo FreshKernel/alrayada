@@ -165,7 +165,8 @@ fun Route.verifyEmailForm() {
                 meta("viewport", "user-scalable=no, width=device-width, initial-scale=1.0")
                 meta("apple-mobile-web-app-capable", "yes")
                 style {
-                    +"""
+                    unsafe {
+                        +"""
                         body {
                         font-family: Arial, sans-serif;
                         background-color: #f4f4f4;
@@ -210,6 +211,7 @@ fun Route.verifyEmailForm() {
                         background-color: #0056b3;
                     }
                     """.trimIndent()
+                    }
                 }
             }
             body {
@@ -221,7 +223,8 @@ fun Route.verifyEmailForm() {
                     }
                 }
                 script {
-                    +"""
+                    unsafe {
+                        +"""
                         document.querySelector('form').addEventListener('submit', async function (event) {
                         event.preventDefault();
                         const requestBody = {
@@ -251,6 +254,7 @@ fun Route.verifyEmailForm() {
                         }
                     });
                     """.trimIndent()
+                    }
                 }
             }
         }

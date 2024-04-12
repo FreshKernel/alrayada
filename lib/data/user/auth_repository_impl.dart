@@ -283,7 +283,7 @@ class AuthRepositoryImpl extends AuthRepository {
     try {
       await _dio.delete(
         ServerConfigurations.getRequestUrl(
-          RoutesConstants.authRoutes.deleteSelfAccount,
+          RoutesConstants.authRoutes.deleteAccount,
         ),
       );
       await logout();
@@ -311,15 +311,14 @@ class AuthRepositoryImpl extends AuthRepository {
     UserInfo userInfo,
   ) async {
     try {
-      await _dio.put(
+      await _dio.patch(
         ServerConfigurations.getRequestUrl(
             RoutesConstants.authRoutes.updateUserInfo),
         data: userInfo.toJson(),
       );
-      final prefs = await SharedPreferences.getInstance();
-      final userJson = prefs.getString(userPrefKey);
-      if (userJson == null) return;
-      final userCredential = UserCredential.fromJson(jsonDecode(userJson));
+      final userCredential = await fetchSavedUserCredential() ??
+          (throw StateError(
+              'The current saved user credential is null which should not be.'));
 
       await saveUser(userCredential.copyWith(
         user: userCredential.user.copyWith(

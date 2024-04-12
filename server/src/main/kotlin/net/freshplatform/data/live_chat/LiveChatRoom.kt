@@ -16,7 +16,7 @@ data class LiveChatRoom(
      * The [clientUserId] is for the client or the creator of this room
      * */
     val clientUserId: String,
-    // Default empty list required in case off loading the rooms without including the messages
+    // Default empty list required in case off loading the rooms without including the messages (getAllRooms)
     val messages: List<ChatMessage> = emptyList(),
     @Serializable(with = InstantAsBsonDateTime::class)
     val createdAt: Instant,

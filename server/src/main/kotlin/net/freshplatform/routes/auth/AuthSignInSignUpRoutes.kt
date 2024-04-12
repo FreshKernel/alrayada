@@ -120,7 +120,8 @@ fun Route.signUpWithEmailAndPassword() {
             )
         }
 
-        val accessToken = jwtService.generateAccessToken(user.id.toString(), AuthUtils.USER_ACCESS_TOKEN_EXPIRES_IN).token
+        val accessToken =
+            jwtService.generateAccessToken(user.id.toString(), AuthUtils.USER_ACCESS_TOKEN_EXPIRES_IN).token
 
         call.respond(
             HttpStatusCode.Created,
@@ -168,6 +169,10 @@ fun Route.signInWithEmailAndPassword() {
             "Email not found. Please check your email address and try again.",
             "EMAIL_NOT_FOUND",
         )*/
+
+        // TODO: Handle this case
+//        if (request.password == User.SOCIAL_LOGIN_EMPTY_PASSWORD) {
+//        }
 
         val isValidPassword = bcryptHashingService.verify(request.password, user.password)
         if (!isValidPassword) {
@@ -262,7 +267,7 @@ fun Route.socialLogin() {
             )
             val newUser = User(
                 email = socialUserData.email.trim().lowercase(),
-                password = "", // No password
+                password = User.SOCIAL_LOGIN_EMPTY_PASSWORD,
                 isAccountActivated = false,
                 isEmailVerified = socialUserData.isEmailVerified,
                 role = UserRole.User,

@@ -10,6 +10,7 @@ import io.ktor.server.routing.*
 import net.freshplatform.data.user.UserDataSource
 import net.freshplatform.data.user.UserDeviceNotificationsToken
 import net.freshplatform.routes.auth.admin.adminAuthRoutes
+import net.freshplatform.services.telegram_bot.TelegramBotService
 import net.freshplatform.utils.ErrorResponseException
 import net.freshplatform.utils.extensions.requireCurrentUser
 import org.koin.ktor.ext.inject
@@ -24,7 +25,7 @@ fun Route.authRoutes() {
             sendEmailVerificationLink()
             verifyEmail()
             verifyEmailForm()
-            deleteSelfAccount()
+            deleteAccount()
             updateDeviceNotificationsToken()
             getUserData()
             updateUserInfo()
@@ -37,8 +38,9 @@ fun Route.authRoutes() {
     }
 }
 
-fun Route.deleteSelfAccount() {
+fun Route.deleteAccount() {
     val userDataSource by inject<UserDataSource>()
+    val telegramBotService by inject<TelegramBotService>()
     authenticate {
         delete("/deleteAccount") {
             val currentUser = call.requireCurrentUser()
@@ -48,6 +50,8 @@ fun Route.deleteSelfAccount() {
                 "Error while deleting the user.",
                 "UNKNOWN_ERROR"
             )
+            // TODO: Should the app ask for the gender as optional field?
+            telegramBotService.sendMessage("The user: <b>${currentUser.info.labOwnerName}</b> has deleted his/her account.")
             call.respondText { "User has been successfully deleted." }
         }
     }

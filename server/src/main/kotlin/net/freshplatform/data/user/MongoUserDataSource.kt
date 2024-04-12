@@ -65,6 +65,26 @@ class MongoUserDataSource(
         }
     }
 
+    override suspend fun findUserDeviceNotificationsTokenById(userId: String): Result<UserDeviceNotificationsToken?> {
+        return try {
+            val result = users.find<Document>(
+                userIdFilter(userId)
+            )
+                .projection(Projections.include(User::deviceNotificationsToken.name))
+                .singleOrNull()?.get(User::deviceNotificationsToken.name, Document::class.java)
+            // TODO: Solution might be improved in the future.
+            Result.success(
+                UserDeviceNotificationsToken(
+                    firebase = result?.getString(UserDeviceNotificationsToken::firebase.name) ?: "",
+                    oneSignal = result?.getString(UserDeviceNotificationsToken::oneSignal.name) ?: ""
+                )
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Result.failure(e)
+        }
+    }
+
     override suspend fun verifyUserEmailById(userId: String): Boolean {
         return try {
             users.updateOne(

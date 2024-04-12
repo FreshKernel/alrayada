@@ -45,14 +45,14 @@ class MongoLiveChatDataSource(
         }
     }
 
-    override suspend fun getLastMessageInRoomById(userId: String): Result<ChatMessage?> {
+    override suspend fun getLastMessageInRoomByClientUserId(clientUserId: String): Result<ChatMessage?> {
         return try {
             val projection = Projections.fields(
                 Projections.include(LiveChatRoom::messages.name),
                 Projections.slice(LiveChatRoom::messages.name, -1),
             )
             val message =
-                rooms.find(clientUserIdFilter(userId))
+                rooms.find(clientUserIdFilter(clientUserId))
                     .projection(projection).singleOrNull()?.messages?.firstOrNull()
             Result.success(message)
         } catch (e: Exception) {
@@ -77,16 +77,21 @@ class MongoLiveChatDataSource(
         }
     }
 
-    override suspend fun getAllMessagesByUserId(userId: String, page: Int, limit: Int): Result<List<ChatMessage>> {
+    override suspend fun getAllMessagesByClientUserId(clientUserId: String, page: Int, limit: Int): Result<List<ChatMessage>> {
         return try {
             val skip = (page - 1) * limit
-            val messages = rooms.find(clientUserIdFilter(userId))
-                .sort(Sorts.descending(LiveChatRoom::updatedAt.name))
-                .projection(Projections.slice(LiveChatRoom::messages.name, skip, limit))
-                .skip(skip)
-                .limit(limit)
-                .singleOrNull()?.messages ?: listOf()
-            Result.success(messages)
+            val pipeline = listOf(
+//                Aggregates.match(clientUserIdFilter(clientUserId)),
+                Aggregates.unwind("\$${LiveChatRoom::messages.name}"),
+//                Aggregates.sort(Sorts.descending("messages.updatedAt"))
+            )
+//            val messages = rooms.find(clientUserIdFilter(userId))
+//                .sort(Sorts.descending("${LiveChatRoom::messages.name}.${ChatMessage::updatedAt.name}")) // TODO: The sorting is broken and doesn't work
+//                .projection(Projections.slice(LiveChatRoom::messages.name, skip, limit))
+//                .singleOrNull()?.messages ?: listOf()
+            val messages = rooms.find().sort(Sorts.descending("messages.updatedAt")).singleOrNull()
+            println(messages)
+            Result.success(emptyList())
         } catch (e: Exception) {
             e.printStackTrace()
             Result.failure(e)

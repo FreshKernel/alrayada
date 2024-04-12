@@ -14,9 +14,9 @@ interface LiveChatDataSource {
     suspend fun deleteRoomById(roomId: String): Boolean
 
     /**
-     * Get the last [ChatMessage] in a [LiveChatRoom] by [userId]
+     * Get the last [ChatMessage] in a [LiveChatRoom] by [clientUserId]
      * */
-    suspend fun getLastMessageInRoomById(userId: String): Result<ChatMessage?>
+    suspend fun getLastMessageInRoomByClientUserId(clientUserId: String): Result<ChatMessage?>
 
     /***
      * Get all [LiveChatRoom]
@@ -24,8 +24,8 @@ interface LiveChatDataSource {
     suspend fun getAllRooms(page: Int, limit: Int): Result<List<LiveChatRoom>>
 
     /***
-     * Get all [LiveChatRoom] by [userId]
-     * Sort by [LiveChatRoom.updatedAt]
+     * Get all [LiveChatRoom] by [clientUserId]
+     * Sorted by [LiveChatRoom.updatedAt]
      * */
-    suspend fun getAllMessagesByUserId(userId: String, page: Int, limit: Int): Result<List<ChatMessage>>
+    suspend fun getAllMessagesByClientUserId(clientUserId: String, page: Int, limit: Int): Result<List<ChatMessage>>
 }

@@ -1,13 +1,16 @@
 [versions]
 kotlin = "1.9.23"
-ktor = "2.3.9"
+ktor = "2.3.10"
 koin = "3.5.3"
 koin-ktor = "3.5.3"
-logback = "1.5.3"
-kotlinx-datetime = "0.5.0"
+logback = "1.5.4"
+kotlinx-datetime = "0.6.0-RC.2"
 dotenv-kotlin = "6.4.1"
-mongodb = "4.11.0"
+mongodb = "5.0.0"
 bcrypt = "0.10.2"
+google-auth-library-oauth2-http = "1.23"
+google-api-client = "2.4.0"
+kotlin-css = "1.0.0-pre.728"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -20,6 +23,11 @@ mongodb-driver-kotlin-coroutine = { module = "org.mongodb:mongodb-driver-kotlin-
 mongodb-bson-kotlinx = { module = "org.mongodb:bson-kotlinx", version.ref = "mongodb" }
 bcrypt = { module = "at.favre.lib:bcrypt", version.ref = "bcrypt" }
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
+kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
+google-auth-library-oauth2-http = { module = "com.google.auth:google-auth-library-oauth2-http", version.ref = "google-auth-library-oauth2-http" }
+google-api-client = { module = "com.google.api-client:google-api-client", version.ref = "google-api-client" }
+# TODO: Use it or not since now it's not used (kotlin-css)
+kotlin-css = { module = "org.jetbrains.kotlin-wrappers:kotlin-css", version.ref = "kotlin-css" }
 
 [plugins]
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }

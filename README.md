@@ -20,3 +20,8 @@ An ecommerce application developed by Fresh Platform for Alrayada company.
    2. Apple: TODO: 
 2. Firebase Messaging for notifications: No configurations required
 3. For location by ip address ipapi.co: No configurations required
+
+## Todos
+
+1. I might change the Auth feature to User or Users
+2. I might add a way to choose whatever to enter already existing user auth form inputs data on debug mode only for development mode

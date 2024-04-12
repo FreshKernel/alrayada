@@ -5,7 +5,10 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.server.testing.*
 import net.freshplatform.di.dependencyInjection
-import net.freshplatform.plugins.*
+import net.freshplatform.plugins.configureRouting
+import net.freshplatform.plugins.configureSecurity
+import net.freshplatform.plugins.configureSerialization
+import net.freshplatform.plugins.configureSockets
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -14,10 +17,8 @@ class ApplicationTest {
     fun testRoot() = testApplication {
         application {
             dependencyInjection()
-            configureHTTP()
             configureSockets()
             configureSerialization()
-            configureMonitoring()
             configureSecurity()
             configureRouting()
         }

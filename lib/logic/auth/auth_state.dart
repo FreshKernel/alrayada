@@ -45,7 +45,7 @@ final class AuthLoginFailure extends AuthState {
   final AuthException exception;
 
   @override
-  List<Object?> get props => [userCredential, exception];
+  List<Object?> get props => [exception, ...super.props];
 }
 
 // Forgot password screen
@@ -64,7 +64,7 @@ final class AuthForgotPasswordFailure extends AuthState {
   final AuthException exception;
 
   @override
-  List<Object?> get props => [userCredential, exception];
+  List<Object?> get props => [exception, ...super.props];
 }
 
 // For usage in different screens (account page, verify email screen etc..)
@@ -83,7 +83,7 @@ final class AuthFetchUserFailure extends AuthState {
   final AuthException exception;
 
   @override
-  List<Object?> get props => [userCredential, exception];
+  List<Object?> get props => [exception, ...super.props];
 }
 
 // For verify email screen
@@ -103,7 +103,7 @@ final class AuthResendEmailVerificationFailure extends AuthState {
   final AuthException exception;
 
   @override
-  List<Object?> get props => [userCredential, exception];
+  List<Object?> get props => [exception, ...super.props];
 }
 
 // For the social login
@@ -126,5 +126,43 @@ final class AuthSocialLoginFailure extends AuthState {
   final AuthException exception;
 
   @override
-  List<Object?> get props => [userCredential, exception];
+  List<Object?> get props => [exception, ...super.props];
+}
+
+// For deleting the user
+
+final class AuthDeleteInProgress extends AuthState {
+  const AuthDeleteInProgress({required super.userCredential});
+}
+
+final class AuthDeleteSuccess extends AuthState {
+  const AuthDeleteSuccess() : super(userCredential: null);
+}
+
+final class AuthDeleteFailure extends AuthState {
+  const AuthDeleteFailure(this.exception, {required super.userCredential});
+
+  final AuthException exception;
+
+  @override
+  List<Object?> get props => [exception, ...super.props];
+}
+
+// For Updating the user
+
+final class AuthUpdateUserInProgress extends AuthState {
+  const AuthUpdateUserInProgress({required super.userCredential});
+}
+
+final class AuthUpdateUserSuccess extends AuthState {
+  const AuthUpdateUserSuccess({required super.userCredential});
+}
+
+final class AuthUpdateUserFailure extends AuthState {
+  const AuthUpdateUserFailure(this.exception, {required super.userCredential});
+
+  final AuthException exception;
+
+  @override
+  List<Object?> get props => [exception, ...super.props];
 }

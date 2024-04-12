@@ -43,11 +43,13 @@ class LiveChatRoomController(
             createdAt = Clock.System.now(),
             updatedAt = Clock.System.now(),
         )
-        // TODO: Handle the error when inserting the message
         val isSuccess = liveChatDataSource.insertMessage(
             clientUserId = clientUserId,
             message = message
         )
+        if (!isSuccess) {
+            throw IllegalStateException("Unknown error while inserting a message to the database.")
+        }
         connections.forEach { connection ->
             connection.session.sendSerialized(message.toResponse())
         }
@@ -63,5 +65,6 @@ class LiveChatRoomController(
     ) {
         socketSession.close(CloseReason(CloseReason.Codes.NORMAL, "Disconnected"))
         val isRemoved = connections.removeIf { it.clientUserId == clientUserId }
+        if (!isRemoved) throw IllegalStateException("The room connection has not been removed")
     }
 }

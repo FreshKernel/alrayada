@@ -1,14 +1,14 @@
 import 'package:go_router/go_router.dart';
 
-import 'account_data/account_data_screen.dart';
 import 'admin/admin_dashboard_screen.dart';
 import 'auth/auth_forgot_password.dart';
 import 'auth/auth_screen.dart';
 import 'auth/auth_social_login_sign_up.dart';
 import 'dashboard/dashboard_screen.dart';
-import 'notifications/notifications_screen.dart';
-import 'settings/settings_screen.dart';
 import 'live_chat/live_chat_screen.dart';
+import 'notifications/notifications_screen.dart';
+import 'profile/profile_screen.dart';
+import 'settings/settings_screen.dart';
 
 class AppRouter {
   const AppRouter._();
@@ -24,8 +24,8 @@ class AppRouter {
         builder: (context, state) => const LiveChatScreen(),
       ),
       GoRoute(
-        path: AccountDataScreen.routeName,
-        builder: (context, state) => const AccountDataScreen(),
+        path: ProfileScreen.routeName,
+        builder: (context, state) => const ProfileScreen(),
       ),
       GoRoute(
         path: NotificationsScreen.routeName,

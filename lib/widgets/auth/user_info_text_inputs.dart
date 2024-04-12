@@ -25,7 +25,8 @@ class UserInfoTextInputs extends StatelessWidget {
   final TextEditingController labOwnerNameController;
   final ({
     FormFieldSetter<IraqGovernorate> onSaved,
-    IraqGovernorate initialCity
+    IraqGovernorate initialCity,
+    bool loadCachedCity,
   }) cityInputHandler;
 
   @override
@@ -126,9 +127,11 @@ class UserInfoTextInputs extends StatelessWidget {
             errorMessage: context.loc.pleaseEnterTheLabOwnerName,
           ),
         ),
+        // TODO: Update how the CityPickerFormField work, don't use onSaved to avoid some bugs
         CityPickerFormField(
           onSaved: cityInputHandler.onSaved,
           initialCity: cityInputHandler.initialCity,
+          loadCachedCity: cityInputHandler.loadCachedCity,
         ),
       ],
     );

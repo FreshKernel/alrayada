@@ -151,7 +151,7 @@ enum IraqGovernorate {
 class UserDeviceNotificationsToken with _$UserDeviceNotificationsToken {
   const factory UserDeviceNotificationsToken({
     @Default('') String firebase,
-    @Default('') oneSignal,
+    @Default('') String oneSignal,
   }) = _UserDeviceNotificationsToken;
 
   factory UserDeviceNotificationsToken.fromJson(Map<String, Object?> json) =>

@@ -144,7 +144,7 @@ class _AdminUserTileDataDialog extends StatelessWidget {
         ],
       ),
       actions: [
-        TextButton(
+        PlatformDialogAction(
           onPressed: context.pop,
           child: Text(context.loc.close),
         ),
