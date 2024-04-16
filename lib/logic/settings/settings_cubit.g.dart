@@ -17,6 +17,7 @@ _$SettingsStateImpl _$$SettingsStateImplFromJson(Map<String, dynamic> json) =>
       themeSystem:
           $enumDecodeNullable(_$AppThemeSystemEnumMap, json['themeSystem']) ??
               AppThemeSystem.material3,
+      useDynamicColors: json['useDynamicColors'] as bool? ?? true,
       layoutMode:
           $enumDecodeNullable(_$AppLayoutModeEnumMap, json['layoutMode']) ??
               AppLayoutMode.auto,
@@ -38,6 +39,7 @@ Map<String, dynamic> _$$SettingsStateImplToJson(_$SettingsStateImpl instance) =>
       'appLanguague': _$AppLanguagueEnumMap[instance.appLanguague]!,
       'themeMode': _$AppThemeModeEnumMap[instance.themeMode]!,
       'themeSystem': _$AppThemeSystemEnumMap[instance.themeSystem]!,
+      'useDynamicColors': instance.useDynamicColors,
       'layoutMode': _$AppLayoutModeEnumMap[instance.layoutMode]!,
       'isAnimationsEnabled': instance.isAnimationsEnabled,
       'darkDuringDayInAutoMode': instance.darkDuringDayInAutoMode,

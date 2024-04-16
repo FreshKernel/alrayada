@@ -118,13 +118,16 @@ class AdminLiveChatRoutes extends RoutesConstants {
   const AdminLiveChatRoutes._();
   static const root = '${LiveChatRoutes.root}/admin';
 
-  /// userRoomId by default is the uuid of the user
-  String chatWithUser(String userRoomId) {
-    return '$root/chat/$userRoomId';
+  String chatWithUser({required String roomClientUserId}) {
+    return '$root/$roomClientUserId';
   }
 
-  final getRooms = '${root}rooms';
-  String deleteRoom(String chatRoomId) {
-    return '$root/rooms/$chatRoomId';
+  String getMessagesWithUser({required String roomClientUserId}) {
+    return '$root/messages/$roomClientUserId';
+  }
+
+  final getRooms = '$root/rooms';
+  String deleteRoom(String roomId) {
+    return '$root/rooms/$roomId';
   }
 }

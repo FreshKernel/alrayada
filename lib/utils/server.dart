@@ -41,7 +41,7 @@ class ServerConfigurations {
     return '$baseUrl/$path';
   }
 
-  /// Used for local development only
+  /// Used so it work in local development and not just production
   ///
   /// The image url might be localhost from the server but on Android emulator
   /// the localhost won't work

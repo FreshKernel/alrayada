@@ -56,12 +56,12 @@ class _UsersList extends StatelessWidget {
         }
       },
       builder: (context, state) {
-        if (state is AdminAuthLoadInProgress) {
+        if (state is AdminAuthLoadUsersInProgress) {
           return const Center(
             child: CircularProgressIndicator.adaptive(),
           );
         }
-        if (state is AdminAuthLoadFailure) {
+        if (state is AdminAuthLoadUsersFailure) {
           return ErrorWithTryAgain(
             onTryAgain: () => context.read<AdminAuthCubit>().initLoadUsers(),
           );
@@ -77,11 +77,11 @@ class _UsersList extends StatelessWidget {
               physics: const BouncingScrollPhysics(
                 parent: AlwaysScrollableScrollPhysics(),
               ),
-              itemCount: state is AdminAuthLoadMoreInProgress
+              itemCount: state is AdminAuthLoadMoreUsersInProgress
                   ? users.length + 1
                   : users.length,
               itemBuilder: (context, index) {
-                if (index == state.usersState.users.length) {
+                if (index == users.length) {
                   // Loading indicator when loading more items
                   return const Center(
                     child: CircularProgressIndicator.adaptive(),

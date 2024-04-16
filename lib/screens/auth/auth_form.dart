@@ -18,6 +18,7 @@ class AuthenticationForm extends StatefulWidget {
 }
 
 class _AuthFormState extends State<AuthenticationForm> {
+  /// Must be the same value in isLogin of [AuthFormInputs]
   var _isLogin = true;
   final _appChannel = const MethodChannel('App');
 

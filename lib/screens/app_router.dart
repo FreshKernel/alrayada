@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 
+import '../data/live_chat/live_chat_repository.dart';
 import 'admin/admin_dashboard_screen.dart';
 import 'auth/auth_forgot_password.dart';
 import 'auth/auth_screen.dart';
@@ -21,7 +22,9 @@ class AppRouter {
       ),
       GoRoute(
         path: LiveChatScreen.routeName,
-        builder: (context, state) => const LiveChatScreen(),
+        builder: (context, state) => LiveChatScreen(
+          args: state.extra as LiveChatScreenArgs,
+        ),
       ),
       GoRoute(
         path: ProfileScreen.routeName,

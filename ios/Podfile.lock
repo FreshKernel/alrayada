@@ -8,7 +8,6 @@ PODS:
   - connectivity_plus (0.0.1):
     - Flutter
     - FlutterMacOS
-    - ReachabilitySwift
   - device_info_plus (0.0.1):
     - Flutter
   - Firebase/Analytics (10.22.0):
@@ -24,18 +23,18 @@ PODS:
   - Firebase/Messaging (10.22.0):
     - Firebase/CoreOnly
     - FirebaseMessaging (~> 10.22.0)
-  - firebase_analytics (10.9.0):
+  - firebase_analytics (10.10.1):
     - Firebase/Analytics (= 10.22.0)
     - firebase_core
     - Flutter
-  - firebase_core (2.27.2):
+  - firebase_core (2.29.0):
     - Firebase/CoreOnly (= 10.22.0)
     - Flutter
-  - firebase_crashlytics (3.4.20):
+  - firebase_crashlytics (3.5.1):
     - Firebase/Crashlytics (= 10.22.0)
     - firebase_core
     - Flutter
-  - firebase_messaging (14.7.21):
+  - firebase_messaging (14.8.1):
     - Firebase/Messaging (= 10.22.0)
     - firebase_core
     - Flutter
@@ -177,7 +176,6 @@ PODS:
   - PromisesObjC (2.4.0)
   - PromisesSwift (2.4.0):
     - PromisesObjC (= 2.4.0)
-  - ReachabilitySwift (5.2.1)
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -228,7 +226,6 @@ SPEC REPOS:
     - nanopb
     - PromisesObjC
     - PromisesSwift
-    - ReachabilitySwift
 
 EXTERNAL SOURCES:
   connectivity_plus:
@@ -266,13 +263,13 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   AppAuth: a13994980c1ec792f7e2e665acd4d4aa6be43240
-  connectivity_plus: e2dad488011aeb593e219360e804c43cc1af5770
+  connectivity_plus: ddd7f30999e1faaef5967c23d5b6d503d10434db
   device_info_plus: 97af1d7e84681a90d0693e63169a5d50e0839a0d
   Firebase: 797fd7297b7e1be954432743a0b3f90038e45a71
-  firebase_analytics: 2bf19b4d020f0e3f4f8ef73ce03b4d0b2768fc9c
-  firebase_core: cc49b6648d6dd7570d9273a616cb1205260db91e
-  firebase_crashlytics: a5050259f9e6989a44c131dbf14887a434b4395a
-  firebase_messaging: bca531e02d5b4d3ed940f234d4e1b6f970e8278a
+  firebase_analytics: 8e6cecb9b9541db49ac40a46eec7c0f519de7252
+  firebase_core: aaadbddb3cb2ee3792b9804f9dbb63e5f6f7b55c
+  firebase_crashlytics: 4271b5bb77f6169ac7c2a9d62ad0e6aa5f84c2fe
+  firebase_messaging: 860e28c6ad8b3281276eba922024644b9909c903
   FirebaseAnalytics: 8d0ff929c63b7f72260f332b86ccf569776b75d3
   FirebaseCore: 0326ec9b05fbed8f8716cddbf0e36894a13837f7
   FirebaseCoreExtension: cb88851781a24e031d1b58e0bd01eb1f46b044b5
@@ -296,7 +293,6 @@ SPEC CHECKSUMS:
   path_provider_foundation: 3784922295ac71e43754bd15e0653ccfd36a147c
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   PromisesSwift: 9d77319bbe72ebf6d872900551f7eeba9bce2851
-  ReachabilitySwift: 5ae15e16814b5f9ef568963fb2c87aeb49158c66
   shared_preferences_foundation: b4c3b4cddf1c21f02770737f147a3f5da9d39695
   sign_in_with_apple: f3bf75217ea4c2c8b91823f225d70230119b8440
   sqflite: 673a0e54cc04b7d6dba8d24fb8095b31c3a99eec

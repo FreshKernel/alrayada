@@ -37,6 +37,7 @@ fun Route.getAllUsers() {
                     "Unknown error while getting the users: ${it.message}",
                     "COULD_NOT_LOAD_USERS"
                 )
+                // I might filter the result using the database code instead, so we don't return 9 item in some cases
             }.map { it.toResponse() }.filterNot { it.userId == currentUser.id.toString() }
             call.respond(HttpStatusCode.OK, users)
         }
@@ -176,7 +177,7 @@ fun Route.sendNotificationToUser() {
             val userId: String = requestBody["userId"] ?: throw ErrorResponseException(
                 HttpStatusCode.BadRequest, "User id is missing.", "MISSING_USER_ID"
             )
-            val user = userDataSource.findUserById(userId).getOrElse {
+            val deviceNotificationsToken = userDataSource.findUserDeviceNotificationsTokenById(userId).getOrElse {
                 throw ErrorResponseException(
                     HttpStatusCode.InternalServerError,
                     "Unknown error while getting the user from the database: ${it.message}",
@@ -188,7 +189,7 @@ fun Route.sendNotificationToUser() {
             val messageId = notificationsService.sendToDevice(
                 title = title,
                 body = body,
-                deviceNotificationsToken = user.deviceNotificationsToken
+                deviceNotificationsToken = deviceNotificationsToken
             ).getOrElse {
                 throw ErrorResponseException(
                     HttpStatusCode.InternalServerError,

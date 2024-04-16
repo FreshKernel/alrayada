@@ -17,8 +17,8 @@ dependencies:
 
   # Packages
   intl: ^0.18.1
-  path: ^1.8.3
-  go_router: ^13.2.1
+  path: ^1.9.0
+  go_router: ^13.2.4
   flutter_bloc: ^8.1.5
   bloc: ^8.1.4
   hydrated_bloc: ^9.1.5
@@ -29,10 +29,10 @@ dependencies:
   lottie: ^3.1.0
   cached_network_image: ^3.3.1
   flutter_svg: ^2.0.10+1
-  web_socket_channel: ^2.4.4
+  web_socket_channel: ^2.4.5
   cupertino_stepper: ^0.2.1
   flutter_platform_widgets: ^6.1.0
-  dio: ^5.4.1
+  dio: ^5.4.3
   pretty_dio_logger: ^1.3.1
   flutter_dotenv: ^5.1.0
   flutter_animate: ^4.5.0
@@ -51,28 +51,29 @@ dependencies:
   freezed_annotation: ^2.4.1
 
   # Plugins
-  url_launcher: ^6.2.5
-  path_provider: ^2.1.2
-  sqflite: ^2.3.2
-  connectivity_plus: ^6.0.1
-  shared_preferences: ^2.2.2
+  url_launcher: ^6.2.6
+  path_provider: ^2.1.3
+  sqflite: ^2.3.3
+  connectivity_plus: ^6.0.2
+  shared_preferences: ^2.2.3
   flutter_secure_storage: ^9.0.0
-  device_info_plus: ^10.0.1
-  package_info_plus: ^6.0.0
-  firebase_core: ^2.27.2
-  firebase_crashlytics: ^3.4.20
-  firebase_analytics: ^10.9.0
-  firebase_messaging: ^14.7.21
+  device_info_plus: ^10.1.0
+  package_info_plus: ^7.0.0
+  firebase_core: ^2.29.0
+  firebase_crashlytics: ^3.5.1
+  firebase_analytics: ^10.10.1
+  firebase_messaging: ^14.8.1
   google_sign_in: ^6.2.1
-  sign_in_with_apple: ^6.0.0
+  sign_in_with_apple: ^6.1.0
+  dynamic_color: ^1.7.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.2
 
-  build_runner: ^2.4.8
-  freezed: ^2.4.7
+  build_runner: ^2.4.9
+  freezed: ^2.5.2
   json_serializable: ^6.7.1
   flutter_gen_runner: ^5.4.0
   icons_launcher: ^2.1.7

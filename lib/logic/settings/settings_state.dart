@@ -7,6 +7,7 @@ class SettingsState with _$SettingsState {
     @Default(AppLanguague.system) AppLanguague appLanguague,
     @Default(AppThemeMode.system) AppThemeMode themeMode,
     @Default(AppThemeSystem.material3) AppThemeSystem themeSystem,
+    @Default(true) bool useDynamicColors,
     @Default(AppLayoutMode.auto) AppLayoutMode layoutMode,
     @Default(true) bool isAnimationsEnabled,
     @Default(false) darkDuringDayInAutoMode,

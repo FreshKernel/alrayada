@@ -55,16 +55,16 @@ class AdminAuthInitial extends AdminAuthState {
 
 // For loading the users
 
-class AdminAuthLoadInProgress extends AdminAuthState {
-  const AdminAuthLoadInProgress();
+class AdminAuthLoadUsersInProgress extends AdminAuthState {
+  const AdminAuthLoadUsersInProgress();
 }
 
-class AdminAuthLoadSuccess extends AdminAuthState {
-  const AdminAuthLoadSuccess({required super.usersState});
+class AdminAuthLoadUsersSuccess extends AdminAuthState {
+  const AdminAuthLoadUsersSuccess({required super.usersState});
 }
 
-class AdminAuthLoadFailure extends AdminAuthState {
-  const AdminAuthLoadFailure({required this.exception});
+class AdminAuthLoadUsersFailure extends AdminAuthState {
+  const AdminAuthLoadUsersFailure(this.exception);
 
   final AdminAuthException exception;
 
@@ -72,14 +72,20 @@ class AdminAuthLoadFailure extends AdminAuthState {
   List<Object?> get props => [exception, ...super.props];
 }
 
-class AdminAuthLoadMoreInProgress extends AdminAuthState {
-  const AdminAuthLoadMoreInProgress({required super.usersState});
+class AdminAuthLoadMoreUsersInProgress extends AdminAuthState {
+  const AdminAuthLoadMoreUsersInProgress({required super.usersState});
 }
 
 // For user actions such as delete user etc...
 
 class AdminAuthActionInProgress extends AdminAuthState {
-  const AdminAuthActionInProgress({required super.usersState});
+  const AdminAuthActionInProgress({
+    required super.usersState,
+    required this.userId,
+  });
+
+  /// The user id for that each tile
+  final String userId;
 }
 
 class AdminAuthActionSuccess extends AdminAuthState {
@@ -87,8 +93,8 @@ class AdminAuthActionSuccess extends AdminAuthState {
 }
 
 class AdminAuthActionFailure extends AdminAuthState {
-  const AdminAuthActionFailure({
-    required this.exception,
+  const AdminAuthActionFailure(
+    this.exception, {
     required super.usersState,
   });
 

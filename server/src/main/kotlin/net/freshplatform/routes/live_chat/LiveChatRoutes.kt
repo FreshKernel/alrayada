@@ -21,7 +21,7 @@ fun Route.liveChatRoutes() {
     )
     route("/liveChat") {
         userLiveChat(controller)
-        loadMessages()
+        getMessages()
         adminLiveChatRoutes(controller)
     }
 }
@@ -32,7 +32,7 @@ fun Route.userLiveChat(controller: LiveChatRoomController) {
             val userId = requireCurrentUser().id.toString()
             try {
                 controller.onJoin(
-                    clientUserId = userId,
+                    roomClientUserId = userId,
                     session = this
                 )
                 for (frame in incoming) {
@@ -40,7 +40,7 @@ fun Route.userLiveChat(controller: LiveChatRoomController) {
                     val receivedText = frame.readText()
                     controller.sendMessage(
                         senderId = userId,
-                        clientUserId = userId,
+                        roomClientUserId = userId,
                         text = receivedText
                     )
                 }
@@ -48,7 +48,7 @@ fun Route.userLiveChat(controller: LiveChatRoomController) {
                 e.printStackTrace()
             } finally {
                 controller.disconnect(
-                    clientUserId = userId,
+                    roomClientUserId = userId,
                     socketSession = this
                 )
             }
@@ -56,7 +56,7 @@ fun Route.userLiveChat(controller: LiveChatRoomController) {
     }
 }
 
-fun Route.loadMessages() {
+fun Route.getMessages() {
     val liveChatDataSource by inject<LiveChatDataSource>()
     authenticate {
         get("/messages") {
@@ -64,7 +64,7 @@ fun Route.loadMessages() {
             val page: Int by call.request.queryParameters
             val limit: Int by call.request.queryParameters
 
-            val messages = liveChatDataSource.getAllMessagesByClientUserId(user.id.toString(), page, limit).getOrElse {
+            val messages = liveChatDataSource.getAllMessagesByRoomClientUserId(user.id.toString(), page, limit).getOrElse {
                 throw ErrorResponseException(
                     HttpStatusCode.InternalServerError,
                     "Unknown error while getting the messages.",

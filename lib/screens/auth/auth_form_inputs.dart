@@ -10,6 +10,7 @@ import '../../data/user/models/user.dart';
 import '../../l10n/app_localizations.dart';
 import '../../logic/auth/auth_cubit.dart';
 import '../../logic/settings/settings_cubit.dart';
+import '../../utils/env.dart';
 import '../../utils/extensions/scaffold_messenger_ext.dart';
 import '../../utils/text_input_handler.dart';
 import '../../widgets/auth/email_text_field.dart';
@@ -36,29 +37,47 @@ class _AuthFormInputsState extends State<AuthFormInputs> {
   /// Must be the same value in isLogin of [AuthenticationForm]
   var _isLogin = true;
 
-  final _emailController =
-      TextEditingController(text: kDebugMode ? 'user@gmail.com' : null);
+  final _emailController = TextEditingController(
+      text: getEnvironmentVariables().isProductionMode && kDebugMode
+          ? 'user@gmail.com'
+          : null);
   final _passwordInputHandler = TextInputHandler(
-    TextEditingController(text: kDebugMode ? '?Rocej2dr!zL+wiDlni4' : null),
+    TextEditingController(
+        text: getEnvironmentVariables().isProductionMode && kDebugMode
+            ? '?Rocej2dr!zL+wiDlni4'
+            : null),
     FocusNode(),
   );
 
   // Sign up inputs
   final _confirmPasswordInputHandler = TextInputHandler(
-      TextEditingController(text: kDebugMode ? '?Rocej2dr!zL+wiDlni4' : null),
+      TextEditingController(
+          text: getEnvironmentVariables().isProductionMode && kDebugMode
+              ? '?Rocej2dr!zL+wiDlni4'
+              : null),
       FocusNode());
 
   final _labOwnerPhoneNumberInputHandler = TextInputHandler(
-      TextEditingController(text: kDebugMode ? '07054726510' : null),
+      TextEditingController(
+          text: getEnvironmentVariables().isProductionMode && kDebugMode
+              ? '07054726510'
+              : null),
       FocusNode());
-  final _labPhoneNumberController =
-      TextEditingController(text: kDebugMode ? '07054726510' : null);
-  final _labNameController =
-      TextEditingController(text: kDebugMode ? 'My Lab Name' : null);
-  final _labOwnerNameController =
-      TextEditingController(text: kDebugMode ? 'My name' : null);
+  final _labPhoneNumberController = TextEditingController(
+      text: getEnvironmentVariables().isProductionMode && kDebugMode
+          ? '07054726510'
+          : null);
+  final _labNameController = TextEditingController(
+      text: getEnvironmentVariables().isProductionMode && kDebugMode
+          ? 'My Lab Name'
+          : null);
+  final _labOwnerNameController = TextEditingController(
+      text: getEnvironmentVariables().isProductionMode && kDebugMode
+          ? 'My name'
+          : null);
   var _labCity = IraqGovernorate.defaultCity;
-  var _isPrivacyPolicyAgreed = kDebugMode ? true : false;
+  var _isPrivacyPolicyAgreed =
+      getEnvironmentVariables().isProductionMode && kDebugMode ? true : false;
 
   String? _emailError;
   String? _passwordError;

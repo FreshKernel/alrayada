@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../data/live_chat/live_chat_repository.dart';
 import '../../l10n/app_localizations.dart';
 import '../../logic/live_chat/live_chat_cubit.dart';
 import '../../utils/extensions/scaffold_messenger_ext.dart';
@@ -9,9 +10,14 @@ import '../../widgets/scroll_edge_detector.dart';
 import 'live_chat_message_tile.dart';
 
 class LiveChatMessagesList extends StatelessWidget {
-  const LiveChatMessagesList({required this.scrollController, super.key});
+  const LiveChatMessagesList({
+    required this.scrollController,
+    required this.connectionType,
+    super.key,
+  });
 
   final ScrollController scrollController;
+  final LiveChatConnectionType connectionType;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +43,8 @@ class LiveChatMessagesList extends StatelessWidget {
         }
         if (state is LiveChatConnectFailure) {
           return ErrorWithTryAgain(
-            onTryAgain: () => context.read<LiveChatCubit>().connect(),
+            onTryAgain: () =>
+                context.read<LiveChatCubit>().connect(connectionType),
           );
         }
         final messages = state.messagesState.messages;
@@ -47,7 +54,9 @@ class LiveChatMessagesList extends StatelessWidget {
               const LinearProgressIndicator(),
             Expanded(
               child: ScrollEdgeDetector(
-                onTop: () => context.read<LiveChatCubit>().loadMoreMessages(),
+                onTop: () => context
+                    .read<LiveChatCubit>()
+                    .loadMoreMessages(connectionType),
                 child: ListView.builder(
                   controller: scrollController,
                   itemCount: messages.length,

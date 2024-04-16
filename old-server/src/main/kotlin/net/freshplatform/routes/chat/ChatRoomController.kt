@@ -108,7 +108,7 @@ class ChatRoomController(
 
     /**
      * First of all, close the web socket connection
-     * Second check if the room is exists and remove the socket
+     * Second check if the room is existing and remove the socket
      * Third check if there are no sockets so the chat members is empty
      * then remove it from the chat rooms
      * */

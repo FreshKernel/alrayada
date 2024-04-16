@@ -5,6 +5,7 @@ import 'package:web_socket_channel/io.dart';
 
 import '../../services/dio_service.dart';
 import '../../utils/constants/routes_constants.dart';
+import '../../utils/extensions/dio_response_ext.dart';
 import '../../utils/server.dart';
 import 'live_chat_exceptions.dart';
 import 'live_chat_repository.dart';
@@ -12,16 +13,28 @@ import 'models/chat_message.dart';
 
 class LiveChatRepositoryImpl extends LiveChatRepository {
   IOWebSocketChannel? _channel;
+
   @override
-  Future<void> connect({required String accessToken}) async {
+  Future<void> connect({
+    required String accessToken,
+    required LiveChatConnectionType connectionType,
+  }) async {
     if (_channel != null) {
       // Close previous connection
       await disconnect();
     }
+    final path = switch (connectionType) {
+      LiveChatConnectClientUser() =>
+        RoutesConstants.liveChatRoutes.userLiveChat,
+      LiveChatConnectAdminUser() =>
+        RoutesConstants.liveChatRoutes.adminRoutes.chatWithUser(
+          roomClientUserId: connectionType.roomClientUserId,
+        ),
+    };
     _channel = IOWebSocketChannel.connect(
       Uri.parse(
         ServerConfigurations.getRequestUrl(
-          RoutesConstants.liveChatRoutes.userLiveChat,
+          path,
           isWebSocket: true,
         ),
       ),
@@ -68,25 +81,28 @@ class LiveChatRepositoryImpl extends LiveChatRepository {
   }
 
   @override
-  Future<List<ChatMessage>> loadMessages({
+  Future<List<ChatMessage>> getMessages({
     required int page,
     required int limit,
+    required LiveChatConnectionType connectionType,
   }) async {
     try {
-      final response = await DioService.instance.dio.get<List>(
-        ServerConfigurations.getRequestUrl(
+      final path = switch (connectionType) {
+        LiveChatConnectClientUser() =>
           RoutesConstants.liveChatRoutes.getMessages,
-        ),
+        LiveChatConnectAdminUser() =>
+          RoutesConstants.liveChatRoutes.adminRoutes.getMessagesWithUser(
+            roomClientUserId: connectionType.roomClientUserId,
+          ),
+      };
+      final response = await DioService.instance.dio.get<List>(
+        ServerConfigurations.getRequestUrl(path),
         queryParameters: {
           'page': page,
           'limit': limit,
         },
       );
-      final responseData = response.data;
-      if (responseData == null) {
-        throw StateError('The response data can not be null');
-      }
-      return responseData.map((e) => ChatMessage.fromJson(e)).toList();
+      return response.dataOrThrow.map((e) => ChatMessage.fromJson(e)).toList();
     } on DioException catch (e) {
       throw UnknownLiveChatException(message: e.message.toString());
     } catch (e) {

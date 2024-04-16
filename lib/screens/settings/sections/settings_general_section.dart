@@ -105,21 +105,33 @@ class SettingsGeneralSection extends StatelessWidget {
           ),
         ),
         SwitchListTile.adaptive(
+          value: state.useDynamicColors,
+          onChanged: (value) => context.read<SettingsCubit>().updateSettings(
+                state.copyWith(useDynamicColors: value),
+              ),
+          title: Text(context.loc.dynamicColors),
+          subtitle: Text(context.loc.automaticallyAdaptToSystemColors),
+          secondary: Icon(
+            isCupertino(context)
+                ? CupertinoIcons.paintbrush_fill
+                : Icons.palette,
+            semanticLabel: context.loc.dynamicColors,
+          ),
+        ),
+        SwitchListTile.adaptive(
           title: Text(context.loc.useClassicMaterial),
           subtitle: Text(
             context.loc.useClassicMaterialDesc,
           ),
           secondary: const Icon(Icons.android),
           value: state.themeSystem == AppThemeSystem.material2,
-          onChanged: (value) {
-            final settingsBloc = context.read<SettingsCubit>();
-            settingsBloc.updateSettings(
-              settingsBloc.state.copyWith(
-                themeSystem:
-                    value ? AppThemeSystem.material2 : AppThemeSystem.material3,
+          onChanged: (value) => context.read<SettingsCubit>().updateSettings(
+                state.copyWith(
+                  themeSystem: value
+                      ? AppThemeSystem.material2
+                      : AppThemeSystem.material3,
+                ),
               ),
-            );
-          },
         ),
         SwitchListTile.adaptive(
           title: Text(context.loc.animations),

@@ -7,6 +7,7 @@ class EnvironmentVariables {
   const EnvironmentVariables({
     required this.developmentIpAddress,
     required this.useDevServer,
+    required this.isProductionMode,
   });
 
   /// Example 192.168.0.151, used when the running device is not an emulator
@@ -25,9 +26,15 @@ class EnvironmentVariables {
   /// this will only work when running in debug mode
   /// of the flutter app [kDebugMode]
   final bool useDevServer;
+
+  /// The app will have different logic for development version
+  /// for example if true when you open the register account screen, it will fill
+  /// the inputs with some data, the caching will be off for testing
+  final bool isProductionMode;
 }
 
 EnvironmentVariables getEnvironmentVariables() => EnvironmentVariables(
       developmentIpAddress: dotenv.get('DEVELOPMENT_IP_ADDRESS'),
       useDevServer: bool.parse(dotenv.get('USE_DEV_SERVER')),
+      isProductionMode: bool.parse(dotenv.get('PRODUCTION_MODE')),
     );

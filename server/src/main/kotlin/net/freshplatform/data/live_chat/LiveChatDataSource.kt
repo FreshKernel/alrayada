@@ -2,11 +2,11 @@ package net.freshplatform.data.live_chat
 
 interface LiveChatDataSource {
     /**
-     * Insert a [message] to a [LiveChatRoom] by [clientUserId]
+     * Insert a [message] to a [LiveChatRoom] by [roomClientUserId]
      * create the room if it doesn't exist
      * otherwise just insert the [message]
      * */
-    suspend fun insertMessage(clientUserId: String, message: ChatMessage): Boolean
+    suspend fun insertMessage(roomClientUserId: String, message: ChatMessage): Boolean
 
     /**
      * Delete a [LiveChatRoom] by [roomId]
@@ -14,9 +14,9 @@ interface LiveChatDataSource {
     suspend fun deleteRoomById(roomId: String): Boolean
 
     /**
-     * Get the last [ChatMessage] in a [LiveChatRoom] by [clientUserId]
+     * Get the last [ChatMessage] in a [LiveChatRoom] by [roomClientUserId]
      * */
-    suspend fun getLastMessageInRoomByClientUserId(clientUserId: String): Result<ChatMessage?>
+    suspend fun getLastMessageInRoomByRoomClientUserId(roomClientUserId: String): Result<ChatMessage?>
 
     /***
      * Get all [LiveChatRoom]
@@ -24,8 +24,8 @@ interface LiveChatDataSource {
     suspend fun getAllRooms(page: Int, limit: Int): Result<List<LiveChatRoom>>
 
     /***
-     * Get all [LiveChatRoom] by [clientUserId]
+     * Get all [LiveChatRoom] by [roomClientUserId]
      * Sorted by [LiveChatRoom.updatedAt]
      * */
-    suspend fun getAllMessagesByClientUserId(clientUserId: String, page: Int, limit: Int): Result<List<ChatMessage>>
+    suspend fun getAllMessagesByRoomClientUserId(roomClientUserId: String, page: Int, limit: Int): Result<List<ChatMessage>>
 }

@@ -289,5 +289,7 @@
    "title": "العنوان",
    "thisFieldCantBeEmpty": "لا يمكن أن يكون هذا الحقل فارغًا",
    "notificationHasBeenSuccessfullySent": "تم إرسال الإشعار بنجاح",
-   "admin": "مسؤول"
+   "admin": "مسؤول",
+   "dynamicColors": "الألوان الديناميكية",
+   "automaticallyAdaptToSystemColors": "التكيف تلقائيا مع ألوان النظام"
 }

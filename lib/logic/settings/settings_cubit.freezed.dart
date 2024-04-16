@@ -24,6 +24,7 @@ mixin _$SettingsState {
   AppLanguague get appLanguague => throw _privateConstructorUsedError;
   AppThemeMode get themeMode => throw _privateConstructorUsedError;
   AppThemeSystem get themeSystem => throw _privateConstructorUsedError;
+  bool get useDynamicColors => throw _privateConstructorUsedError;
   AppLayoutMode get layoutMode => throw _privateConstructorUsedError;
   bool get isAnimationsEnabled => throw _privateConstructorUsedError;
   dynamic get darkDuringDayInAutoMode => throw _privateConstructorUsedError;
@@ -54,6 +55,7 @@ abstract class $SettingsStateCopyWith<$Res> {
       {AppLanguague appLanguague,
       AppThemeMode themeMode,
       AppThemeSystem themeSystem,
+      bool useDynamicColors,
       AppLayoutMode layoutMode,
       bool isAnimationsEnabled,
       dynamic darkDuringDayInAutoMode,
@@ -83,6 +85,7 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
     Object? appLanguague = null,
     Object? themeMode = null,
     Object? themeSystem = null,
+    Object? useDynamicColors = null,
     Object? layoutMode = null,
     Object? isAnimationsEnabled = null,
     Object? darkDuringDayInAutoMode = freezed,
@@ -108,6 +111,10 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
           ? _value.themeSystem
           : themeSystem // ignore: cast_nullable_to_non_nullable
               as AppThemeSystem,
+      useDynamicColors: null == useDynamicColors
+          ? _value.useDynamicColors
+          : useDynamicColors // ignore: cast_nullable_to_non_nullable
+              as bool,
       layoutMode: null == layoutMode
           ? _value.layoutMode
           : layoutMode // ignore: cast_nullable_to_non_nullable
@@ -168,6 +175,7 @@ abstract class _$$SettingsStateImplCopyWith<$Res>
       {AppLanguague appLanguague,
       AppThemeMode themeMode,
       AppThemeSystem themeSystem,
+      bool useDynamicColors,
       AppLayoutMode layoutMode,
       bool isAnimationsEnabled,
       dynamic darkDuringDayInAutoMode,
@@ -195,6 +203,7 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
     Object? appLanguague = null,
     Object? themeMode = null,
     Object? themeSystem = null,
+    Object? useDynamicColors = null,
     Object? layoutMode = null,
     Object? isAnimationsEnabled = null,
     Object? darkDuringDayInAutoMode = freezed,
@@ -220,6 +229,10 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
           ? _value.themeSystem
           : themeSystem // ignore: cast_nullable_to_non_nullable
               as AppThemeSystem,
+      useDynamicColors: null == useDynamicColors
+          ? _value.useDynamicColors
+          : useDynamicColors // ignore: cast_nullable_to_non_nullable
+              as bool,
       layoutMode: null == layoutMode
           ? _value.layoutMode
           : layoutMode // ignore: cast_nullable_to_non_nullable
@@ -274,6 +287,7 @@ class _$SettingsStateImpl implements _SettingsState {
       {this.appLanguague = AppLanguague.system,
       this.themeMode = AppThemeMode.system,
       this.themeSystem = AppThemeSystem.material3,
+      this.useDynamicColors = true,
       this.layoutMode = AppLayoutMode.auto,
       this.isAnimationsEnabled = true,
       this.darkDuringDayInAutoMode = false,
@@ -299,6 +313,9 @@ class _$SettingsStateImpl implements _SettingsState {
   @override
   @JsonKey()
   final AppThemeSystem themeSystem;
+  @override
+  @JsonKey()
+  final bool useDynamicColors;
   @override
   @JsonKey()
   final AppLayoutMode layoutMode;
@@ -339,7 +356,7 @@ class _$SettingsStateImpl implements _SettingsState {
 
   @override
   String toString() {
-    return 'SettingsState(appLanguague: $appLanguague, themeMode: $themeMode, themeSystem: $themeSystem, layoutMode: $layoutMode, isAnimationsEnabled: $isAnimationsEnabled, darkDuringDayInAutoMode: $darkDuringDayInAutoMode, showOnBoardingScreen: $showOnBoardingScreen, confirmDeleteCartItem: $confirmDeleteCartItem, clearCartAfterCheckout: $clearCartAfterCheckout, forceUseScrollableChart: $forceUseScrollableChart, useMonthNumberInChart: $useMonthNumberInChart, unFocusAfterSendMsg: $unFocusAfterSendMsg, useClassicMsgBubble: $useClassicMsgBubble, showOrderItemNotes: $showOrderItemNotes)';
+    return 'SettingsState(appLanguague: $appLanguague, themeMode: $themeMode, themeSystem: $themeSystem, useDynamicColors: $useDynamicColors, layoutMode: $layoutMode, isAnimationsEnabled: $isAnimationsEnabled, darkDuringDayInAutoMode: $darkDuringDayInAutoMode, showOnBoardingScreen: $showOnBoardingScreen, confirmDeleteCartItem: $confirmDeleteCartItem, clearCartAfterCheckout: $clearCartAfterCheckout, forceUseScrollableChart: $forceUseScrollableChart, useMonthNumberInChart: $useMonthNumberInChart, unFocusAfterSendMsg: $unFocusAfterSendMsg, useClassicMsgBubble: $useClassicMsgBubble, showOrderItemNotes: $showOrderItemNotes)';
   }
 
   @override
@@ -353,6 +370,8 @@ class _$SettingsStateImpl implements _SettingsState {
                 other.themeMode == themeMode) &&
             (identical(other.themeSystem, themeSystem) ||
                 other.themeSystem == themeSystem) &&
+            (identical(other.useDynamicColors, useDynamicColors) ||
+                other.useDynamicColors == useDynamicColors) &&
             (identical(other.layoutMode, layoutMode) ||
                 other.layoutMode == layoutMode) &&
             (identical(other.isAnimationsEnabled, isAnimationsEnabled) ||
@@ -385,6 +404,7 @@ class _$SettingsStateImpl implements _SettingsState {
       appLanguague,
       themeMode,
       themeSystem,
+      useDynamicColors,
       layoutMode,
       isAnimationsEnabled,
       const DeepCollectionEquality().hash(darkDuringDayInAutoMode),
@@ -416,6 +436,7 @@ abstract class _SettingsState implements SettingsState {
       {final AppLanguague appLanguague,
       final AppThemeMode themeMode,
       final AppThemeSystem themeSystem,
+      final bool useDynamicColors,
       final AppLayoutMode layoutMode,
       final bool isAnimationsEnabled,
       final dynamic darkDuringDayInAutoMode,
@@ -437,6 +458,8 @@ abstract class _SettingsState implements SettingsState {
   AppThemeMode get themeMode;
   @override
   AppThemeSystem get themeSystem;
+  @override
+  bool get useDynamicColors;
   @override
   AppLayoutMode get layoutMode;
   @override

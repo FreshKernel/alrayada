@@ -13,9 +13,10 @@ data class LiveChatRoom(
     @Contextual
     val id: ObjectId = ObjectId(), // The room id
     /**
-     * The [clientUserId] is for the client or the creator of this room
+     * The [roomClientUserId] is for the client or the creator of this room
+     * The reason why this is not roomId, so it doesn't conflict with [LiveChatRoom.id]
      * */
-    val clientUserId: String,
+    val roomClientUserId: String,
     // Default empty list required in case off loading the rooms without including the messages (getAllRooms)
     val messages: List<ChatMessage> = emptyList(),
     @Serializable(with = InstantAsBsonDateTime::class)
@@ -25,7 +26,7 @@ data class LiveChatRoom(
 ) {
     fun toResponse() = LiveChatRoomResponse(
         id = id.toString(),
-        clientUserId = clientUserId,
+        roomClientUserId = roomClientUserId,
         createdAt = createdAt,
         updatedAt = updatedAt,
     )
@@ -34,7 +35,7 @@ data class LiveChatRoom(
 @Serializable
 data class LiveChatRoomResponse(
     val id: String,
-    val clientUserId: String,
+    val roomClientUserId: String,
     val createdAt: Instant,
     val updatedAt: Instant
 )

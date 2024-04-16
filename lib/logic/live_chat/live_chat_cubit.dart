@@ -8,9 +8,12 @@ import '../../data/live_chat/live_chat_exceptions.dart';
 import '../../data/live_chat/live_chat_repository.dart';
 import '../../data/live_chat/models/chat_message.dart';
 import '../auth/auth_cubit.dart';
+import './admin/admin_live_chat_cubit.dart';
 
 part 'live_chat_state.dart';
 
+/// Responsible for live chat messages for both admin and client
+/// Also see [AdminLiveChatCubit]
 class LiveChatCubit extends Cubit<LiveChatState> {
   LiveChatCubit({
     required this.liveChatRepository,
@@ -23,14 +26,16 @@ class LiveChatCubit extends Cubit<LiveChatState> {
 
   static const int _limit = 15;
 
-  Future<void> connect() async {
+  Future<void> connect(LiveChatConnectionType connectionType) async {
     try {
       emit(const LiveChatConnectInProgress());
-      final currentMessages = await liveChatRepository.loadMessages(
+      final currentMessages = await liveChatRepository.getMessages(
+        connectionType: connectionType,
         page: 1,
         limit: _limit,
       );
       await liveChatRepository.connect(
+        connectionType: connectionType,
         accessToken: authCubit.state.requireUserCredential.accessToken,
       );
       _connectionSubscription =
@@ -78,7 +83,7 @@ class LiveChatCubit extends Cubit<LiveChatState> {
     }
   }
 
-  Future<void> loadMoreMessages() async {
+  Future<void> loadMoreMessages(LiveChatConnectionType connectionType) async {
     if (state.messagesState.hasReachedLastPage) {
       return;
     }
@@ -92,7 +97,8 @@ class LiveChatCubit extends Cubit<LiveChatState> {
           page: state.messagesState.page + 1,
         ),
       ));
-      final moreMessages = await liveChatRepository.loadMessages(
+      final moreMessages = await liveChatRepository.getMessages(
+        connectionType: connectionType,
         page: state.messagesState.page,
         limit: _limit,
       );

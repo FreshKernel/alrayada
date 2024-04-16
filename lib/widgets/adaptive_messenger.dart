@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../l10n/app_localizations.dart';
 
 class AdaptiveMessenger {
-  AdaptiveMessenger._();
+  const AdaptiveMessenger._();
 
   static Future<void> showPlatformMessage({
     required BuildContext context,
@@ -27,45 +27,34 @@ class AdaptiveMessenger {
               ),
             )
             .closed;
-      } else {
-        await showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: title != null ? Text(title) : null,
-            content: Text(
-              message,
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => context.pop(),
-                child: Text(context.loc.ok),
-              )
-            ],
-          ),
-        );
+        return;
       }
+      await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: title != null ? Text(title) : null,
+          content: Text(
+            message,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => context.pop(),
+              child: Text(context.loc.ok),
+            )
+          ],
+        ),
+      );
       return;
     }
     await showCupertinoModalPopup(
       context: context,
       builder: (context) {
         return CupertinoActionSheet(
-          title: title != null
-              ? Semantics(
-                  label: title,
-                  child: Text(title),
-                )
-              : null,
-          message: Semantics(
-            label: message,
-            child: Text(message),
-          ),
-          cancelButton: Semantics(
-            label: context.loc.ok,
-            child: CupertinoActionSheetAction(
-              onPressed: () => context.pop(),
-              child: Text(context.loc.ok),
-            ),
+          title: title != null ? Text(title) : null,
+          message: Text(message),
+          cancelButton: CupertinoActionSheetAction(
+            onPressed: () => context.pop(),
+            child: Text(context.loc.ok),
           ),
         );
       },

@@ -40,6 +40,7 @@ class DioService {
           if (error.requestOptions.uri.host == Uri.parse(baseUrl).host) {
             // Execute code only for the client to server request errors
             if (_accessToken != null && error.response?.statusCode == 401) {
+              // TODO: For now this will not update the state, it will be affected after restarting the app
               _onInvalidToken?.call();
             }
           }

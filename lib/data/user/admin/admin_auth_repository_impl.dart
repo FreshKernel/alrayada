@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import '../../../services/dio_service.dart';
 import '../../../utils/constants/routes_constants.dart';
 import '../../../utils/error_response.dart';
+import '../../../utils/extensions/dio_response_ext.dart';
 import '../../../utils/server.dart';
 import '../models/user.dart';
 import 'admin_auth_exceptions.dart';
@@ -43,11 +44,7 @@ class AdminAuthRepositoryImpl extends AdminAuthRepository {
           'limit': limit,
         },
       );
-      final responseData = response.data;
-      if (responseData == null) {
-        throw StateError('The response data can not be null');
-      }
-      return responseData.map((e) => User.fromJson(e)).toList();
+      return response.dataOrThrow.map((e) => User.fromJson(e)).toList();
     } catch (e) {
       throw UnknownAdminAuthException(message: e.toString());
     }

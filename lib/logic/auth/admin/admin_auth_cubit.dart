@@ -21,20 +21,20 @@ class AdminAuthCubit extends Cubit<AdminAuthState> {
 
   Future<void> initLoadUsers() async {
     try {
-      emit(const AdminAuthLoadInProgress());
+      emit(const AdminAuthLoadUsersInProgress());
       final users = await adminAuthRepository.getAllUsers(
         searchQuery: '',
         page: 1,
         limit: _limit,
       );
-      emit(AdminAuthLoadSuccess(
+      emit(AdminAuthLoadUsersSuccess(
         usersState: AdminAuthUsersState(
           users: users,
           page: 1,
         ),
       ));
     } on AdminAuthException catch (e) {
-      emit(AdminAuthLoadFailure(exception: e));
+      emit(AdminAuthLoadUsersFailure(e));
     }
   }
 
@@ -42,12 +42,12 @@ class AdminAuthCubit extends Cubit<AdminAuthState> {
     if (state.usersState.hasReachedLastPage) {
       return;
     }
-    if (state is AdminAuthLoadMoreInProgress) {
+    if (state is AdminAuthLoadMoreUsersInProgress) {
       // In case if the function called more than once
       return;
     }
     try {
-      emit(AdminAuthLoadMoreInProgress(
+      emit(AdminAuthLoadMoreUsersInProgress(
         usersState: state.usersState.copyWith(
           page: state.usersState.page + 1,
         ),
@@ -57,7 +57,7 @@ class AdminAuthCubit extends Cubit<AdminAuthState> {
         page: state.usersState.page,
         limit: _limit,
       );
-      emit(AdminAuthLoadSuccess(
+      emit(AdminAuthLoadUsersSuccess(
         usersState: state.usersState.copyWith(
           users: [
             ...state.usersState.users,
@@ -67,25 +67,25 @@ class AdminAuthCubit extends Cubit<AdminAuthState> {
         ),
       ));
     } on AdminAuthException catch (e) {
-      emit(AdminAuthLoadFailure(exception: e));
+      emit(AdminAuthLoadUsersFailure(e));
     }
   }
 
   Future<void> searchAllUsers({required String searchQuery}) async {
     try {
-      emit(const AdminAuthLoadInProgress());
+      emit(const AdminAuthLoadUsersInProgress());
       final users = await adminAuthRepository.getAllUsers(
         searchQuery: searchQuery,
         page: 1,
         limit: _limit,
       );
-      emit(AdminAuthLoadSuccess(
+      emit(AdminAuthLoadUsersSuccess(
           usersState: AdminAuthUsersState(
         users: users,
         searchQuery: searchQuery, // So pagination work when searching
       )));
     } on AdminAuthException catch (e) {
-      emit(AdminAuthLoadFailure(exception: e));
+      emit(AdminAuthLoadUsersFailure(e));
     }
   }
 
@@ -94,8 +94,10 @@ class AdminAuthCubit extends Cubit<AdminAuthState> {
     required bool value,
   }) async {
     try {
-      emit(AdminAuthActionInProgress(usersState: state.usersState));
-
+      emit(AdminAuthActionInProgress(
+        userId: userId,
+        usersState: state.usersState,
+      ));
       await adminAuthRepository.setAccountActivated(
         userId: userId,
         value: value,
@@ -113,7 +115,7 @@ class AdminAuthCubit extends Cubit<AdminAuthState> {
       ));
     } on AdminAuthException catch (e) {
       emit(AdminAuthActionFailure(
-        exception: e,
+        e,
         usersState: state.usersState,
       ));
     }
@@ -123,7 +125,10 @@ class AdminAuthCubit extends Cubit<AdminAuthState> {
     required String userId,
   }) async {
     try {
-      emit(AdminAuthActionInProgress(usersState: state.usersState));
+      emit(AdminAuthActionInProgress(
+        userId: userId,
+        usersState: state.usersState,
+      ));
       await adminAuthRepository.deleteUserAccount(
         userId: userId,
       );
@@ -136,7 +141,7 @@ class AdminAuthCubit extends Cubit<AdminAuthState> {
       )));
     } on AdminAuthException catch (e) {
       emit(AdminAuthActionFailure(
-        exception: e,
+        e,
         usersState: state.usersState,
       ));
     }
@@ -148,7 +153,10 @@ class AdminAuthCubit extends Cubit<AdminAuthState> {
     required String body,
   }) async {
     try {
-      emit(AdminAuthActionInProgress(usersState: state.usersState));
+      emit(AdminAuthActionInProgress(
+        userId: userId,
+        usersState: state.usersState,
+      ));
       await adminAuthRepository.sendNotificationToUser(
         userId: userId,
         title: title,
@@ -157,7 +165,7 @@ class AdminAuthCubit extends Cubit<AdminAuthState> {
       emit(AdminAuthActionSuccess(usersState: state.usersState));
     } on AdminAuthException catch (e) {
       emit(AdminAuthActionFailure(
-        exception: e,
+        e,
         usersState: state.usersState,
       ));
     }

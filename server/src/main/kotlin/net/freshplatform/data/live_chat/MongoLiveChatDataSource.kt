@@ -14,10 +14,10 @@ class MongoLiveChatDataSource(
 ) : LiveChatDataSource {
     private val rooms = database.getCollection<LiveChatRoom>("liveChatRooms")
 
-    override suspend fun insertMessage(clientUserId: String, message: ChatMessage): Boolean {
+    override suspend fun insertMessage(roomClientUserId: String, message: ChatMessage): Boolean {
         return try {
             rooms.updateOne(
-                Filters.eq(LiveChatRoom::clientUserId.name, clientUserId),
+                Filters.eq(LiveChatRoom::roomClientUserId.name, roomClientUserId),
                 Updates.combine(
                     Updates.setOnInsert(
                         LiveChatRoom::createdAt.name,
@@ -45,14 +45,14 @@ class MongoLiveChatDataSource(
         }
     }
 
-    override suspend fun getLastMessageInRoomByClientUserId(clientUserId: String): Result<ChatMessage?> {
+    override suspend fun getLastMessageInRoomByRoomClientUserId(roomClientUserId: String): Result<ChatMessage?> {
         return try {
             val projection = Projections.fields(
                 Projections.include(LiveChatRoom::messages.name),
                 Projections.slice(LiveChatRoom::messages.name, -1),
             )
             val message =
-                rooms.find(clientUserIdFilter(clientUserId))
+                rooms.find(roomClientUserIdFilter(roomClientUserId))
                     .projection(projection).singleOrNull()?.messages?.firstOrNull()
             Result.success(message)
         } catch (e: Exception) {
@@ -77,21 +77,14 @@ class MongoLiveChatDataSource(
         }
     }
 
-    override suspend fun getAllMessagesByClientUserId(clientUserId: String, page: Int, limit: Int): Result<List<ChatMessage>> {
+    override suspend fun getAllMessagesByRoomClientUserId(roomClientUserId: String, page: Int, limit: Int): Result<List<ChatMessage>> {
         return try {
             val skip = (page - 1) * limit
-            val pipeline = listOf(
-//                Aggregates.match(clientUserIdFilter(clientUserId)),
-                Aggregates.unwind("\$${LiveChatRoom::messages.name}"),
-//                Aggregates.sort(Sorts.descending("messages.updatedAt"))
-            )
-//            val messages = rooms.find(clientUserIdFilter(userId))
-//                .sort(Sorts.descending("${LiveChatRoom::messages.name}.${ChatMessage::updatedAt.name}")) // TODO: The sorting is broken and doesn't work
-//                .projection(Projections.slice(LiveChatRoom::messages.name, skip, limit))
-//                .singleOrNull()?.messages ?: listOf()
-            val messages = rooms.find().sort(Sorts.descending("messages.updatedAt")).singleOrNull()
-            println(messages)
-            Result.success(emptyList())
+            val messages = rooms.find(roomClientUserIdFilter(roomClientUserId))
+                .sort(Sorts.descending("${LiveChatRoom::messages.name}.${ChatMessage::updatedAt.name}")) // TODO: The sorting is broken and doesn't work
+                .projection(Projections.slice(LiveChatRoom::messages.name, skip, limit))
+                .singleOrNull()?.messages ?: listOf()
+            Result.success(messages)
         } catch (e: Exception) {
             e.printStackTrace()
             Result.failure(e)
@@ -102,8 +95,8 @@ class MongoLiveChatDataSource(
         return Filters.eq("_id", ObjectId(roomId))
     }
 
-    private fun clientUserIdFilter(clientUserId: String): Bson {
-        return Filters.eq(LiveChatRoom::clientUserId.name, clientUserId)
+    private fun roomClientUserIdFilter(roomClientUserId: String): Bson {
+        return Filters.eq(LiveChatRoom::roomClientUserId.name, roomClientUserId)
     }
 
     private fun generateUpdatedAtUpdate(fieldName: String): Bson {

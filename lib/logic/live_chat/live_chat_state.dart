@@ -1,5 +1,6 @@
 part of 'live_chat_cubit.dart';
 
+@immutable
 class LiveChatMessagesState extends Equatable {
   const LiveChatMessagesState({
     this.messages = const [],
@@ -58,8 +59,10 @@ class LiveChatSendMessageSuccess extends LiveChatState {
 }
 
 class LiveChatSendMessageFailure extends LiveChatState {
-  const LiveChatSendMessageFailure(this.exception,
-      {required super.messagesState});
+  const LiveChatSendMessageFailure(
+    this.exception, {
+    required super.messagesState,
+  });
 
   final LiveChatException exception;
 

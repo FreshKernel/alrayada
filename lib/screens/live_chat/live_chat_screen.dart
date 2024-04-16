@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../data/live_chat/live_chat_repository.dart';
 import '../../l10n/app_localizations.dart';
 import '../../logic/connectivity/connectivity_cubit.dart';
 import '../../logic/live_chat/live_chat_cubit.dart';
@@ -8,8 +9,18 @@ import '../../widgets/errors/w_internet_error.dart';
 import 'live_chat_messages_list.dart';
 import 'live_chat_new_message.dart';
 
+@immutable
+class LiveChatScreenArgs {
+  const LiveChatScreenArgs({required this.connectionType});
+
+  /// To whatever to connect as admin or client
+  final LiveChatConnectionType connectionType;
+}
+
 class LiveChatScreen extends StatefulWidget {
-  const LiveChatScreen({super.key});
+  const LiveChatScreen({required this.args, super.key});
+
+  final LiveChatScreenArgs args;
 
   static const routeName = '/liveChat';
 
@@ -32,7 +43,7 @@ class _LiveChatScreenState extends State<LiveChatScreen> {
   void initState() {
     super.initState();
     _liveChatCubit = context.read<LiveChatCubit>();
-    _liveChatCubit.connect();
+    _liveChatCubit.connect(widget.args.connectionType);
   }
 
   @override
@@ -51,6 +62,7 @@ class _LiveChatScreenState extends State<LiveChatScreen> {
               Expanded(
                 child: LiveChatMessagesList(
                   scrollController: _scrollController,
+                  connectionType: widget.args.connectionType,
                 ),
               ),
               LiveChatNewMessage(

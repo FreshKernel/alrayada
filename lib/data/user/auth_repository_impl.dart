@@ -9,6 +9,7 @@ import '../../services/dio_service.dart';
 import '../../services/notifications/s_notifications.dart';
 import '../../utils/constants/routes_constants.dart';
 import '../../utils/error_response.dart';
+import '../../utils/extensions/dio_response_ext.dart';
 import '../../utils/server.dart';
 import 'auth_exceptions.dart';
 import 'auth_repository.dart';
@@ -204,9 +205,7 @@ class AuthRepositoryImpl extends AuthRepository {
         ServerConfigurations.getRequestUrl(
             RoutesConstants.authRoutes.getUserData),
       );
-      final responseData = response.data;
-      if (responseData == null) return null;
-      final user = User.fromJson(responseData);
+      final user = User.fromJson(response.dataOrThrow);
       final savedUserCredential = await fetchSavedUserCredential() ??
           (throw StateError(
               'To load the user from server, user must be authenticated.'));

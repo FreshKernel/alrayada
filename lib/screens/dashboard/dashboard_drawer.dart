@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../logic/auth/auth_cubit.dart';
+import '../../data/live_chat/live_chat_repository.dart';
 import '../../utils/extensions/scaffold_messenger_ext.dart';
 import '../live_chat/live_chat_screen.dart';
 import '../notifications/notifications_screen.dart';
@@ -32,7 +33,12 @@ class DashboardDrawer extends StatelessWidget {
         DrawerItem(
           icon: Icons.message,
           title: context.loc.support,
-          onTap: () => context.push(LiveChatScreen.routeName),
+          onTap: () => context.push(
+            LiveChatScreen.routeName,
+            extra: const LiveChatScreenArgs(
+              connectionType: LiveChatConnectClientUser(),
+            ),
+          ),
           isAuthRequired: true,
         ),
         DrawerItem(

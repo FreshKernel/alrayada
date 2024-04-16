@@ -20,6 +20,7 @@ import net.freshplatform.services.security.social_login.SocialLoginService
 import net.freshplatform.services.security.social_login.SocialLoginServiceImpl
 import net.freshplatform.services.security.token_verification.JavaTokenVerificationService
 import net.freshplatform.services.security.token_verification.TokenVerificationService
+import net.freshplatform.services.telegram_bot.DevTelegramBotService
 import net.freshplatform.services.telegram_bot.KtorTelegramBotService
 import net.freshplatform.services.telegram_bot.TelegramBotService
 import net.freshplatform.utils.getEnvironmentVariables
@@ -46,7 +47,11 @@ val servicesModule = module {
         }
     }
     single<TelegramBotService> {
-        KtorTelegramBotService(HttpService.client)
+        if (getEnvironmentVariables().isProductionMode) {
+            KtorTelegramBotService(HttpService.client)
+        } else {
+            DevTelegramBotService()
+        }
     }
     single<TokenVerificationService> {
         JavaTokenVerificationService()

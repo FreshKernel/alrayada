@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../data/live_chat/live_chat_repository.dart';
 import '../../l10n/app_localizations.dart';
 import '../../logic/auth/auth_cubit.dart';
 import '../../logic/settings/settings_cubit.dart';
@@ -51,7 +52,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 );
                 return;
               }
-              context.push(LiveChatScreen.routeName);
+              context.push(
+                LiveChatScreen.routeName,
+                extra: const LiveChatScreenArgs(
+                  connectionType: LiveChatConnectClientUser(),
+                ),
+              );
             },
             child: Icon(
               isCupertino(context)
@@ -64,7 +70,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
               material: (context, platform) => MaterialIconButtonData(
                 tooltip: context.loc.support,
               ),
-              onPressed: () => context.push(LiveChatScreen.routeName),
+              onPressed: () => context.push(
+                LiveChatScreen.routeName,
+                extra: const LiveChatScreenArgs(
+                  connectionType: LiveChatConnectClientUser(),
+                ),
+              ),
               icon: Icon(
                 isCupertino(context)
                     ? CupertinoIcons.chat_bubble_fill

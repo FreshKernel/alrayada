@@ -5,6 +5,7 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/responsive_navbar.dart';
 import '../dashboard/tab_item.dart';
+import 'tabs/live_chat/live_chat_tab.dart';
 import 'tabs/users/admin_users_tab.dart';
 
 class AdminDashboardScreen extends StatefulWidget {
@@ -50,13 +51,24 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
           ),
         ),
         TabItem(
-          id: 'Chat',
-          label: 'Chat',
-          body: const Text('Chat'),
-          title: 'Chat',
+          id: LiveChatTab.id,
+          label: context.loc.chat,
+          body: const LiveChatTab(),
+          title: context.loc.chat,
           icon: Icon(
             isCupertino(context) ? CupertinoIcons.chat_bubble : Icons.chat,
           ),
+          // TODO: Add delete all chat rooms button
+          actionsBuilder: (context) => [
+            IconButton(
+              color: Theme.of(context).colorScheme.error,
+              onPressed: () => throw UnimplementedError('Not yet'),
+              icon: Icon(
+                isCupertino(context) ? CupertinoIcons.delete : Icons.delete,
+                semanticLabel: context.loc.delete,
+              ),
+            ),
+          ],
         ),
         TabItem(
           id: 'Offers',

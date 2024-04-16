@@ -4,9 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../data/live_chat/live_chat_repository.dart';
 import '../../../../data/user/models/user.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../logic/auth/admin/admin_auth_cubit.dart';
+import '../../../live_chat/live_chat_screen.dart';
 import 'send_notification_dialog.dart';
 
 /// The admin can view all the users data
@@ -40,37 +42,52 @@ class AdminUserTile extends StatelessWidget {
                 ? CupertinoIcons.bubble_left_bubble_right
                 : Icons.rate_review),
       ),
-      trailing: PopupMenuButton(
-        itemBuilder: (context) => <PopupMenuEntry<String>>[
-          PopupMenuItem(
-            child: Text(user.isAccountActivated
-                ? context.loc.deactivate
-                : context.loc.activate),
-            onTap: () => context.read<AdminAuthCubit>().setAccountActivated(
-                  userId: user.userId,
-                  value: !user.isAccountActivated,
-                ),
-          ),
-          PopupMenuItem(
-            child: Text(context.loc.delete),
-            onTap: () => context.read<AdminAuthCubit>().deleteUserAccount(
-                  userId: user.userId,
-                ),
-          ),
-          PopupMenuItem(
-            child: Text(context.loc.sendNotification),
-            onTap: () => showAdaptiveDialog(
-              context: context,
-              builder: (context) => SendNotificationToUserDialog(
-                userId: user.userId,
+      trailing: BlocBuilder<AdminAuthCubit, AdminAuthState>(
+        builder: (context, state) {
+          if (state is AdminAuthActionInProgress &&
+              state.userId == user.userId) {
+            return const CircularProgressIndicator.adaptive();
+          }
+          return PopupMenuButton(
+            itemBuilder: (context) => <PopupMenuEntry<String>>[
+              PopupMenuItem(
+                child: Text(user.isAccountActivated
+                    ? context.loc.deactivate
+                    : context.loc.activate),
+                onTap: () => context.read<AdminAuthCubit>().setAccountActivated(
+                      userId: user.userId,
+                      value: !user.isAccountActivated,
+                    ),
               ),
-            ),
-          ),
-          PopupMenuItem(
-            child: Text(context.loc.chat),
-            onTap: () {},
-          ),
-        ],
+              PopupMenuItem(
+                child: Text(context.loc.delete),
+                onTap: () => context.read<AdminAuthCubit>().deleteUserAccount(
+                      userId: user.userId,
+                    ),
+              ),
+              PopupMenuItem(
+                child: Text(context.loc.sendNotification),
+                onTap: () => showAdaptiveDialog(
+                  context: context,
+                  builder: (context) => SendNotificationToUserDialog(
+                    userId: user.userId,
+                  ),
+                ),
+              ),
+              PopupMenuItem(
+                child: Text(context.loc.chat),
+                onTap: () => context.push(
+                  LiveChatScreen.routeName,
+                  extra: LiveChatScreenArgs(
+                    connectionType: LiveChatConnectAdminUser(
+                      roomClientUserId: user.userId,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
