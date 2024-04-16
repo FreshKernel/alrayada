@@ -1,7 +1,7 @@
-import 'package:alrayada/data/user/auth_repository.dart';
-import 'package:alrayada/data/user/auth_social_login.dart';
 import 'package:alrayada/data/user/models/auth_credential.dart';
 import 'package:alrayada/data/user/models/user.dart';
+import 'package:alrayada/data/user/user_repository.dart';
+import 'package:alrayada/data/user/user_social_login.dart';
 
 final mockUserCredential = UserCredential(
   accessToken: 'accessToken',
@@ -26,7 +26,7 @@ final mockUserCredential = UserCredential(
   ),
 );
 
-class AuthRepositoryMock extends AuthRepository {
+class UserRepositoryMock extends UserRepository {
   @override
   Future<UserCredential> authenticateWithSocialLogin(SocialLogin socialLogin,
       {required UserInfo? userInfo}) async {

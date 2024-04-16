@@ -17,7 +17,7 @@ fun Application.configureSecurity() {
         global {
             rateLimiter(limit = 100, refillPeriod = 1.minutes)
         }
-        register(RateLimitName("auth")) {
+        register(RateLimitName("user")) {
             rateLimiter(limit = 20, refillPeriod = 5.minutes)
         }
     }

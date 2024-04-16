@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../l10n/app_localizations.dart';
-import '../../../logic/auth/auth_cubit.dart';
 import '../../data/live_chat/live_chat_repository.dart';
+import '../../logic/user/user_cubit.dart';
 import '../../utils/extensions/scaffold_messenger_ext.dart';
 import '../live_chat/live_chat_screen.dart';
 import '../notifications/notifications_screen.dart';
@@ -70,7 +70,7 @@ class DashboardDrawer extends StatelessWidget {
         final item = items[value];
         context.pop();
         if (item.isAuthRequired) {
-          final userCredential = context.read<AuthCubit>().state.userCredential;
+          final userCredential = context.read<UserCubit>().state.userCredential;
           if (userCredential == null) {
             ScaffoldMessenger.of(context).showSnackBarText(
               context.loc.youNeedToLoginFirst,
@@ -81,7 +81,7 @@ class DashboardDrawer extends StatelessWidget {
         item.onTap();
       },
       children: [
-        BlocBuilder<AuthCubit, AuthState>(
+        BlocBuilder<UserCubit, UserState>(
           builder: (context, state) {
             final user = state.userCredential;
             return UserAccountsDrawerHeader(

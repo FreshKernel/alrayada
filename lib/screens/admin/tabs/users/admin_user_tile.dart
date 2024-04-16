@@ -7,7 +7,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../data/live_chat/live_chat_repository.dart';
 import '../../../../data/user/models/user.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../../logic/auth/admin/admin_auth_cubit.dart';
+import '../../../../logic/user/admin/admin_user_cubit.dart';
 import '../../../live_chat/live_chat_screen.dart';
 import 'send_notification_dialog.dart';
 
@@ -42,9 +42,9 @@ class AdminUserTile extends StatelessWidget {
                 ? CupertinoIcons.bubble_left_bubble_right
                 : Icons.rate_review),
       ),
-      trailing: BlocBuilder<AdminAuthCubit, AdminAuthState>(
+      trailing: BlocBuilder<AdminUserCubit, AdminUserState>(
         builder: (context, state) {
-          if (state is AdminAuthActionInProgress &&
+          if (state is AdminUserActionInProgress &&
               state.userId == user.userId) {
             return const CircularProgressIndicator.adaptive();
           }
@@ -54,14 +54,14 @@ class AdminUserTile extends StatelessWidget {
                 child: Text(user.isAccountActivated
                     ? context.loc.deactivate
                     : context.loc.activate),
-                onTap: () => context.read<AdminAuthCubit>().setAccountActivated(
+                onTap: () => context.read<AdminUserCubit>().setAccountActivated(
                       userId: user.userId,
                       value: !user.isAccountActivated,
                     ),
               ),
               PopupMenuItem(
                 child: Text(context.loc.delete),
-                onTap: () => context.read<AdminAuthCubit>().deleteUserAccount(
+                onTap: () => context.read<AdminUserCubit>().deleteUserAccount(
                       userId: user.userId,
                     ),
               ),

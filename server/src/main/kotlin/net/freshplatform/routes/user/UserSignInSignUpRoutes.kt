@@ -1,4 +1,4 @@
-package net.freshplatform.routes.auth
+package net.freshplatform.routes.user
 
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -76,7 +76,7 @@ fun Route.signUpWithEmailAndPassword() {
             info = request.userInfo,
             deviceNotificationsToken = request.deviceNotificationsToken,
             pictureUrl = null,
-            emailVerification = tokenVerificationService.generate(AuthUtils.EMAIL_VERIFICATION_TOKEN_EXPIRATION),
+            emailVerification = tokenVerificationService.generate(UserUtils.EMAIL_VERIFICATION_TOKEN_EXPIRATION),
             resetPasswordVerification = null,
             createdAt = Clock.System.now(),
             updatedAt = Clock.System.now(),
@@ -92,7 +92,7 @@ fun Route.signUpWithEmailAndPassword() {
         }
 
         val verificationLink =
-            AuthUtils.createEmailVerificationLink(
+            UserUtils.createEmailVerificationLink(
                 baseUrl = call.request.baseUrl(),
                 userId = user.id.toString(),
                 token = user.emailVerification?.token
@@ -121,7 +121,7 @@ fun Route.signUpWithEmailAndPassword() {
         }
 
         val accessToken =
-            jwtService.generateAccessToken(user.id.toString(), AuthUtils.USER_ACCESS_TOKEN_EXPIRES_IN).token
+            jwtService.generateAccessToken(user.id.toString(), UserUtils.USER_ACCESS_TOKEN_EXPIRES_IN).token
 
         call.respond(
             HttpStatusCode.Created,
@@ -195,7 +195,7 @@ fun Route.signInWithEmailAndPassword() {
         }
 
         val accessToken =
-            jwtService.generateAccessToken(userId = user.id.toString(), AuthUtils.USER_ACCESS_TOKEN_EXPIRES_IN)
+            jwtService.generateAccessToken(userId = user.id.toString(), UserUtils.USER_ACCESS_TOKEN_EXPIRES_IN)
 
         call.respond(
             UserCredential(
@@ -326,7 +326,7 @@ fun Route.socialLogin() {
         }
 
         val accessToken =
-            jwtService.generateAccessToken(user.id.toString(), AuthUtils.USER_ACCESS_TOKEN_EXPIRES_IN).token
+            jwtService.generateAccessToken(user.id.toString(), UserUtils.USER_ACCESS_TOKEN_EXPIRES_IN).token
 
         call.respond(
             if (isSignIn) HttpStatusCode.OK else HttpStatusCode.Created,

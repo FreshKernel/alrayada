@@ -2,39 +2,39 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
-import '../../../data/user/admin/admin_auth_exceptions.dart';
-import '../../../data/user/admin/admin_auth_repository.dart';
+import '../../../data/user/admin/admin_user_exceptions.dart';
+import '../../../data/user/admin/admin_user_repository.dart';
 import '../../../data/user/models/user.dart';
 
-part 'admin_auth_state.dart';
+part 'admin_user_state.dart';
 
-class AdminAuthCubit extends Cubit<AdminAuthState> {
-  AdminAuthCubit({
-    required this.adminAuthRepository,
-  }) : super(const AdminAuthInitial()) {
+class AdminUserCubit extends Cubit<AdminUserState> {
+  AdminUserCubit({
+    required this.adminUserRepository,
+  }) : super(const AdminUserInitial()) {
     initLoadUsers();
   }
 
-  final AdminAuthRepository adminAuthRepository;
+  final AdminUserRepository adminUserRepository;
 
   static const _limit = 10;
 
   Future<void> initLoadUsers() async {
     try {
-      emit(const AdminAuthLoadUsersInProgress());
-      final users = await adminAuthRepository.getAllUsers(
+      emit(const AdminUserLoadUsersInProgress());
+      final users = await adminUserRepository.getAllUsers(
         searchQuery: '',
         page: 1,
         limit: _limit,
       );
-      emit(AdminAuthLoadUsersSuccess(
-        usersState: AdminAuthUsersState(
+      emit(AdminUserLoadUsersSuccess(
+        usersState: AdminUserUsersState(
           users: users,
           page: 1,
         ),
       ));
-    } on AdminAuthException catch (e) {
-      emit(AdminAuthLoadUsersFailure(e));
+    } on AdminUserException catch (e) {
+      emit(AdminUserLoadUsersFailure(e));
     }
   }
 
@@ -42,22 +42,22 @@ class AdminAuthCubit extends Cubit<AdminAuthState> {
     if (state.usersState.hasReachedLastPage) {
       return;
     }
-    if (state is AdminAuthLoadMoreUsersInProgress) {
+    if (state is AdminUserLoadMoreUsersInProgress) {
       // In case if the function called more than once
       return;
     }
     try {
-      emit(AdminAuthLoadMoreUsersInProgress(
+      emit(AdminUserLoadMoreUsersInProgress(
         usersState: state.usersState.copyWith(
           page: state.usersState.page + 1,
         ),
       ));
-      final moreUsers = await adminAuthRepository.getAllUsers(
+      final moreUsers = await adminUserRepository.getAllUsers(
         searchQuery: state.usersState.searchQuery,
         page: state.usersState.page,
         limit: _limit,
       );
-      emit(AdminAuthLoadUsersSuccess(
+      emit(AdminUserLoadUsersSuccess(
         usersState: state.usersState.copyWith(
           users: [
             ...state.usersState.users,
@@ -66,26 +66,26 @@ class AdminAuthCubit extends Cubit<AdminAuthState> {
           hasReachedLastPage: moreUsers.isEmpty,
         ),
       ));
-    } on AdminAuthException catch (e) {
-      emit(AdminAuthLoadUsersFailure(e));
+    } on AdminUserException catch (e) {
+      emit(AdminUserLoadUsersFailure(e));
     }
   }
 
   Future<void> searchAllUsers({required String searchQuery}) async {
     try {
-      emit(const AdminAuthLoadUsersInProgress());
-      final users = await adminAuthRepository.getAllUsers(
+      emit(const AdminUserLoadUsersInProgress());
+      final users = await adminUserRepository.getAllUsers(
         searchQuery: searchQuery,
         page: 1,
         limit: _limit,
       );
-      emit(AdminAuthLoadUsersSuccess(
-          usersState: AdminAuthUsersState(
+      emit(AdminUserLoadUsersSuccess(
+          usersState: AdminUserUsersState(
         users: users,
         searchQuery: searchQuery, // So pagination work when searching
       )));
-    } on AdminAuthException catch (e) {
-      emit(AdminAuthLoadUsersFailure(e));
+    } on AdminUserException catch (e) {
+      emit(AdminUserLoadUsersFailure(e));
     }
   }
 
@@ -94,11 +94,11 @@ class AdminAuthCubit extends Cubit<AdminAuthState> {
     required bool value,
   }) async {
     try {
-      emit(AdminAuthActionInProgress(
+      emit(AdminUserActionInProgress(
         userId: userId,
         usersState: state.usersState,
       ));
-      await adminAuthRepository.setAccountActivated(
+      await adminUserRepository.setAccountActivated(
         userId: userId,
         value: value,
       );
@@ -108,13 +108,13 @@ class AdminAuthCubit extends Cubit<AdminAuthState> {
         }
         return user;
       }).toList();
-      emit(AdminAuthActionSuccess(
+      emit(AdminUserActionSuccess(
         usersState: state.usersState.copyWith(
           users: users,
         ),
       ));
-    } on AdminAuthException catch (e) {
-      emit(AdminAuthActionFailure(
+    } on AdminUserException catch (e) {
+      emit(AdminUserActionFailure(
         e,
         usersState: state.usersState,
       ));
@@ -125,22 +125,22 @@ class AdminAuthCubit extends Cubit<AdminAuthState> {
     required String userId,
   }) async {
     try {
-      emit(AdminAuthActionInProgress(
+      emit(AdminUserActionInProgress(
         userId: userId,
         usersState: state.usersState,
       ));
-      await adminAuthRepository.deleteUserAccount(
+      await adminUserRepository.deleteUserAccount(
         userId: userId,
       );
       final users = [...state.usersState.users]..removeWhere(
           (user) => user.userId == userId,
         );
-      emit(AdminAuthActionSuccess(
+      emit(AdminUserActionSuccess(
           usersState: state.usersState.copyWith(
         users: users,
       )));
-    } on AdminAuthException catch (e) {
-      emit(AdminAuthActionFailure(
+    } on AdminUserException catch (e) {
+      emit(AdminUserActionFailure(
         e,
         usersState: state.usersState,
       ));
@@ -153,18 +153,18 @@ class AdminAuthCubit extends Cubit<AdminAuthState> {
     required String body,
   }) async {
     try {
-      emit(AdminAuthActionInProgress(
+      emit(AdminUserActionInProgress(
         userId: userId,
         usersState: state.usersState,
       ));
-      await adminAuthRepository.sendNotificationToUser(
+      await adminUserRepository.sendNotificationToUser(
         userId: userId,
         title: title,
         body: body,
       );
-      emit(AdminAuthActionSuccess(usersState: state.usersState));
-    } on AdminAuthException catch (e) {
-      emit(AdminAuthActionFailure(
+      emit(AdminUserActionSuccess(usersState: state.usersState));
+    } on AdminUserException catch (e) {
+      emit(AdminUserActionFailure(
         e,
         usersState: state.usersState,
       ));

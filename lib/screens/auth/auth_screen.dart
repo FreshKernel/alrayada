@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../l10n/app_localizations.dart';
-import '../../logic/auth/auth_cubit.dart';
+import '../../logic/user/user_cubit.dart';
 import 'auth_form.dart';
 import 'auth_verify_email.dart';
 
@@ -11,9 +11,11 @@ class AuthScreen extends StatelessWidget {
 
   static const routeName = '/auth';
 
-  Widget _getScreenByAuthState(AuthState authState,
-      {required BuildContext context}) {
-    final user = authState.userCredential?.user;
+  Widget _getScreenByAuthState(
+    UserState userState, {
+    required BuildContext context,
+  }) {
+    final user = userState.userCredential?.user;
     if (user != null && !user.isEmailVerified) {
       return const AuthVerifyEmailScreen();
     }
@@ -50,7 +52,7 @@ class AuthScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AuthCubit, AuthState>(
+    return BlocBuilder<UserCubit, UserState>(
       builder: (context, state) {
         return AnimatedSwitcher(
           duration: const Duration(milliseconds: 330),

@@ -1,4 +1,4 @@
-package net.freshplatform.routes.auth
+package net.freshplatform.routes.user
 
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -45,7 +45,7 @@ fun Route.sendEmailVerificationLink() {
             }
 
             val emailVerification = tokenVerificationService.generate(
-                AuthUtils.EMAIL_VERIFICATION_TOKEN_EXPIRATION
+                UserUtils.EMAIL_VERIFICATION_TOKEN_EXPIRATION
             )
 
             val isUpdateSuccess = userDataSource.updateEmailVerificationStatusById(
@@ -62,7 +62,7 @@ fun Route.sendEmailVerificationLink() {
             }
 
             val verificationLink =
-                AuthUtils.createEmailVerificationLink(
+                UserUtils.createEmailVerificationLink(
                     baseUrl = call.request.baseUrl(),
                     userId = currentUser.id.toString(),
                     token = emailVerification.token // Use this instead of the one from currentUser
@@ -152,7 +152,7 @@ fun Route.verifyEmail() {
 }
 
 fun Route.verifyEmailForm() {
-    val verifyEmailRoutePath = "/auth/verifyEmail" // Hardcoded
+    val verifyEmailRoutePath = "/user/verifyEmail" // Hardcoded
 
     // When you change the route path, you also need to change it from `AuthUtils` class
     get("/verifyEmailForm") {

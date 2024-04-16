@@ -5,8 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../data/live_chat/models/chat_message.dart';
 import '../../l10n/app_localizations.dart';
-import '../../logic/auth/auth_cubit.dart';
 import '../../logic/settings/settings_cubit.dart';
+import '../../logic/user/user_cubit.dart';
 
 class LiveChatMessageTile extends StatelessWidget {
   const LiveChatMessageTile({required this.message, super.key});
@@ -15,7 +15,7 @@ class LiveChatMessageTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = context.read<AuthCubit>().state.userCredential?.user ??
+    final user = context.read<UserCubit>().state.userCredential?.user ??
         (throw StateError('You need to be authenticated in order to chat'));
     final isMe = message.isMe(user.userId);
     final messageAlignment = isMe ? Alignment.topRight : Alignment.topLeft;

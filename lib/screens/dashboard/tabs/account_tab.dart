@@ -13,7 +13,7 @@ import '../../../constants.dart';
 import '../../../data/user/models/user.dart';
 import '../../../gen/assets.gen.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../../logic/auth/auth_cubit.dart';
+import '../../../logic/user/user_cubit.dart';
 import '../../../utils/extensions/scaffold_messenger_ext.dart';
 import '../../../utils/server.dart';
 import '../../admin/admin_dashboard_screen.dart';
@@ -54,7 +54,7 @@ class _AccountTabState extends State<AccountTab> {
     final shape = RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(8),
     );
-    final listTile = BlocBuilder<AuthCubit, AuthState>(
+    final listTile = BlocBuilder<UserCubit, UserState>(
       builder: (context, state) {
         return ListTile(
           onTap: isAuthRequired
@@ -90,14 +90,14 @@ class _AccountTabState extends State<AccountTab> {
   Widget build(BuildContext context) {
     return RefreshIndicator.adaptive(
       onRefresh: () async {
-        await context.read<AuthCubit>().fetchUser();
+        await context.read<UserCubit>().fetchUser();
       },
       child: ListView(
         physics: const BouncingScrollPhysics(
           parent: AlwaysScrollableScrollPhysics(),
         ),
         children: [
-          BlocBuilder<AuthCubit, AuthState>(
+          BlocBuilder<UserCubit, UserState>(
             builder: (context, state) {
               final userCredential = state.userCredential;
               return Column(
@@ -185,7 +185,7 @@ class _AccountTabState extends State<AccountTab> {
                     onTap: () => context.push(ProfileScreen.routeName),
                     isAuthRequired: true,
                   ),
-                  BlocBuilder<AuthCubit, AuthState>(
+                  BlocBuilder<UserCubit, UserState>(
                     builder: (context, state) {
                       if (state.userCredential?.user.role != UserRole.admin) {
                         return const SizedBox.shrink();
@@ -235,7 +235,7 @@ class _AccountTabState extends State<AccountTab> {
                     onTap: () => context.push(SettingsScreen.routeName),
                   ),
                   const SizedBox(height: 6),
-                  BlocBuilder<AuthCubit, AuthState>(
+                  BlocBuilder<UserCubit, UserState>(
                     builder: (context, state) {
                       if (state.userCredential == null) {
                         return const SizedBox.shrink(); // No logout button
@@ -247,12 +247,12 @@ class _AccountTabState extends State<AccountTab> {
                           child: PlatformWidget(
                             cupertino: (context, platform) => CupertinoButton(
                               onPressed: () =>
-                                  context.read<AuthCubit>().logout(),
+                                  context.read<UserCubit>().logout(),
                               child: Text(context.loc.logout),
                             ),
                             material: (context, platform) => OutlinedButton(
                               onPressed: () =>
-                                  context.read<AuthCubit>().logout(),
+                                  context.read<UserCubit>().logout(),
                               child: Text(context.loc.logout),
                             ),
                           ),

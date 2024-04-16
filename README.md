@@ -23,6 +23,5 @@ An ecommerce application developed by Fresh Platform for Alrayada company.
 
 ## Todos
 
-1. I might change the Auth feature to User or Users
-2. I might add a way to choose whatever to enter already existing user auth form inputs data on debug mode only for development mode
-3. Make that when the user open the notification it will navigate to the correct screen, for example when the user account is activated, then trigger the code to update the state
+1. I might add a way to choose whatever to enter already existing user auth form inputs data on debug mode only for development mode
+2. Make that when the user open the notification it will navigate to the correct screen, for example when the user account is activated, then trigger the code to update the state

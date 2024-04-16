@@ -6,8 +6,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../data/user/models/user.dart';
 import '../../l10n/app_localizations.dart';
-import '../../logic/auth/auth_cubit.dart';
 import '../../logic/connectivity/connectivity_cubit.dart';
+import '../../logic/user/user_cubit.dart';
 import '../../utils/extensions/scaffold_messenger_ext.dart';
 import '../../utils/text_input_handler.dart';
 import '../../widgets/auth/user_info_text_inputs.dart';
@@ -36,7 +36,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     final userInfo =
-        context.read<AuthCubit>().state.requireUserCredential.user.info;
+        context.read<UserCubit>().state.requireUserCredential.user.info;
     _labOwnerPhoneNumberInputHandler.controller.text =
         userInfo.labOwnerPhoneNumber;
     _labPhoneNumberController.text = userInfo.labPhoneNumber;
@@ -57,7 +57,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             if (state is ConnectivityDisconnected) {
               return const InternetError(onTryAgain: null);
             }
-            return BlocBuilder<AuthCubit, AuthState>(
+            return BlocBuilder<UserCubit, UserState>(
               builder: (context, state) {
                 // This should be nullable since once user logout
                 // it will take very short time before go back to the previous screen
@@ -100,23 +100,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     const SizedBox(height: 12),
                     Padding(
                       padding: const EdgeInsets.only(top: 6.0),
-                      child: BlocConsumer<AuthCubit, AuthState>(
+                      child: BlocConsumer<UserCubit, UserState>(
                         listener: (context, state) {
-                          if (state is AuthUpdateUserFailure) {
+                          if (state is UserUpdateUserFailure) {
                             ScaffoldMessenger.of(context).showSnackBarText(
                                 context.loc.unknownErrorWithMsg(
                               state.exception.message,
                             ));
                             return;
                           }
-                          if (state is AuthUpdateUserSuccess) {
+                          if (state is UserUpdateUserSuccess) {
                             ScaffoldMessenger.of(context).showSnackBarText(
                                 context.loc.dataHasBeenSuccessfullyUpdated);
                             return;
                           }
                         },
                         builder: (context, state) {
-                          if (state is AuthUpdateUserInProgress) {
+                          if (state is UserUpdateUserInProgress) {
                             return const Center(
                               child: CircularProgressIndicator.adaptive(),
                             );
@@ -129,7 +129,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     _formKey.currentState?.validate() ?? false;
                                 if (!isValid) return;
                                 _formKey.currentState?.save();
-                                context.read<AuthCubit>().updateUserInfo(
+                                context.read<UserCubit>().updateUserInfo(
                                       UserInfo(
                                         labOwnerPhoneNumber:
                                             _labOwnerPhoneNumberInputHandler
@@ -151,22 +151,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 6.0),
-                      child: BlocConsumer<AuthCubit, AuthState>(
+                      child: BlocConsumer<UserCubit, UserState>(
                         listener: (context, state) {
-                          if (state is AuthDeleteFailure) {
+                          if (state is UserDeleteFailure) {
                             ScaffoldMessenger.of(context).showSnackBarText(
                                 context.loc.unknownErrorWithMsg(
                               state.exception.message,
                             ));
                             return;
                           }
-                          if (state is AuthDeleteSuccess) {
+                          if (state is UserDeleteSuccess) {
                             context.pop();
                             return;
                           }
                         },
                         builder: (context, state) {
-                          if (state is AuthDeleteInProgress) {
+                          if (state is UserDeleteInProgress) {
                             return const Center(
                               child: CircularProgressIndicator.adaptive(),
                             );

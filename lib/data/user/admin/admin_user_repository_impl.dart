@@ -6,10 +6,10 @@ import '../../../utils/error_response.dart';
 import '../../../utils/extensions/dio_response_ext.dart';
 import '../../../utils/server.dart';
 import '../models/user.dart';
-import 'admin_auth_exceptions.dart';
-import 'admin_auth_repository.dart';
+import 'admin_user_exceptions.dart';
+import 'admin_user_repository.dart';
 
-class AdminAuthRepositoryImpl extends AdminAuthRepository {
+class AdminUserRepositoryImpl extends AdminUserRepository {
   final _dio = DioService.instance.dio;
 
   @override
@@ -17,13 +17,13 @@ class AdminAuthRepositoryImpl extends AdminAuthRepository {
     try {
       await _dio.delete(
         ServerConfigurations.getRequestUrl(
-            RoutesConstants.authRoutes.adminRoutes.deleteUser),
+            RoutesConstants.userRoutes.adminRoutes.deleteUser),
         data: {
           'userId': userId,
         },
       );
     } catch (e) {
-      throw UnknownAdminAuthException(message: e.toString());
+      throw UnknownAdminUserException(message: e.toString());
     }
   }
 
@@ -36,7 +36,7 @@ class AdminAuthRepositoryImpl extends AdminAuthRepository {
     try {
       final response = await _dio.get<List>(
         ServerConfigurations.getRequestUrl(
-          RoutesConstants.authRoutes.adminRoutes.getAllUsers,
+          RoutesConstants.userRoutes.adminRoutes.getAllUsers,
         ),
         queryParameters: {
           'searchQuery': searchQuery,
@@ -46,7 +46,7 @@ class AdminAuthRepositoryImpl extends AdminAuthRepository {
       );
       return response.dataOrThrow.map((e) => User.fromJson(e)).toList();
     } catch (e) {
-      throw UnknownAdminAuthException(message: e.toString());
+      throw UnknownAdminUserException(message: e.toString());
     }
   }
 
@@ -59,7 +59,7 @@ class AdminAuthRepositoryImpl extends AdminAuthRepository {
     try {
       await _dio.post(
         ServerConfigurations.getRequestUrl(
-          RoutesConstants.authRoutes.adminRoutes.sendNotificationToUser,
+          RoutesConstants.userRoutes.adminRoutes.sendNotificationToUser,
         ),
         data: {
           'userId': userId,
@@ -72,15 +72,15 @@ class AdminAuthRepositoryImpl extends AdminAuthRepository {
       if (responseData is Map) {
         final code = ErrorResponse.fromJson(responseData.cast()).code;
         final exception = switch (code) {
-          'NOTIFICATION_SERVER_ERROR' =>
-            NotificationsServerException(message: e.message.toString()),
-          String() => UnknownAdminAuthException(message: e.message.toString()),
+          'NOTIFICATION_SERVER_ERROR' => NotificationsServerAdminUserException(
+              message: e.message.toString()),
+          String() => UnknownAdminUserException(message: e.message.toString()),
         };
         throw exception;
       }
-      throw UnknownAdminAuthException(message: e.message.toString());
+      throw UnknownAdminUserException(message: e.message.toString());
     } catch (e) {
-      throw UnknownAdminAuthException(message: e.toString());
+      throw UnknownAdminUserException(message: e.toString());
     }
   }
 
@@ -92,7 +92,7 @@ class AdminAuthRepositoryImpl extends AdminAuthRepository {
     try {
       await _dio.patch(
         ServerConfigurations.getRequestUrl(
-          RoutesConstants.authRoutes.adminRoutes.setAccountActivated,
+          RoutesConstants.userRoutes.adminRoutes.setAccountActivated,
         ),
         data: {
           'userId': userId,
@@ -104,17 +104,17 @@ class AdminAuthRepositoryImpl extends AdminAuthRepository {
       if (responseData is Map) {
         final code = ErrorResponse.fromJson(responseData.cast()).code;
         final exception = switch (code) {
-          'ALREADY_ACTIVATED' =>
-            UserAlreadyNotActivatedException(message: e.message.toString()),
-          'ALREADY_NOT_ACTIVATED' =>
-            UserAlreadyNotActivatedException(message: e.message.toString()),
-          String() => UnknownAdminAuthException(message: e.message.toString()),
+          'ALREADY_ACTIVATED' => UserAlreadyNotActivatedAdminUserException(
+              message: e.message.toString()),
+          'ALREADY_NOT_ACTIVATED' => UserAlreadyNotActivatedAdminUserException(
+              message: e.message.toString()),
+          String() => UnknownAdminUserException(message: e.message.toString()),
         };
         throw exception;
       }
-      throw UnknownAdminAuthException(message: e.message.toString());
+      throw UnknownAdminUserException(message: e.message.toString());
     } catch (e) {
-      throw UnknownAdminAuthException(message: e.toString());
+      throw UnknownAdminUserException(message: e.toString());
     }
   }
 }

@@ -7,7 +7,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import '../../data/live_chat/live_chat_exceptions.dart';
 import '../../data/live_chat/live_chat_repository.dart';
 import '../../data/live_chat/models/chat_message.dart';
-import '../auth/auth_cubit.dart';
+import '../user/user_cubit.dart';
 import './admin/admin_live_chat_cubit.dart';
 
 part 'live_chat_state.dart';
@@ -21,7 +21,7 @@ class LiveChatCubit extends Cubit<LiveChatState> {
   }) : super(const LiveChatInitial());
 
   final LiveChatRepository liveChatRepository;
-  final AuthCubit authCubit;
+  final UserCubit authCubit;
   late StreamSubscription<ChatMessage> _connectionSubscription;
 
   static const int _limit = 15;

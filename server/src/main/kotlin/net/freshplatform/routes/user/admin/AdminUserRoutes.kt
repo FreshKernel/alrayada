@@ -1,4 +1,4 @@
-package net.freshplatform.routes.auth.admin
+package net.freshplatform.routes.user.admin
 
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -14,7 +14,7 @@ import net.freshplatform.utils.ErrorResponseException
 import net.freshplatform.utils.extensions.requireCurrentAdminUser
 import org.koin.ktor.ext.inject
 
-fun Route.adminAuthRoutes() {
+fun Route.adminUserRoutes() {
     route("/admin") {
         getAllUsers()
         deleteUserAccount()

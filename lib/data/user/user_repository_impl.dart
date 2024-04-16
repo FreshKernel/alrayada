@@ -11,13 +11,13 @@ import '../../utils/constants/routes_constants.dart';
 import '../../utils/error_response.dart';
 import '../../utils/extensions/dio_response_ext.dart';
 import '../../utils/server.dart';
-import 'auth_exceptions.dart';
-import 'auth_repository.dart';
-import 'auth_social_login.dart';
 import 'models/auth_credential.dart';
 import 'models/user.dart';
+import 'user_exceptions.dart';
+import 'user_repository.dart';
+import 'user_social_login.dart';
 
-class AuthRepositoryImpl extends AuthRepository {
+class UserRepositoryImpl extends UserRepository {
   final _dio = DioService.instance.dio;
   final _secureStorage = const FlutterSecureStorage(
     aOptions: AndroidOptions(
@@ -33,7 +33,7 @@ class AuthRepositoryImpl extends AuthRepository {
     try {
       final response = await _dio.post(
         ServerConfigurations.getRequestUrl(
-          RoutesConstants.authRoutes.signIn,
+          RoutesConstants.userRoutes.signIn,
         ),
         data: {
           'email': email,
@@ -47,25 +47,25 @@ class AuthRepositoryImpl extends AuthRepository {
       return userCredential;
     } on DioException catch (e) {
       if (e.response?.statusCode == 429) {
-        throw TooManyRequestsAuthException(message: e.message.toString());
+        throw TooManyRequestsUserException(message: e.message.toString());
       }
       final responseData = e.response?.data;
       if (responseData is Map) {
         final code = ErrorResponse.fromJson(responseData.cast()).code;
         final exception = switch (code) {
           'INVALID_CREDENTIALS' =>
-            InvalidCredentialsAuthException(message: e.message.toString()),
+            InvalidCredentialsUserException(message: e.message.toString()),
           'EMAIL_NOT_FOUND' =>
-            EmailNotFoundAuthException(message: e.message.toString()),
+            EmailNotFoundUserException(message: e.message.toString()),
           'WRONG_PASSWORD' =>
-            WrongPasswordAuthException(message: e.message.toString()),
-          String() => UnknownAuthException(message: e.message.toString()),
+            WrongPasswordUserException(message: e.message.toString()),
+          String() => UnknownUserException(message: e.message.toString()),
         };
         throw exception;
       }
-      throw UnknownAuthException(message: e.message.toString());
+      throw UnknownUserException(message: e.message.toString());
     } catch (e) {
-      throw UnknownAuthException(
+      throw UnknownUserException(
         message: e.toString(),
       );
     }
@@ -79,7 +79,7 @@ class AuthRepositoryImpl extends AuthRepository {
   }) async {
     try {
       final response = await _dio.post<Map<String, Object?>>(
-        ServerConfigurations.getRequestUrl(RoutesConstants.authRoutes.signUp),
+        ServerConfigurations.getRequestUrl(RoutesConstants.userRoutes.signUp),
         data: {
           'email': email,
           'password': password,
@@ -93,21 +93,21 @@ class AuthRepositoryImpl extends AuthRepository {
       return userCredential;
     } on DioException catch (e) {
       if (e.response?.statusCode == 429) {
-        throw TooManyRequestsAuthException(message: e.message.toString());
+        throw TooManyRequestsUserException(message: e.message.toString());
       }
       final responseData = e.response?.data;
       if (responseData is Map) {
         final code = ErrorResponse.fromJson(responseData.cast()).code;
         final exception = switch (code) {
           'EMAIL_USED' =>
-            EmailAlreadyUsedAuthException(message: e.message.toString()),
-          String() => UnknownAuthException(message: e.message.toString()),
+            EmailAlreadyUsedUserException(message: e.message.toString()),
+          String() => UnknownUserException(message: e.message.toString()),
         };
         throw exception;
       }
-      throw UnknownAuthException(message: e.message.toString());
+      throw UnknownUserException(message: e.message.toString());
     } catch (e) {
-      throw UnknownAuthException(
+      throw UnknownUserException(
         message: e.toString(),
       );
     }
@@ -155,7 +155,7 @@ class AuthRepositoryImpl extends AuthRepository {
         value: userCredential.refreshToken,
       );
     } catch (e) {
-      throw UnknownAuthException(message: e.toString());
+      throw UnknownUserException(message: e.toString());
     }
   }
 
@@ -168,7 +168,7 @@ class AuthRepositoryImpl extends AuthRepository {
       await _secureStorage.delete(key: refreshTokenPrefKey);
       DioService.instance.clearTokens();
     } catch (e) {
-      throw UnknownAuthException(message: e.toString());
+      throw UnknownUserException(message: e.toString());
     }
   }
 
@@ -194,7 +194,7 @@ class AuthRepositoryImpl extends AuthRepository {
       );
       return userCredential;
     } catch (e) {
-      throw UnknownAuthException(message: e.toString());
+      throw UnknownUserException(message: e.toString());
     }
   }
 
@@ -203,7 +203,7 @@ class AuthRepositoryImpl extends AuthRepository {
     try {
       final response = await _dio.get<Map<String, Object?>>(
         ServerConfigurations.getRequestUrl(
-            RoutesConstants.authRoutes.getUserData),
+            RoutesConstants.userRoutes.getUserData),
       );
       final user = User.fromJson(response.dataOrThrow);
       final savedUserCredential = await fetchSavedUserCredential() ??
@@ -216,9 +216,9 @@ class AuthRepositoryImpl extends AuthRepository {
         // The user is no longer authenticated
         return null;
       }
-      throw UnknownAuthException(message: e.toString());
+      throw UnknownUserException(message: e.toString());
     } catch (e) {
-      throw UnknownAuthException(message: e.toString());
+      throw UnknownUserException(message: e.toString());
     }
   }
 
@@ -234,7 +234,7 @@ class AuthRepositoryImpl extends AuthRepository {
       };
       final response = await _dio.post<Map<String, Object?>>(
         ServerConfigurations.getRequestUrl(
-          RoutesConstants.authRoutes.socialLogin,
+          RoutesConstants.userRoutes.socialLogin,
         ),
         data: {
           'socialLogin': socialLogin.toJson(),
@@ -251,27 +251,27 @@ class AuthRepositoryImpl extends AuthRepository {
       return userCredential;
     } on DioException catch (e) {
       if (e.response?.statusCode == 429) {
-        throw TooManyRequestsAuthException(message: e.message.toString());
+        throw TooManyRequestsUserException(message: e.message.toString());
       }
       final responseData = e.response?.data;
       if (responseData is Map) {
         final code = ErrorResponse.fromJson(responseData.cast()).code;
         final exception = switch (code) {
           'INVALID_SOCIAL_INFO' =>
-            InvalidSocialInfoAuthException(message: e.message.toString()),
-          'SOCIAL_EMAIL_NOT_VERIFIED' => SocialEmailIsNotVerifiedAuthException(
+            InvalidSocialInfoUserException(message: e.message.toString()),
+          'SOCIAL_EMAIL_NOT_VERIFIED' => SocialEmailIsNotVerifiedUserException(
               message: e.message.toString()),
-          'SOCIAL_MISSING_SIGNUP_DATA' => SocialMissingSignUpDataAuthException(
+          'SOCIAL_MISSING_SIGNUP_DATA' => SocialMissingSignUpDataUserException(
               message: e.message.toString(),
               socialLogin: socialLogin,
             ),
-          String() => UnknownAuthException(message: e.message.toString()),
+          String() => UnknownUserException(message: e.message.toString()),
         };
         throw exception;
       }
-      throw UnknownAuthException(message: e.message.toString());
+      throw UnknownUserException(message: e.message.toString());
     } catch (e) {
-      throw UnknownAuthException(
+      throw UnknownUserException(
         message: e.toString(),
       );
     }
@@ -282,12 +282,12 @@ class AuthRepositoryImpl extends AuthRepository {
     try {
       await _dio.delete(
         ServerConfigurations.getRequestUrl(
-          RoutesConstants.authRoutes.deleteAccount,
+          RoutesConstants.userRoutes.deleteAccount,
         ),
       );
       await logout();
     } catch (e) {
-      throw UnknownAuthException(message: e.toString());
+      throw UnknownUserException(message: e.toString());
     }
   }
 
@@ -296,12 +296,12 @@ class AuthRepositoryImpl extends AuthRepository {
     try {
       await _dio.patch(
         ServerConfigurations.getRequestUrl(
-            RoutesConstants.authRoutes.updateDeviceNotificationsToken),
+            RoutesConstants.userRoutes.updateDeviceNotificationsToken),
         data:
             (await NotificationsService.instanse.getUserDeviceToken()).toJson(),
       );
     } catch (e) {
-      throw UnknownAuthException(message: e.toString());
+      throw UnknownUserException(message: e.toString());
     }
   }
 
@@ -312,7 +312,7 @@ class AuthRepositoryImpl extends AuthRepository {
     try {
       await _dio.patch(
         ServerConfigurations.getRequestUrl(
-            RoutesConstants.authRoutes.updateUserInfo),
+            RoutesConstants.userRoutes.updateUserInfo),
         data: userInfo.toJson(),
       );
       final userCredential = await fetchSavedUserCredential() ??
@@ -325,7 +325,7 @@ class AuthRepositoryImpl extends AuthRepository {
         ),
       ));
     } catch (e) {
-      throw UnknownAuthException(message: e.toString());
+      throw UnknownUserException(message: e.toString());
     }
   }
 
@@ -337,7 +337,7 @@ class AuthRepositoryImpl extends AuthRepository {
     try {
       await _dio.patch(
         ServerConfigurations.getRequestUrl(
-          RoutesConstants.authRoutes.updatePassword,
+          RoutesConstants.userRoutes.updatePassword,
         ),
         data: {
           'currentPassword': currentPassword,
@@ -345,7 +345,7 @@ class AuthRepositoryImpl extends AuthRepository {
         },
       );
     } catch (e) {
-      throw UnknownAuthException(message: e.toString());
+      throw UnknownUserException(message: e.toString());
     }
   }
 
@@ -353,13 +353,13 @@ class AuthRepositoryImpl extends AuthRepository {
   Future<void> sendEmailVerificationLink() async {
     try {
       await _dio.post(ServerConfigurations.getRequestUrl(
-          RoutesConstants.authRoutes.sendEmailVerificationLink));
+          RoutesConstants.userRoutes.sendEmailVerificationLink));
     } on DioException catch (e) {
       if (e.response?.statusCode == 429) {
-        throw TooManyRequestsAuthException(message: e.message.toString());
+        throw TooManyRequestsUserException(message: e.message.toString());
       }
       if (e.response?.statusCode == 401) {
-        throw UserNotLoggedInAnyMoreAuthException(
+        throw UserNotLoggedInAnyMoreUserException(
           message: e.message.toString(),
         );
       }
@@ -368,22 +368,22 @@ class AuthRepositoryImpl extends AuthRepository {
       if (responseData is Map) {
         final errorResponse = ErrorResponse.fromJson(responseData.cast());
         final exception = switch (errorResponse.code) {
-          'EMAIL_ALREADY_VERIFIED' => EmailAlreadyVerifiedAuthException(
+          'EMAIL_ALREADY_VERIFIED' => EmailAlreadyVerifiedUserException(
               message:
                   'Account is already verified and you are trying to verify it again, state error, fore more info: ${e.message.toString()}'),
           'EMAIL_VERIFICATION_LINK_ALREADY_SENT' =>
-            EmailVerificationLinkAlreadySentAuthException(
+            EmailVerificationLinkAlreadySentUserException(
               message: e.message.toString(),
               minutesToExpire:
                   int.parse(errorResponse.data?['minutesToExpire'] as String),
             ),
-          String() => UnknownAuthException(message: e.message.toString()),
+          String() => UnknownUserException(message: e.message.toString()),
         };
         throw exception;
       }
-      throw UnknownAuthException(message: e.message.toString());
+      throw UnknownUserException(message: e.message.toString());
     } catch (e) {
-      throw UnknownAuthException(message: e.toString());
+      throw UnknownUserException(message: e.toString());
     }
   }
 
@@ -392,34 +392,34 @@ class AuthRepositoryImpl extends AuthRepository {
     try {
       await _dio.post(
         ServerConfigurations.getRequestUrl(
-            RoutesConstants.authRoutes.sendResetPasswordLink),
+            RoutesConstants.userRoutes.sendResetPasswordLink),
         data: {
           'email': email,
         },
       );
     } on DioException catch (e) {
       if (e.response?.statusCode == 429) {
-        throw TooManyRequestsAuthException(message: e.message.toString());
+        throw TooManyRequestsUserException(message: e.message.toString());
       }
       final responseData = e.response?.data;
       if (responseData is Map) {
         final errorResponse = ErrorResponse.fromJson(responseData.cast());
         final exception = switch (errorResponse.code) {
           'EMAIL_NOT_FOUND' =>
-            EmailNotFoundAuthException(message: e.message.toString()),
+            EmailNotFoundUserException(message: e.message.toString()),
           'RESET_PASSWORD_LINK_ALREADY_SENT' =>
-            ResetPasswordLinkAlreadySentAuthException(
+            ResetPasswordLinkAlreadySentUserException(
               message: e.message.toString(),
               minutesToExpire:
                   int.parse(errorResponse.data?['minutesToExpire'] as String),
             ),
-          String() => UnknownAuthException(message: e.message.toString()),
+          String() => UnknownUserException(message: e.message.toString()),
         };
         throw exception;
       }
-      throw UnknownAuthException(message: e.message.toString());
+      throw UnknownUserException(message: e.message.toString());
     } catch (e) {
-      throw UnknownAuthException(message: e.toString());
+      throw UnknownUserException(message: e.toString());
     }
   }
 }

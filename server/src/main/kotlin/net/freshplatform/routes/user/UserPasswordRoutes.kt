@@ -1,4 +1,4 @@
-package net.freshplatform.routes.auth
+package net.freshplatform.routes.user
 
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -58,7 +58,7 @@ fun Route.sendResetPasswordLink() {
         }
 
         val resetPasswordVerification = tokenVerificationService.generate(
-            AuthUtils.RESET_PASSWORD_VERIFICATION_TOKEN_EXPIRATION
+            UserUtils.RESET_PASSWORD_VERIFICATION_TOKEN_EXPIRATION
         )
 
         val isUpdateSuccess =
@@ -72,7 +72,7 @@ fun Route.sendResetPasswordLink() {
             )
         }
 
-        val resetLink = AuthUtils.createResetPasswordLink(
+        val resetLink = UserUtils.createResetPasswordLink(
             baseUrl = call.request.baseUrl(),
             userId = user.id.toString(),
             token = resetPasswordVerification.token // Use this instead of the one from user
@@ -172,7 +172,7 @@ fun Route.resetPassword() {
 }
 
 fun Route.resetPasswordForm() {
-    val resetPasswordRoutePath = "/auth/resetPassword" // Hardcoded
+    val resetPasswordRoutePath = "/user/resetPassword" // Hardcoded
 
     get("/resetPasswordForm") {
         val token: String by call.request.queryParameters

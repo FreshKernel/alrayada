@@ -5,11 +5,11 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 
-import '../../data/user/auth_social_login.dart';
 import '../../data/user/models/user.dart';
+import '../../data/user/user_social_login.dart';
 import '../../gen/assets.gen.dart';
 import '../../l10n/app_localizations.dart';
-import '../../logic/auth/auth_cubit.dart';
+import '../../logic/user/user_cubit.dart';
 import '../../utils/env.dart';
 import '../../utils/extensions/scaffold_messenger_ext.dart';
 import '../../utils/text_input_handler.dart';
@@ -94,7 +94,7 @@ class _AuthSocialLoginSignUpScreenState
     }
     _formKey.currentState?.save();
     context.pop();
-    context.read<AuthCubit>().authenticateWithSocialLogin(
+    context.read<UserCubit>().authenticateWithSocialLogin(
           widget.args.socialLogin,
           userInfo: UserInfo(
             labOwnerPhoneNumber:

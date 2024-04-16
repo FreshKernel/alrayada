@@ -5,34 +5,34 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
-import '../../data/user/auth_exceptions.dart';
-import '../../data/user/auth_repository.dart';
-import '../../data/user/auth_social_login.dart';
 import '../../data/user/models/auth_credential.dart';
 import '../../data/user/models/user.dart';
+import '../../data/user/user_exceptions.dart';
+import '../../data/user/user_repository.dart';
+import '../../data/user/user_social_login.dart';
 import '../../utils/app_logger.dart';
 
-part 'auth_state.dart';
+part 'user_state.dart';
 
-class AuthCubit extends Cubit<AuthState> {
-  AuthCubit({required this.authRepository}) : super(const AuthInitial()) {
+class UserCubit extends Cubit<UserState> {
+  UserCubit({required this.userRepository}) : super(const UserInitial()) {
     fetchSavedUser();
   }
-  final AuthRepository authRepository;
+  final UserRepository userRepository;
 
   Future<void> signInWithEmailAndPassword({
     required String email,
     required String password,
   }) async {
     try {
-      emit(const AuthLoginInProgress());
-      final userCredential = await authRepository.signInWithEmailAndPassword(
+      emit(const UserLoginInProgress());
+      final userCredential = await userRepository.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-      emit(AuthLoginSuccess(userCredential: userCredential));
-    } on AuthException catch (e) {
-      emit(AuthLoginFailure(e));
+      emit(UserLoginSuccess(userCredential: userCredential));
+    } on UserException catch (e) {
+      emit(UserLoginFailure(e));
     }
   }
 
@@ -42,15 +42,15 @@ class AuthCubit extends Cubit<AuthState> {
     required UserInfo userInfo,
   }) async {
     try {
-      emit(const AuthLoginInProgress());
-      final userCredential = await authRepository.signUpWithEmailAndPassword(
+      emit(const UserLoginInProgress());
+      final userCredential = await userRepository.signUpWithEmailAndPassword(
         email: email,
         password: password,
         userInfo: userInfo,
       );
-      emit(AuthLoginSuccess(userCredential: userCredential));
-    } on AuthException catch (e) {
-      emit(AuthLoginFailure(e));
+      emit(UserLoginSuccess(userCredential: userCredential));
+    } on UserException catch (e) {
+      emit(UserLoginFailure(e));
     }
   }
 
@@ -58,7 +58,7 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<void> loginWithGoogle() async {
     try {
-      emit(const AuthSocialLoginInProgress());
+      emit(const UserSocialLoginInProgress());
       final googleSignIn = GoogleSignIn(
         scopes: [
           'email',
@@ -71,7 +71,7 @@ class AuthCubit extends Cubit<AuthState> {
       final googleUser = await googleSignIn.signIn();
       if (googleUser == null) {
         // User abort the sign in process
-        emit(const AuthSocialLoginAborted());
+        emit(const UserSocialLoginAborted());
         return;
       }
       final googleAuth = await googleUser.authentication;
@@ -84,24 +84,24 @@ class AuthCubit extends Cubit<AuthState> {
       authenticateWithSocialLogin(
         GoogleSocialLogin(
           idToken: googleAuth.idToken ??
-              (throw const InvalidSocialInfoAuthException(
+              (throw const InvalidSocialInfoUserException(
                   message: 'The google id token should not be null')),
           accessToken: googleAuth.accessToken ??
-              (throw const InvalidSocialInfoAuthException(
+              (throw const InvalidSocialInfoUserException(
                   message: 'The google access token should not be null')),
         ),
         userInfo: null,
       );
     } on PlatformException catch (e) {
       emit(
-        AuthSocialLoginFailure(
-          UnknownAuthException(message: e.message.toString()),
+        UserSocialLoginFailure(
+          UnknownUserException(message: e.message.toString()),
         ),
       );
     } on Exception catch (e) {
       emit(
-        AuthSocialLoginFailure(
-          UnknownAuthException(message: e.toString()),
+        UserSocialLoginFailure(
+          UnknownUserException(message: e.toString()),
         ),
       );
     }
@@ -109,7 +109,7 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<void> loginWithApple() async {
     try {
-      emit(const AuthSocialLoginInProgress());
+      emit(const UserSocialLoginInProgress());
       final credential = await SignInWithApple.getAppleIDCredential(
         scopes: [
           AppleIDAuthorizationScopes.email,
@@ -126,11 +126,11 @@ class AuthCubit extends Cubit<AuthState> {
       authenticateWithSocialLogin(
         AppleSocialLogin(
           identityToken: credential.identityToken ??
-              (throw const InvalidSocialInfoAuthException(
+              (throw const InvalidSocialInfoUserException(
                   message: 'The apple identity token should not be null')),
           authorizationCode: credential.authorizationCode,
           userIdentifier: credential.userIdentifier ??
-              (throw const InvalidSocialInfoAuthException(
+              (throw const InvalidSocialInfoUserException(
                   message: 'The apple user identifier should not be null')),
         ),
         userInfo: null,
@@ -142,7 +142,7 @@ class AuthCubit extends Cubit<AuthState> {
         AppLogger.info('Sign in with apple result is ${e.code}');
         switch (e.code) {
           case AuthorizationErrorCode.canceled:
-            emit(const AuthSocialLoginAborted());
+            emit(const UserSocialLoginAborted());
             break;
           case AuthorizationErrorCode.failed:
             rethrow;
@@ -161,14 +161,14 @@ class AuthCubit extends Cubit<AuthState> {
       );
     } on PlatformException catch (e) {
       emit(
-        AuthSocialLoginFailure(
-          UnknownAuthException(message: e.message.toString()),
+        UserSocialLoginFailure(
+          UnknownUserException(message: e.message.toString()),
         ),
       );
     } on Exception catch (e) {
       emit(
-        AuthSocialLoginFailure(
-          UnknownAuthException(message: e.toString()),
+        UserSocialLoginFailure(
+          UnknownUserException(message: e.toString()),
         ),
       );
     }
@@ -183,63 +183,63 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       // Make sure we are in the in progress state
       // will be useful when we request the user to enter the data and re-try again
-      emit(const AuthSocialLoginInProgress());
-      final userCredential = await authRepository.authenticateWithSocialLogin(
+      emit(const UserSocialLoginInProgress());
+      final userCredential = await userRepository.authenticateWithSocialLogin(
         socialLogin,
         userInfo: userInfo,
       );
-      emit(AuthSocialLoginSuccess(userCredential: userCredential));
-    } on AuthException catch (e) {
-      emit(AuthSocialLoginFailure(e));
+      emit(UserSocialLoginSuccess(userCredential: userCredential));
+    } on UserException catch (e) {
+      emit(UserSocialLoginFailure(e));
     }
   }
 
   Future<void> fetchSavedUser() async {
     try {
-      final userCredential = await authRepository.fetchSavedUserCredential();
+      final userCredential = await userRepository.fetchSavedUserCredential();
       if (userCredential == null) {
-        emit(const AuthLoggedOut());
+        emit(const UserLoggedOut());
         return;
       }
-      emit(AuthLoggedIn(userCredential: userCredential));
-    } on AuthException catch (e) {
+      emit(UserLoggedIn(userCredential: userCredential));
+    } on UserException catch (e) {
       // TODO: Handle this error
       AppLogger.error(
         'Unknown error while fetching the saved user: ${e.message}',
         error: e,
       );
-      emit(const AuthLoggedOut());
+      emit(const UserLoggedOut());
     }
   }
 
   Future<void> fetchUser() async {
-    final savedUserCredential = await authRepository.fetchSavedUserCredential();
+    final savedUserCredential = await userRepository.fetchSavedUserCredential();
     if (savedUserCredential == null) {
       throw StateError(
         'The user needs to be logged in in order to fetch the user',
       );
     }
     try {
-      emit(AuthFetchUserInProgress(userCredential: savedUserCredential));
-      final user = await authRepository.fetchUser();
+      emit(UserFetchUserInProgress(userCredential: savedUserCredential));
+      final user = await userRepository.fetchUser();
       if (user == null) {
         // For the current impl of auth repository, we don't need to logout (clear the tokens etc..)
         // we only need to update the state but we will do it just in case
         await logout();
         return;
       }
-      emit(AuthFetchUserSuccess(
+      emit(UserFetchUserSuccess(
         userCredential: savedUserCredential.copyWith(user: user),
       ));
-    } on AuthException catch (e) {
-      emit(AuthFetchUserFailure(e, userCredential: savedUserCredential));
+    } on UserException catch (e) {
+      emit(UserFetchUserFailure(e, userCredential: savedUserCredential));
     }
   }
 
   Future<void> logout() async {
     try {
-      await authRepository.logout();
-      emit(const AuthLoggedOut());
+      await userRepository.logout();
+      emit(const UserLoggedOut());
     } catch (e) {
       // TODO: Handle this error
       AppLogger.error(
@@ -253,10 +253,10 @@ class AuthCubit extends Cubit<AuthState> {
     UserInfo userInfo,
   ) async {
     try {
-      emit(AuthUpdateUserInProgress(userCredential: state.userCredential));
-      await authRepository.updateUserInfo(userInfo);
+      emit(UserUpdateUserInProgress(userCredential: state.userCredential));
+      await userRepository.updateUserInfo(userInfo);
       emit(
-        AuthUpdateUserSuccess(
+        UserUpdateUserSuccess(
           userCredential: state.requireUserCredential.copyWith(
             user: state.requireUserCredential.user.copyWith(
               info: userInfo,
@@ -264,34 +264,34 @@ class AuthCubit extends Cubit<AuthState> {
           ),
         ),
       );
-    } on AuthException catch (e) {
-      emit(AuthUpdateUserFailure(e, userCredential: state.userCredential));
+    } on UserException catch (e) {
+      emit(UserUpdateUserFailure(e, userCredential: state.userCredential));
     }
   }
 
   /// For forgot password screen
   Future<void> sendResetPasswordLink({required String email}) async {
     try {
-      emit(const AuthForgotPasswordInProgress());
-      await authRepository.sendResetPasswordLink(email: email);
-      emit(const AuthForgotPasswordSuccess());
-    } on AuthException catch (e) {
-      emit(AuthForgotPasswordFailure(e));
+      emit(const UserForgotPasswordInProgress());
+      await userRepository.sendResetPasswordLink(email: email);
+      emit(const UserForgotPasswordSuccess());
+    } on UserException catch (e) {
+      emit(UserForgotPasswordFailure(e));
     }
   }
 
   Future<void> sendEmailVerificationLink() async {
     try {
-      emit(AuthResendEmailVerificationInProgress(
+      emit(UserResendEmailVerificationInProgress(
         userCredential: state.userCredential,
       ));
-      await authRepository.sendEmailVerificationLink();
+      await userRepository.sendEmailVerificationLink();
       emit(
-        AuthResendEmailVerificationSuccess(
+        UserResendEmailVerificationSuccess(
             userCredential: state.userCredential),
       );
-    } on AuthException catch (e) {
-      emit(AuthResendEmailVerificationFailure(
+    } on UserException catch (e) {
+      emit(UserResendEmailVerificationFailure(
         e,
         userCredential: state.userCredential,
       ));
@@ -300,12 +300,12 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<void> deleteAccount() async {
     try {
-      emit(AuthDeleteInProgress(userCredential: state.userCredential));
-      await authRepository.deleteAccount();
+      emit(UserDeleteInProgress(userCredential: state.userCredential));
+      await userRepository.deleteAccount();
       // No need to logout as it do that internally by clearing the local data
-      emit(const AuthDeleteSuccess());
-    } on AuthException catch (e) {
-      emit(AuthDeleteFailure(e, userCredential: state.userCredential));
+      emit(const UserDeleteSuccess());
+    } on UserException catch (e) {
+      emit(UserDeleteFailure(e, userCredential: state.userCredential));
     }
   }
 }

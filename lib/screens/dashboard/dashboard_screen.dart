@@ -6,8 +6,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../data/live_chat/live_chat_repository.dart';
 import '../../l10n/app_localizations.dart';
-import '../../logic/auth/auth_cubit.dart';
 import '../../logic/settings/settings_cubit.dart';
+import '../../logic/user/user_cubit.dart';
 import '../../utils/extensions/scaffold_messenger_ext.dart';
 import '../../widgets/responsive_navbar.dart';
 import '../live_chat/live_chat_screen.dart';
@@ -46,7 +46,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
           actionButtonBuilder: (context) => FloatingActionButton(
             onPressed: () {
-              if (context.read<AuthCubit>().state.userCredential == null) {
+              if (context.read<UserCubit>().state.userCredential == null) {
                 ScaffoldMessenger.of(context).showSnackBarText(
                   context.loc.youNeedToLoginFirst,
                 );

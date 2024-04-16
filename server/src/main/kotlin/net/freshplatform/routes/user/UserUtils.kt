@@ -1,9 +1,9 @@
-package net.freshplatform.routes.auth
+package net.freshplatform.routes.user
 
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.minutes
 
-object AuthUtils {
+object UserUtils {
     val EMAIL_VERIFICATION_TOKEN_EXPIRATION = 15.minutes
     val RESET_PASSWORD_VERIFICATION_TOKEN_EXPIRATION = 15.minutes
     val USER_ACCESS_TOKEN_EXPIRES_IN = 10.days
@@ -12,10 +12,10 @@ object AuthUtils {
     //  verifyEmail, resetPassword, verifyEmailForm and resetPasswordForm
 
     fun createEmailVerificationLink(baseUrl: String, userId: String, token: String): String {
-        return "${baseUrl}/auth/verifyEmailForm?userId=${userId}&token=${token}" // Hardcoded
+        return "${baseUrl}/user/verifyEmailForm?userId=${userId}&token=${token}" // Hardcoded
     }
 
     fun createResetPasswordLink(baseUrl: String, userId: String, token: String): String {
-        return "${baseUrl}/auth/resetPasswordForm?userId=${userId}&token=${token}" // Hardcoded
+        return "${baseUrl}/user/resetPasswordForm?userId=${userId}&token=${token}" // Hardcoded
     }
 }

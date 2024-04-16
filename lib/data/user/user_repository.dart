@@ -1,8 +1,8 @@
-import 'auth_social_login.dart';
 import 'models/auth_credential.dart';
 import 'models/user.dart';
+import 'user_social_login.dart';
 
-abstract class AuthRepository {
+abstract class UserRepository {
   Future<UserCredential> signInWithEmailAndPassword({
     required String email,
     required String password,

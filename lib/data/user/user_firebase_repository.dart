@@ -8,7 +8,7 @@
 // import 'models/auth_credential.dart';
 // import 'models/user.dart';
 
-// class FirebaseAuthRepository extends AuthRepository {
+// class FirebaseAuthRepository extends UserRepository {
 //   final users = FirebaseFirestore.instance.collection('users');
 
 //   @override

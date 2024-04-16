@@ -11,7 +11,7 @@ import io.ktor.server.resources.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.SerializationException
-import net.freshplatform.routes.auth.authRoutes
+import net.freshplatform.routes.user.userRoutes
 import net.freshplatform.routes.live_chat.liveChatRoutes
 import net.freshplatform.utils.ErrorResponse
 import net.freshplatform.utils.ErrorResponseException
@@ -94,7 +94,7 @@ fun Application.configureRouting() {
             call.respondText("Welcome, to our api!")
         }
 
-        authRoutes()
+        userRoutes()
         liveChatRoutes()
     }
 }

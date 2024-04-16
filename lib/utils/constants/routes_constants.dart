@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 sealed class RoutesConstants {
   const RoutesConstants();
 
-  static const authRoutes = AuthRoutes._();
+  static const userRoutes = UserRoutes._();
   static const productsRoutes = ProductsRoutes._();
   static const productsCategoryRoutes = ProductCategoryRoutes._();
   static const offersRoutes = OffersRoutes._();
@@ -13,9 +13,9 @@ sealed class RoutesConstants {
   static const liveChatRoutes = LiveChatRoutes._();
 }
 
-class AuthRoutes extends RoutesConstants {
-  const AuthRoutes._();
-  static const root = 'auth';
+class UserRoutes extends RoutesConstants {
+  const UserRoutes._();
+  static const root = 'user';
 
   final signIn = '$root/signIn';
   final signUp = '$root/signUp';
@@ -31,12 +31,12 @@ class AuthRoutes extends RoutesConstants {
   final updatePassword = '$root/updatePassword';
   final updateDeviceNotificationsToken = '$root/updateDeviceNotificationsToken';
 
-  final adminRoutes = const AuthAdminRoutes._();
+  final adminRoutes = const AdminUserRoutes._();
 }
 
-class AuthAdminRoutes extends RoutesConstants {
-  const AuthAdminRoutes._();
-  static const root = '${AuthRoutes.root}/admin';
+class AdminUserRoutes extends RoutesConstants {
+  const AdminUserRoutes._();
+  static const root = '${UserRoutes.root}/admin';
   final getAllUsers = '$root/users';
   final deleteUser = '$root/deleteUser';
   final setAccountActivated = '$root/setAccountActivated';

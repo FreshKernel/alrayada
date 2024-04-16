@@ -4,7 +4,7 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../l10n/app_localizations.dart';
-import '../../logic/auth/auth_cubit.dart';
+import '../../logic/user/user_cubit.dart';
 import './profile_screen.dart';
 
 /// To be used in [ProfileScreen]
@@ -51,14 +51,14 @@ class _DeleteAccountDialogState extends State<DeleteAccountDialog> {
           onPressed: () => Navigator.of(context).pop(),
           child: Text(context.loc.cancel),
         ),
-        BlocBuilder<AuthCubit, AuthState>(
+        BlocBuilder<UserCubit, UserState>(
           builder: (context, state) {
             return PlatformDialogAction(
               onPressed: (_confirmationController.text == context.loc.delete &&
-                      state is! AuthDeleteInProgress)
+                      state is! UserDeleteInProgress)
                   ? () {
                       context.pop(); // Close the dialog
-                      context.read<AuthCubit>().deleteAccount();
+                      context.read<UserCubit>().deleteAccount();
                     }
                   : null,
               child: Text(context.loc.delete),

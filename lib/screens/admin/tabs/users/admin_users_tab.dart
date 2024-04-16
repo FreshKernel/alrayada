@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 import '../../../../l10n/app_localizations.dart';
-import '../../../../logic/auth/admin/admin_auth_cubit.dart';
+import '../../../../logic/user/admin/admin_user_cubit.dart';
 import '../../../../utils/extensions/scaffold_messenger_ext.dart';
 import '../../../../widgets/errors/w_error.dart';
 import '../../../../widgets/scroll_edge_detector.dart';
@@ -23,7 +23,7 @@ class AdminUsersTab extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: SearchBar(
             onSubmitted: (value) =>
-                context.read<AdminAuthCubit>().searchAllUsers(
+                context.read<AdminUserCubit>().searchAllUsers(
                       searchQuery: value,
                     ),
             hintText: context.loc.search,
@@ -47,37 +47,37 @@ class _UsersList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<AdminAuthCubit, AdminAuthState>(
+    return BlocConsumer<AdminUserCubit, AdminUserState>(
       listener: (context, state) {
-        if (state is AdminAuthActionFailure) {
+        if (state is AdminUserActionFailure) {
           ScaffoldMessenger.of(context).showSnackBarText(
             context.loc.unknownErrorWithMsg(state.exception.toString()),
           );
         }
       },
       builder: (context, state) {
-        if (state is AdminAuthLoadUsersInProgress) {
+        if (state is AdminUserLoadUsersInProgress) {
           return const Center(
             child: CircularProgressIndicator.adaptive(),
           );
         }
-        if (state is AdminAuthLoadUsersFailure) {
+        if (state is AdminUserLoadUsersFailure) {
           return ErrorWithTryAgain(
-            onTryAgain: () => context.read<AdminAuthCubit>().initLoadUsers(),
+            onTryAgain: () => context.read<AdminUserCubit>().initLoadUsers(),
           );
         }
         final users = state.usersState.users;
         return RefreshIndicator.adaptive(
           onRefresh: () async {
-            await context.read<AdminAuthCubit>().initLoadUsers();
+            await context.read<AdminUserCubit>().initLoadUsers();
           },
           child: ScrollEdgeDetector(
-            onBottom: () => context.read<AdminAuthCubit>().loadMoreUsers(),
+            onBottom: () => context.read<AdminUserCubit>().loadMoreUsers(),
             child: ListView.builder(
               physics: const BouncingScrollPhysics(
                 parent: AlwaysScrollableScrollPhysics(),
               ),
-              itemCount: state is AdminAuthLoadMoreUsersInProgress
+              itemCount: state is AdminUserLoadMoreUsersInProgress
                   ? users.length + 1
                   : users.length,
               itemBuilder: (context, index) {

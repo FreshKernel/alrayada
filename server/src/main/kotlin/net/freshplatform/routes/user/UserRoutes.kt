@@ -1,4 +1,4 @@
-package net.freshplatform.routes.auth
+package net.freshplatform.routes.user
 
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -9,16 +9,16 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import net.freshplatform.data.user.UserDataSource
 import net.freshplatform.data.user.UserDeviceNotificationsToken
-import net.freshplatform.routes.auth.admin.adminAuthRoutes
+import net.freshplatform.routes.user.admin.adminUserRoutes
 import net.freshplatform.services.telegram_bot.TelegramBotService
 import net.freshplatform.utils.ErrorResponseException
 import net.freshplatform.utils.extensions.requireCurrentUser
 import org.koin.ktor.ext.inject
 
-fun Route.authRoutes() {
-    route("/auth") {
+fun Route.userRoutes() {
+    route("/user") {
         // This RateLimitName is registered in the RateLimit plugin
-        rateLimit(RateLimitName("auth")) {
+        rateLimit(RateLimitName("user")) {
             signUpWithEmailAndPassword()
             signInWithEmailAndPassword()
             socialLogin()
@@ -34,7 +34,7 @@ fun Route.authRoutes() {
             resetPasswordForm()
             updatePassword()
         }
-        adminAuthRoutes()
+        adminUserRoutes()
     }
 }
 

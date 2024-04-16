@@ -5,11 +5,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../data/user/auth_exceptions.dart';
 import '../../data/user/models/user.dart';
+import '../../data/user/user_exceptions.dart';
 import '../../l10n/app_localizations.dart';
-import '../../logic/auth/auth_cubit.dart';
 import '../../logic/settings/settings_cubit.dart';
+import '../../logic/user/user_cubit.dart';
 import '../../utils/env.dart';
 import '../../utils/extensions/scaffold_messenger_ext.dart';
 import '../../utils/text_input_handler.dart';
@@ -111,7 +111,7 @@ class _AuthFormInputsState extends State<AuthFormInputs> {
       return;
     }
 
-    final authBloc = context.read<AuthCubit>();
+    final userBloc = context.read<UserCubit>();
 
     if (!_isLogin) {
       if (!_isPrivacyPolicyAgreed) {
@@ -147,12 +147,12 @@ class _AuthFormInputsState extends State<AuthFormInputs> {
     _formKey.currentState?.save();
 
     if (_isLogin) {
-      await authBloc.signInWithEmailAndPassword(
+      await userBloc.signInWithEmailAndPassword(
         email: _emailController.text,
         password: _passwordInputHandler.controller.text,
       );
     } else {
-      await authBloc.signUpWithEmailAndPassword(
+      await userBloc.signUpWithEmailAndPassword(
         email: _emailController.text,
         password: _passwordInputHandler.controller.text,
         userInfo: UserInfo(
@@ -260,24 +260,24 @@ class _AuthFormInputsState extends State<AuthFormInputs> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AuthCubit, AuthState>(
+    return BlocListener<UserCubit, UserState>(
       listener: (context, state) {
-        if (state is AuthLoginFailure) {
-          final authException = state.exception;
-          switch (authException) {
-            case EmailNotFoundAuthException():
+        if (state is UserLoginFailure) {
+          final exception = state.exception;
+          switch (exception) {
+            case EmailNotFoundUserException():
               ScaffoldMessenger.of(context).showSnackBarText(
                 context.loc.authEmailNotFound,
               );
               setState(() => _emailError = context.loc.authEmailNotFound);
               break;
-            case EmailVerificationLinkAlreadySentAuthException():
+            case EmailVerificationLinkAlreadySentUserException():
               ScaffoldMessenger.of(context).showSnackBarText(
                 context.loc.verificationLinkIsAlreadySentWithMinutesToExpire(
-                    authException.minutesToExpire.toString()),
+                    exception.minutesToExpire.toString()),
               );
               break;
-            case EmailAlreadyUsedAuthException():
+            case EmailAlreadyUsedUserException():
               ScaffoldMessenger.of(context).showSnackBarText(
                 context.loc.authEmailAlreadyInUse,
               );
@@ -285,17 +285,17 @@ class _AuthFormInputsState extends State<AuthFormInputs> {
                 _emailError = context.loc.authEmailAlreadyInUse;
               });
               break;
-            case TooManyRequestsAuthException():
+            case TooManyRequestsUserException():
               ScaffoldMessenger.of(context).showSnackBarText(
                 context.loc.authTooManyFailedAttempts,
               );
               return;
-            case EmailNeedsVerificationAuthException():
+            case EmailNeedsVerificationUserException():
               ScaffoldMessenger.of(context).showSnackBarText(
                 context.loc.yourAccountNeedToBeActivated,
               );
               break;
-            case InvalidCredentialsAuthException():
+            case InvalidCredentialsUserException():
               ScaffoldMessenger.of(context).showSnackBarText(
                 context.loc.authIncorrectEmailOrPassword,
               );
@@ -304,7 +304,7 @@ class _AuthFormInputsState extends State<AuthFormInputs> {
                 _emailError = context.loc.authIncorrectEmailOrPassword;
               });
               break;
-            case WrongPasswordAuthException():
+            case WrongPasswordUserException():
               ScaffoldMessenger.of(context).showSnackBarText(
                 context.loc.authIncorrectPassword,
               );
@@ -312,35 +312,35 @@ class _AuthFormInputsState extends State<AuthFormInputs> {
                 _passwordError = context.loc.authIncorrectPassword;
               });
               break;
-            case UserDisabledAuthException():
+            case UserDisabledUserException():
               ScaffoldMessenger.of(context).showSnackBarText(
                 context.loc.authUserDisabledErrorMessage,
               );
               break;
-            case NetworkAuthException():
+            case NetworkUserException():
               ScaffoldMessenger.of(context).showSnackBarText(
                 context.loc.pleaseCheckYourInternetConnectionMsg,
               );
               break;
-            case OperationNotAllowedAuthException():
+            case OperationNotAllowedUserException():
               ScaffoldMessenger.of(context).showSnackBarText(
                 context.loc.authProviderIsDisabledMessage,
               );
               break;
-            case UnknownAuthException():
+            case UnknownUserException():
               ScaffoldMessenger.of(context).showSnackBarText(
-                context.loc.unknownErrorWithMsg(authException.message),
+                context.loc.unknownErrorWithMsg(exception.message),
               );
               break;
             default:
               ScaffoldMessenger.of(context).showSnackBarText(
-                context.loc.unknownErrorWithMsg(authException.message),
+                context.loc.unknownErrorWithMsg(exception.message),
               );
               break;
           }
           return;
         }
-        if (state is AuthLoginSuccess) {
+        if (state is UserLoginSuccess) {
           final userCredential = state.userCredential;
           if (userCredential == null) {
             throw StateError(
@@ -355,9 +355,9 @@ class _AuthFormInputsState extends State<AuthFormInputs> {
           return;
         }
       },
-      child: BlocBuilder<AuthCubit, AuthState>(
+      child: BlocBuilder<UserCubit, UserState>(
         builder: (context, state) {
-          if (state is AuthLoginInProgress) {
+          if (state is UserLoginInProgress) {
             return const Center(
               child: CircularProgressIndicator.adaptive(),
             );

@@ -5,7 +5,7 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../l10n/app_localizations.dart';
-import '../../../../logic/auth/admin/admin_auth_cubit.dart';
+import '../../../../logic/user/admin/admin_user_cubit.dart';
 import '../../../../utils/extensions/scaffold_messenger_ext.dart';
 import '../../../../utils/validators/global_validator.dart';
 
@@ -38,7 +38,7 @@ class _SendNotificationToUserDialogState
       return;
     }
     _formKey.currentState?.save();
-    context.read<AdminAuthCubit>().sendNotificationToUser(
+    context.read<AdminUserCubit>().sendNotificationToUser(
           userId: widget.userId,
           title: _titleController.text,
           body: _messageController.text,
@@ -47,9 +47,9 @@ class _SendNotificationToUserDialogState
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AdminAuthCubit, AdminAuthState>(
+    return BlocListener<AdminUserCubit, AdminUserState>(
       listener: (context, state) {
-        if (state is AdminAuthActionSuccess) {
+        if (state is AdminUserActionSuccess) {
           ScaffoldMessenger.of(context).showSnackBarText(
             context.loc.notificationHasBeenSuccessfullySent,
           );
@@ -94,11 +94,11 @@ class _SendNotificationToUserDialogState
             child: Text(context.loc.cancel),
             onPressed: () => context.pop(),
           ),
-          BlocBuilder<AdminAuthCubit, AdminAuthState>(
+          BlocBuilder<AdminUserCubit, AdminUserState>(
             builder: (context, state) {
               return TextButton(
                 onPressed:
-                    state is AdminAuthActionInProgress ? null : _onSubmit,
+                    state is AdminUserActionInProgress ? null : _onSubmit,
                 child: Text(context.loc.submit),
               );
             },

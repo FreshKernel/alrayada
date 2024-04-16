@@ -4,11 +4,11 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 
-import '../../data/user/auth_exceptions.dart';
+import '../../data/user/user_exceptions.dart';
 import '../../gen/assets.gen.dart';
 import '../../l10n/app_localizations.dart';
-import '../../logic/auth/auth_cubit.dart';
 import '../../logic/connectivity/connectivity_cubit.dart';
+import '../../logic/user/user_cubit.dart';
 import '../../utils/extensions/scaffold_messenger_ext.dart';
 import '../../widgets/errors/w_internet_error.dart';
 
@@ -22,7 +22,7 @@ class AuthVerifyEmailScreen extends StatelessWidget {
         title: Text(context.loc.verifyYourEmail),
         actions: [
           IconButton(
-            onPressed: () => context.read<AuthCubit>().logout(),
+            onPressed: () => context.read<UserCubit>().logout(),
             icon: const Icon(Icons.logout),
             tooltip: context.loc.logout,
           )
@@ -47,7 +47,7 @@ class AuthVerifyEmailScreen extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 8),
-                  BlocBuilder<AuthCubit, AuthState>(
+                  BlocBuilder<UserCubit, UserState>(
                     builder: (context, state) {
                       final email = state.userCredential?.user.email ?? '';
                       return Text(
@@ -64,16 +64,16 @@ class AuthVerifyEmailScreen extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 16),
-                  BlocConsumer<AuthCubit, AuthState>(
+                  BlocConsumer<UserCubit, UserState>(
                     listener: (context, state) {
-                      if (state is AuthFetchUserFailure) {
+                      if (state is UserFetchUserFailure) {
                         ScaffoldMessenger.of(context).showSnackBarText(
                           context.loc
                               .unknownErrorWithMsg(state.exception.message),
                         );
                         return;
                       }
-                      if (state is AuthFetchUserSuccess) {
+                      if (state is UserFetchUserSuccess) {
                         final userCredential = state.userCredential;
                         if (userCredential == null) {
                           throw StateError(
@@ -89,37 +89,37 @@ class AuthVerifyEmailScreen extends StatelessWidget {
                         context.pop();
                         return;
                       }
-                      if (state is AuthResendEmailVerificationFailure) {
-                        final authException = state.exception;
-                        switch (authException) {
-                          case UserNotLoggedInAnyMoreAuthException():
-                            context.read<AuthCubit>().logout();
+                      if (state is UserResendEmailVerificationFailure) {
+                        final exception = state.exception;
+                        switch (exception) {
+                          case UserNotLoggedInAnyMoreUserException():
+                            context.read<UserCubit>().logout();
                             break;
-                          case EmailVerificationLinkAlreadySentAuthException():
+                          case EmailVerificationLinkAlreadySentUserException():
                             ScaffoldMessenger.of(context).showSnackBarText(
                               context.loc
                                   .verificationLinkIsAlreadySentWithMinutesToExpire(
-                                authException.minutesToExpire.toString(),
+                                exception.minutesToExpire.toString(),
                               ),
                             );
                             break;
-                          case EmailAlreadyVerifiedAuthException():
-                            context.read<AuthCubit>().fetchUser();
+                          case EmailAlreadyVerifiedUserException():
+                            context.read<UserCubit>().fetchUser();
                             break;
-                          case TooManyRequestsAuthException():
+                          case TooManyRequestsUserException():
                             ScaffoldMessenger.of(context).showSnackBarText(
                                 context.loc.tooManyRequestsPleaseTryAgainLater);
                             break;
                           default:
                             ScaffoldMessenger.of(context).showSnackBarText(
                               context.loc
-                                  .unknownErrorWithMsg(authException.message),
+                                  .unknownErrorWithMsg(exception.message),
                             );
                             break;
                         }
                         return;
                       }
-                      if (state is AuthResendEmailVerificationSuccess) {
+                      if (state is UserResendEmailVerificationSuccess) {
                         ScaffoldMessenger.of(context).showSnackBarText(
                           context.loc.authEmailVerificationLinkSent,
                         );
@@ -127,7 +127,7 @@ class AuthVerifyEmailScreen extends StatelessWidget {
                       }
                     },
                     builder: (context, state) {
-                      if (state is AuthFetchUserInProgress) {
+                      if (state is UserFetchUserInProgress) {
                         return const CircularProgressIndicator.adaptive();
                       }
                       return Column(
@@ -136,13 +136,13 @@ class AuthVerifyEmailScreen extends StatelessWidget {
                             width: double.infinity,
                             child: PlatformElevatedButton(
                               onPressed: () =>
-                                  context.read<AuthCubit>().fetchUser(),
+                                  context.read<UserCubit>().fetchUser(),
                               child: Text(context.loc.continueText),
                             ),
                           ),
                           PlatformTextButton(
                             onPressed: () => context
-                                .read<AuthCubit>()
+                                .read<UserCubit>()
                                 .sendEmailVerificationLink(),
                             child: Text(context.loc.resendEmail),
                           ),

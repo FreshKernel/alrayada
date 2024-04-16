@@ -1,4 +1,4 @@
-package net.freshplatform.routes.auth
+package net.freshplatform.routes.user
 
 import io.ktor.http.*
 import io.ktor.server.application.*

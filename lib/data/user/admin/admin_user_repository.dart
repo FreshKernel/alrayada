@@ -1,6 +1,6 @@
 import '../models/user.dart';
 
-abstract class AdminAuthRepository {
+abstract class AdminUserRepository {
   Future<List<User>> getAllUsers({
     required String searchQuery,
     required int page,

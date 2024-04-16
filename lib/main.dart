@@ -14,17 +14,17 @@ import 'package:path_provider/path_provider.dart'
 
 import 'data/live_chat/admin/admin_live_chat_repository_impl.dart';
 import 'data/live_chat/live_chat_repository_impl.dart';
-import 'data/user/admin/admin_auth_repository_impl.dart';
-import 'data/user/auth_repository_impl.dart';
+import 'data/user/admin/admin_user_repository_impl.dart';
+import 'data/user/user_repository_impl.dart';
 import 'firebase_options.dart';
 import 'l10n/app_localizations.dart';
-import 'logic/auth/admin/admin_auth_cubit.dart';
-import 'logic/auth/auth_cubit.dart';
 import 'logic/connectivity/connectivity_cubit.dart';
 import 'logic/live_chat/admin/admin_live_chat_cubit.dart';
 import 'logic/live_chat/live_chat_cubit.dart';
 import 'logic/settings/settings_cubit.dart';
 import 'logic/settings/settings_data.dart';
+import 'logic/user/admin/admin_user_cubit.dart';
+import 'logic/user/user_cubit.dart';
 import 'screens/app_router.dart';
 import 'utils/app_logger.dart';
 import 'utils/env.dart';
@@ -128,19 +128,19 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           lazy: false,
-          create: (context) => AuthCubit(
-            authRepository: AuthRepositoryImpl(),
+          create: (context) => UserCubit(
+            userRepository: UserRepositoryImpl(),
           ),
         ),
         BlocProvider(
-          create: (context) => AdminAuthCubit(
-            adminAuthRepository: AdminAuthRepositoryImpl(),
+          create: (context) => AdminUserCubit(
+            adminUserRepository: AdminUserRepositoryImpl(),
           ),
         ),
         BlocProvider(
           create: (context) => LiveChatCubit(
             liveChatRepository: LiveChatRepositoryImpl(),
-            authCubit: context.read<AuthCubit>(),
+            authCubit: context.read<UserCubit>(),
           ),
         ),
         BlocProvider(

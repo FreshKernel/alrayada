@@ -6,10 +6,10 @@ import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
-import '../../data/user/auth_exceptions.dart';
+import '../../data/user/user_exceptions.dart';
 import '../../gen/assets.gen.dart';
 import '../../l10n/app_localizations.dart';
-import '../../logic/auth/auth_cubit.dart';
+import '../../logic/user/user_cubit.dart';
 import '../../utils/extensions/scaffold_messenger_ext.dart';
 import 'auth_social_login_sign_up.dart';
 
@@ -60,22 +60,22 @@ class AuthSocialLogin extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 4),
-        BlocConsumer<AuthCubit, AuthState>(
+        BlocConsumer<UserCubit, UserState>(
           listener: (context, state) {
-            if (state is AuthSocialLoginFailure) {
-              final authException = state.exception;
-              switch (authException) {
-                case InvalidSocialInfoAuthException():
+            if (state is UserSocialLoginFailure) {
+              final exception = state.exception;
+              switch (exception) {
+                case InvalidSocialInfoUserException():
                   ScaffoldMessenger.of(context).showSnackBarText(
-                    authException.message,
+                    exception.message,
                   );
                   break;
-                case SocialEmailIsNotVerifiedAuthException():
+                case SocialEmailIsNotVerifiedUserException():
                   ScaffoldMessenger.of(context).showSnackBarText(
                     context.loc.emailIsStillNotVerified,
                   );
                   break;
-                case SocialMissingSignUpDataAuthException():
+                case SocialMissingSignUpDataUserException():
                   // I wanted the display name from social login provider
                   // will be as initial text when requesting user data
                   // but I didn't want to make the code messy so we will store
@@ -85,14 +85,14 @@ class AuthSocialLogin extends StatelessWidget {
                       AuthSocialLoginSignUpScreen.routeName,
                       extra: AuthSocialLoginSignUpScreenArgs(
                         initialLabOwnerNameText: value.getString(
-                                AuthCubit.socialLoginDisplayNamePrefKey) ??
+                                UserCubit.socialLoginDisplayNamePrefKey) ??
                             '',
-                        socialLogin: authException.socialLogin,
+                        socialLogin: exception.socialLogin,
                       ),
                     ),
                   );
                   break;
-                case TooManyRequestsAuthException():
+                case TooManyRequestsUserException():
                   ScaffoldMessenger.of(context).showSnackBarText(
                     context.loc.tooManyRequestsPleaseTryAgainLater,
                   );
@@ -104,7 +104,7 @@ class AuthSocialLogin extends StatelessWidget {
                   break;
               }
             }
-            if (state is AuthSocialLoginSuccess) {
+            if (state is UserSocialLoginSuccess) {
               final userCredential = state.userCredential;
               if (userCredential == null) {
                 throw StateError(
@@ -120,7 +120,7 @@ class AuthSocialLogin extends StatelessWidget {
             }
           },
           builder: (context, state) {
-            if (state is AuthSocialLoginInProgress) {
+            if (state is UserSocialLoginInProgress) {
               return const CircularProgressIndicator.adaptive();
             }
             return Column(
@@ -132,7 +132,7 @@ class AuthSocialLogin extends StatelessWidget {
                     height: 25,
                     width: 25,
                   ),
-                  onPressed: () => context.read<AuthCubit>().loginWithGoogle(),
+                  onPressed: () => context.read<UserCubit>().loginWithGoogle(),
                   backgroundColor: Colors.white,
                   fontColor: Colors.black,
                 ),
@@ -146,7 +146,7 @@ class AuthSocialLogin extends StatelessWidget {
                     size: 25,
                   ),
                   onPressed: () async {
-                    final authBloc = context.read<AuthCubit>();
+                    final userBloc = context.read<UserCubit>();
                     final scaffoldMessenger = ScaffoldMessenger.of(context);
                     final localizations = context.loc;
 
@@ -157,7 +157,7 @@ class AuthSocialLogin extends StatelessWidget {
                       );
                       return;
                     }
-                    authBloc.loginWithApple();
+                    userBloc.loginWithApple();
                   },
                   backgroundColor: Colors.black,
                   fontColor: Colors.white,

@@ -4,10 +4,10 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 
-import '../../data/user/auth_exceptions.dart';
+import '../../data/user/user_exceptions.dart';
 import '../../gen/assets.gen.dart';
 import '../../l10n/app_localizations.dart';
-import '../../logic/auth/auth_cubit.dart';
+import '../../logic/user/user_cubit.dart';
 import '../../utils/extensions/scaffold_messenger_ext.dart';
 import '../../widgets/auth/email_text_field.dart';
 
@@ -35,7 +35,7 @@ class _AuthForgotPasswordScreenState extends State<AuthForgotPasswordScreen> {
       return;
     }
     await context
-        .read<AuthCubit>()
+        .read<UserCubit>()
         .sendResetPasswordLink(email: _emailController.text);
   }
 
@@ -53,33 +53,33 @@ class _AuthForgotPasswordScreenState extends State<AuthForgotPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AuthCubit, AuthState>(
+    return BlocListener<UserCubit, UserState>(
       listener: (context, state) {
-        if (state is AuthForgotPasswordFailure) {
-          final authException = state.exception;
-          switch (authException) {
-            case EmailNotFoundAuthException():
+        if (state is UserForgotPasswordFailure) {
+          final exception = state.exception;
+          switch (exception) {
+            case EmailNotFoundUserException():
               ScaffoldMessenger.of(context).showSnackBarText(
                 context.loc.authEmailNotFound,
               );
               setState(() => _emailError = context.loc.authEmailNotFound);
               break;
-            case ResetPasswordLinkAlreadySentAuthException():
+            case ResetPasswordLinkAlreadySentUserException():
               ScaffoldMessenger.of(context).showSnackBarText(
                 context.loc.verificationLinkIsAlreadySentWithMinutesToExpire(
-                  authException.minutesToExpire.toString(),
+                  exception.minutesToExpire.toString(),
                 ),
               );
               break;
             default:
               ScaffoldMessenger.of(context).showSnackBarText(
-                context.loc.unknownErrorWithMsg(authException.message),
+                context.loc.unknownErrorWithMsg(exception.message),
               );
               break;
           }
           return;
         }
-        if (state is AuthForgotPasswordSuccess) {
+        if (state is UserForgotPasswordSuccess) {
           ScaffoldMessenger.of(context).showSnackBarText(
             context.loc.authEmailVerificationLinkSent,
           );
@@ -117,9 +117,9 @@ class _AuthForgotPasswordScreenState extends State<AuthForgotPasswordScreen> {
                     textInputAction: TextInputAction.done,
                   ),
                   const SizedBox(height: 20),
-                  BlocBuilder<AuthCubit, AuthState>(
+                  BlocBuilder<UserCubit, UserState>(
                     builder: (context, state) {
-                      if (state is AuthForgotPasswordInProgress) {
+                      if (state is UserForgotPasswordInProgress) {
                         return const Center(
                             child: CircularProgressIndicator.adaptive());
                       }
