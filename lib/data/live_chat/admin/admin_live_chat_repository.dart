@@ -8,4 +8,5 @@ abstract class AdminLiveChatRepository {
     required int limit,
   });
   Future<void> deleteRoomById({required String roomId});
+  Future<void> deleteAllRooms();
 }

@@ -2,7 +2,6 @@ package net.freshplatform.routes.user
 
 import io.ktor.http.*
 import io.ktor.server.application.*
-import io.ktor.server.auth.*
 import io.ktor.server.html.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
@@ -309,59 +308,57 @@ fun Route.updatePassword() {
     val userDataSource by inject<UserDataSource>()
     val bcryptHashingService by inject<BcryptHashingService>()
 
-    authenticate {
-        post("/updatePassword") {
-            val requestBody: Map<String, String> = call.receive()
-            val currentPassword: String = requestBody["currentPassword"] ?: throw ErrorResponseException(
-                HttpStatusCode.BadRequest,
-                "Please enter the current password",
-                "MISSING_CURRENT_PASSWORD"
+    post("/updatePassword") {
+        val requestBody: Map<String, String> = call.receive()
+        val currentPassword: String = requestBody["currentPassword"] ?: throw ErrorResponseException(
+            HttpStatusCode.BadRequest,
+            "Please enter the current password",
+            "MISSING_CURRENT_PASSWORD"
+        )
+        val newPassword: String = requestBody["newPassword"] ?: throw ErrorResponseException(
+            HttpStatusCode.BadRequest,
+            "Please enter the new password",
+            "MISSING_NEW_PASSWORD"
+        )
+
+        if (currentPassword == newPassword) {
+            throw ErrorResponseException(
+                HttpStatusCode.BadRequest, "Please choose a new password", "IDENTICAL_PASSWORD"
             )
-            val newPassword: String = requestBody["newPassword"] ?: throw ErrorResponseException(
-                HttpStatusCode.BadRequest,
-                "Please enter the new password",
-                "MISSING_NEW_PASSWORD"
-            )
-
-            if (currentPassword == newPassword) {
-                throw ErrorResponseException(
-                    HttpStatusCode.BadRequest, "Please choose a new password", "IDENTICAL_PASSWORD"
-                )
-            }
-
-            if (!newPassword.isValidPassword()) {
-                throw ErrorResponseException(
-                    HttpStatusCode.BadRequest, "Please enter a strong password.",
-                    "WEAK_PASSWORD"
-                )
-            }
-
-            val user = call.requireCurrentUser()
-
-            val isCurrentPasswordValid = bcryptHashingService.verify(currentPassword, user.password)
-
-            if (!isCurrentPasswordValid) {
-                throw ErrorResponseException(
-                    HttpStatusCode.Unauthorized,
-                    "Current password is incorrect.",
-                    "INCORRECT_PASSWORD"
-                )
-            }
-
-            val isUpdateSuccess = userDataSource.updatePasswordById(
-                user.id.toString(),
-                bcryptHashingService.generatedSaltedHash(newPassword)
-            )
-
-            if (!isUpdateSuccess) {
-                throw ErrorResponseException(
-                    HttpStatusCode.InternalServerError,
-                    "Error while update the password.",
-                    "UPDATE_ERROR"
-                )
-            }
-
-            call.respondText { "Password has been successfully updated." }
         }
+
+        if (!newPassword.isValidPassword()) {
+            throw ErrorResponseException(
+                HttpStatusCode.BadRequest, "Please enter a strong password.",
+                "WEAK_PASSWORD"
+            )
+        }
+
+        val user = call.requireCurrentUser()
+
+        val isCurrentPasswordValid = bcryptHashingService.verify(currentPassword, user.password)
+
+        if (!isCurrentPasswordValid) {
+            throw ErrorResponseException(
+                HttpStatusCode.Unauthorized,
+                "Current password is incorrect.",
+                "INCORRECT_PASSWORD"
+            )
+        }
+
+        val isUpdateSuccess = userDataSource.updatePasswordById(
+            user.id.toString(),
+            bcryptHashingService.generatedSaltedHash(newPassword)
+        )
+
+        if (!isUpdateSuccess) {
+            throw ErrorResponseException(
+                HttpStatusCode.InternalServerError,
+                "Error while update the password.",
+                "UPDATE_ERROR"
+            )
+        }
+
+        call.respondText { "Password has been successfully updated." }
     }
 }

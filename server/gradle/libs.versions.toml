@@ -11,6 +11,7 @@ bcrypt = "0.10.2"
 google-auth-library-oauth2-http = "1.23"
 google-api-client = "2.4.0"
 kotlin-css = "1.0.0-pre.728"
+scrimage = "4.1.1"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -28,6 +29,9 @@ google-auth-library-oauth2-http = { module = "com.google.auth:google-auth-librar
 google-api-client = { module = "com.google.api-client:google-api-client", version.ref = "google-api-client" }
 # TODO: Use it or not since now it's not used (kotlin-css)
 kotlin-css = { module = "org.jetbrains.kotlin-wrappers:kotlin-css", version.ref = "kotlin-css" }
+#thumbnailator = { module = "net.coobird:thumbnailator", version.ref = "thumbnailator" }
+scrimage-core = { module = "com.sksamuel.scrimage:scrimage-core", version.ref = "scrimage" }
+scrimage-webp = { module = "com.sksamuel.scrimage:scrimage-webp", version.ref = "scrimage" }
 
 [plugins]
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }

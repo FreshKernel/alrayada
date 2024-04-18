@@ -97,3 +97,27 @@ class AdminLiveChatActionFailure extends AdminLiveChatState {
   @override
   List<Object?> get props => [exception, ...super.props];
 }
+
+// For deleting all the rooms
+
+class AdminLiveChatDeleteAllRoomsInProgress extends AdminLiveChatState {
+  const AdminLiveChatDeleteAllRoomsInProgress({
+    required super.roomsState,
+  });
+}
+
+class AdminLiveChatDeleteAllRoomsSuccess extends AdminLiveChatState {
+  const AdminLiveChatDeleteAllRoomsSuccess({required super.roomsState});
+}
+
+class AdminLiveChatDeleteAllRoomsFailure extends AdminLiveChatState {
+  const AdminLiveChatDeleteAllRoomsFailure(
+    this.exception, {
+    required super.roomsState,
+  });
+
+  final LiveChatException exception;
+
+  @override
+  List<Object?> get props => [exception, ...super.props];
+}

@@ -23,7 +23,7 @@ class MongoLiveChatDataSource(
                         LiveChatRoom::createdAt.name,
                         BsonDateTime(Clock.System.now().toEpochMilliseconds())
                     ),
-                    generateUpdatedAtUpdate(LiveChatRoom::updatedAt.name),
+                    setUpdatedAt(LiveChatRoom::updatedAt.name),
                     Updates.push(LiveChatRoom::messages.name, message),
                 ),
                 UpdateOptions().upsert(true)
@@ -39,6 +39,16 @@ class MongoLiveChatDataSource(
             rooms.deleteOne(
                 roomIdFilter(roomId)
             ).wasAcknowledged()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+
+    override suspend fun deleteAllRooms(): Boolean {
+        return try {
+            rooms.drop()
+            true
         } catch (e: Exception) {
             e.printStackTrace()
             false
@@ -61,7 +71,7 @@ class MongoLiveChatDataSource(
         }
     }
 
-    override suspend fun getAllRooms(page: Int, limit: Int): Result<List<LiveChatRoom>> {
+    override suspend fun getRooms(page: Int, limit: Int): Result<List<LiveChatRoom>> {
         return try {
             val skip = (page - 1) * limit
             val rooms = rooms.find()
@@ -77,7 +87,7 @@ class MongoLiveChatDataSource(
         }
     }
 
-    override suspend fun getAllMessagesByRoomClientUserId(roomClientUserId: String, page: Int, limit: Int): Result<List<ChatMessage>> {
+    override suspend fun getMessagesByRoomClientUserId(roomClientUserId: String, page: Int, limit: Int): Result<List<ChatMessage>> {
         return try {
             val skip = (page - 1) * limit
             val messages = rooms.find(roomClientUserIdFilter(roomClientUserId))
@@ -99,7 +109,7 @@ class MongoLiveChatDataSource(
         return Filters.eq(LiveChatRoom::roomClientUserId.name, roomClientUserId)
     }
 
-    private fun generateUpdatedAtUpdate(fieldName: String): Bson {
+    private fun setUpdatedAt(fieldName: String): Bson {
         return Updates.set(fieldName, BsonDateTime(Clock.System.now().toEpochMilliseconds()))
     }
 }

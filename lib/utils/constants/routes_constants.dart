@@ -127,6 +127,7 @@ class AdminLiveChatRoutes extends RoutesConstants {
   }
 
   final getRooms = '$root/rooms';
+  final deleteRooms = '$root/rooms';
   String deleteRoom(String roomId) {
     return '$root/rooms/$roomId';
   }

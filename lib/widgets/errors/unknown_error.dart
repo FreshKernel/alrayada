@@ -5,8 +5,8 @@ import 'package:lottie/lottie.dart';
 import '../../gen/assets.gen.dart';
 import '../../l10n/app_localizations.dart';
 
-class ErrorWithTryAgain extends StatelessWidget {
-  const ErrorWithTryAgain({
+class UnknownError extends StatelessWidget {
+  const UnknownError({
     required this.onTryAgain,
     super.key,
   });

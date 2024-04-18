@@ -19,20 +19,31 @@ fun Route.userRoutes() {
     route("/user") {
         // This RateLimitName is registered in the RateLimit plugin
         rateLimit(RateLimitName("user")) {
+            // Authentication
             signUpWithEmailAndPassword()
             signInWithEmailAndPassword()
             socialLogin()
-            sendEmailVerificationLink()
+            authenticate {
+                sendEmailVerificationLink()
+            }
             verifyEmail()
             verifyEmailForm()
-            deleteAccount()
-            updateDeviceNotificationsToken()
-            getUserData()
-            updateUserInfo()
+            authenticate {
+                // Account management
+                deleteAccount()
+                updateDeviceNotificationsToken()
+
+                // User data
+                getUserData()
+                updateUserInfo()
+            }
+            // Password management
             sendResetPasswordLink()
             resetPassword()
             resetPasswordForm()
-            updatePassword()
+            authenticate {
+                updatePassword()
+            }
         }
         adminUserRoutes()
     }
@@ -41,43 +52,39 @@ fun Route.userRoutes() {
 fun Route.deleteAccount() {
     val userDataSource by inject<UserDataSource>()
     val telegramBotService by inject<TelegramBotService>()
-    authenticate {
-        delete("/deleteAccount") {
-            val currentUser = call.requireCurrentUser()
-            val isDeleteSuccess = userDataSource.deleteUserById(currentUser.id.toString())
-            if (!isDeleteSuccess) throw ErrorResponseException(
-                HttpStatusCode.InternalServerError,
-                "Error while deleting the user.",
-                "UNKNOWN_ERROR"
-            )
-            // TODO: Should the app ask for the gender as optional field?
-            telegramBotService.sendMessage("The user: <b>${currentUser.info.labOwnerName}</b> has deleted his/her account.")
-            call.respondText { "User has been successfully deleted." }
-        }
+    delete("/deleteAccount") {
+        val currentUser = call.requireCurrentUser()
+        val isDeleteSuccess = userDataSource.deleteUserById(currentUser.id.toString())
+        if (!isDeleteSuccess) throw ErrorResponseException(
+            HttpStatusCode.InternalServerError,
+            "Error while deleting the user.",
+            "UNKNOWN_ERROR"
+        )
+        // TODO: Should the app ask for the gender as optional field?
+        telegramBotService.sendMessage("The user: <b>${currentUser.info.labOwnerName}</b> has deleted his/her account.")
+        call.respondText { "User has been successfully deleted." }
     }
 }
 
 fun Route.updateDeviceNotificationsToken() {
     val userDataSource by inject<UserDataSource>()
-    authenticate {
-        patch("/updateDeviceNotificationsToken") {
-            val deviceNotificationsToken = call.receive<UserDeviceNotificationsToken>()
+    patch("/updateDeviceNotificationsToken") {
+        val deviceNotificationsToken = call.receive<UserDeviceNotificationsToken>()
 
-            val currentUser = call.requireCurrentUser()
-            val isUpdateSuccess = userDataSource.updateDeviceNotificationsTokenById(
-                deviceNotificationsToken = deviceNotificationsToken,
-                userId = currentUser.id.toString()
+        val currentUser = call.requireCurrentUser()
+        val isUpdateSuccess = userDataSource.updateDeviceNotificationsTokenById(
+            deviceNotificationsToken = deviceNotificationsToken,
+            userId = currentUser.id.toString()
+        )
+
+        if (!isUpdateSuccess) {
+            throw ErrorResponseException(
+                HttpStatusCode.InternalServerError,
+                "Error while updating the device notifications token",
+                "UNKNOWN_ERROR"
             )
-
-            if (!isUpdateSuccess) {
-                throw ErrorResponseException(
-                    HttpStatusCode.InternalServerError,
-                    "Error while updating the device notifications token",
-                    "UNKNOWN_ERROR"
-                )
-            }
-
-            call.respondText { "Device notifications token has been successfully updated." }
         }
+
+        call.respondText { "Device notifications token has been successfully updated." }
     }
 }

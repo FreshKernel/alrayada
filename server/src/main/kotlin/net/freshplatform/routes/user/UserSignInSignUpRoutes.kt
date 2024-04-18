@@ -22,18 +22,6 @@ import net.freshplatform.utils.ErrorResponseException
 import net.freshplatform.utils.extensions.baseUrl
 import org.koin.ktor.ext.inject
 
-private suspend fun notifyAdminsUserRegistration(user: User, telegramBotService: TelegramBotService) {
-    val message = buildString {
-        append("A new user has inserted in the database\n")
-        append("Lab owner name: <b>${user.info.labOwnerName}</b>\n")
-        append("Lab name: <b>${user.info.labName}</b>\n")
-        append("Lab owner phone: <b>${user.info.labOwnerPhoneNumber}</b>\n")
-        append("Lab phone: <b>${user.info.labPhoneNumber}</b>\n")
-        append("Email address: <b>${user.email}</b>\n")
-    }
-    telegramBotService.sendMessage(message)
-}
-
 fun Route.signUpWithEmailAndPassword() {
     val userDataSource by inject<UserDataSource>()
     val bcryptHashingService by inject<BcryptHashingService>()
@@ -43,14 +31,14 @@ fun Route.signUpWithEmailAndPassword() {
     val jwtService by inject<JwtService>()
 
     post("/signUp") {
-        val request = call.receive<AuthSignUpRequest>()
+        val requestBody = call.receive<AuthSignUpRequest>()
 
-        val error = request.validate()
+        val error = requestBody.validate()
         if (error != null) {
             throw ErrorResponseException(HttpStatusCode.BadRequest, error.first, error.second)
         }
 
-        val isEmailUsed = userDataSource.isEmailUsed(request.email).getOrElse {
+        val isEmailUsed = userDataSource.isEmailUsed(requestBody.email).getOrElse {
             throw ErrorResponseException(
                 HttpStatusCode.InternalServerError,
                 "Unknown error while trying to find this user with this email",
@@ -65,16 +53,16 @@ fun Route.signUpWithEmailAndPassword() {
             )
         }
 
-        val hashedPassword = bcryptHashingService.generatedSaltedHash(request.password)
+        val hashedPassword = bcryptHashingService.generatedSaltedHash(requestBody.password)
 
         val user = User(
-            email = request.email.trim().lowercase(),
+            email = requestBody.email.trim().lowercase(),
             password = hashedPassword,
             isAccountActivated = false,
             isEmailVerified = false,
             role = UserRole.User,
-            info = request.userInfo,
-            deviceNotificationsToken = request.deviceNotificationsToken,
+            info = requestBody.userInfo,
+            deviceNotificationsToken = requestBody.deviceNotificationsToken,
             pictureUrl = null,
             emailVerification = tokenVerificationService.generate(UserUtils.EMAIL_VERIFICATION_TOKEN_EXPIRATION),
             resetPasswordVerification = null,
@@ -132,7 +120,7 @@ fun Route.signUpWithEmailAndPassword() {
             )
         )
 
-        notifyAdminsUserRegistration(
+        UserUtils.notifyAdminsUserRegistration(
             user, telegramBotService
         )
     }
@@ -144,8 +132,8 @@ fun Route.signInWithEmailAndPassword() {
     val jwtService by inject<JwtService>()
 
     post("/signIn") {
-        val request = call.receive<AuthSignInRequest>()
-        val error = request.validate()
+        val requestBody = call.receive<AuthSignInRequest>()
+        val error = requestBody.validate()
         if (error != null) {
             throw ErrorResponseException(
                 status = HttpStatusCode.BadRequest,
@@ -154,7 +142,7 @@ fun Route.signInWithEmailAndPassword() {
             )
         }
 
-        val user = userDataSource.findUserByEmail(request.email).getOrElse {
+        val user = userDataSource.findUserByEmail(requestBody.email).getOrElse {
             throw ErrorResponseException(
                 HttpStatusCode.InternalServerError,
                 "Unknown error while trying to find this user with this email",
@@ -174,7 +162,7 @@ fun Route.signInWithEmailAndPassword() {
 //        if (request.password == User.SOCIAL_LOGIN_EMPTY_PASSWORD) {
 //        }
 
-        val isValidPassword = bcryptHashingService.verify(request.password, user.password)
+        val isValidPassword = bcryptHashingService.verify(requestBody.password, user.password)
         if (!isValidPassword) {
             throw ErrorResponseException(
                 HttpStatusCode.Unauthorized,
@@ -187,7 +175,7 @@ fun Route.signInWithEmailAndPassword() {
             )*/
         }
 
-        request.deviceNotificationsToken?.let {
+        requestBody.deviceNotificationsToken?.let {
             userDataSource.updateDeviceNotificationsTokenById(
                 deviceNotificationsToken = it,
                 userId = user.id.toString()
@@ -287,7 +275,7 @@ fun Route.socialLogin() {
                     "UNKNOWN_ERROR"
                 )
             }
-            notifyAdminsUserRegistration(newUser, telegramBotService)
+            UserUtils.notifyAdminsUserRegistration(newUser, telegramBotService)
             newUser
         }
 

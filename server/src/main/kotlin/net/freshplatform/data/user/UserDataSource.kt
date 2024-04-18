@@ -40,5 +40,5 @@ interface UserDataSource {
     /**
      * The [searchQuery] filter the results using [UserInfo.labName]
      * */
-    suspend fun getAllUsers(page: Int, limit: Int, searchQuery: String): Result<List<User>>
+    suspend fun getUsers(page: Int, limit: Int, searchQuery: String): Result<List<User>>
 }

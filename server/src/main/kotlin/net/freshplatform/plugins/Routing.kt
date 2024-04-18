@@ -4,6 +4,7 @@ import io.github.smiley4.ktorswaggerui.SwaggerUI
 import io.ktor.http.*
 import io.ktor.serialization.*
 import io.ktor.server.application.*
+import io.ktor.server.http.content.*
 import io.ktor.server.plugins.*
 import io.ktor.server.plugins.ratelimit.*
 import io.ktor.server.plugins.statuspages.*
@@ -11,10 +12,12 @@ import io.ktor.server.resources.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.SerializationException
-import net.freshplatform.routes.user.userRoutes
 import net.freshplatform.routes.live_chat.liveChatRoutes
+import net.freshplatform.routes.products.productsRoutes
+import net.freshplatform.routes.user.userRoutes
 import net.freshplatform.utils.ErrorResponse
 import net.freshplatform.utils.ErrorResponseException
+import net.freshplatform.utils.FilePaths
 import net.freshplatform.utils.getEnvironmentVariables
 
 fun Application.configureRouting() {
@@ -22,6 +25,15 @@ fun Application.configureRouting() {
     install(StatusPages) {
         status(HttpStatusCode.NotFound) { call, status ->
             call.respondText(text = "404: Page Not Found", status = status)
+        }
+        status(HttpStatusCode.UnsupportedMediaType) { call, status ->
+            call.respond(
+                message = ErrorResponse(
+                    "Unsupported media type, json format is usually used. Try set the header `Content-Type: application/json`",
+                    "UNSUPPORTED_MEDIA_TYPE"
+                ),
+                status = status
+            )
         }
         exception<Throwable> { call, cause ->
             cause.printStackTrace()
@@ -96,5 +108,11 @@ fun Application.configureRouting() {
 
         userRoutes()
         liveChatRoutes()
+        productsRoutes()
+
+        val uploadsDirectory = FilePaths.Uploads.getDirectory()
+        staticFiles("/${uploadsDirectory.name}", uploadsDirectory) {
+            preCompressed(CompressedFileType.BROTLI, CompressedFileType.GZIP)
+        }
     }
 }

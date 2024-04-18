@@ -7,7 +7,7 @@ sealed class UserState extends Equatable {
 
   final UserCredential? userCredential;
 
-  UserCredential get requireUserCredential {
+  UserCredential get userCredentialOrThrow {
     return userCredential ??
         (throw StateError('You need to be authenticated.'));
   }

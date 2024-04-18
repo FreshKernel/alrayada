@@ -10,7 +10,7 @@ class GeoLocationService implements LocationRepository {
   const GeoLocationService._();
   static const instance = GeoLocationService._();
 
-  final _impl = const IpLocationImpl();
+  final LocationRepository _impl = const IpLocationImpl();
 
   @override
   Future<GeoLocation> getLocation() async {

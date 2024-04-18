@@ -92,7 +92,7 @@ class MongoUserDataSource(
                 Updates.combine(
                     Updates.set(User::isEmailVerified.name, true),
                     Updates.set(User::emailVerification.name, null),
-                    generateUpdatedAtUpdate()
+                    setUpdatedAt()
                 )
             ).wasAcknowledged()
         } catch (e: Exception) {
@@ -110,7 +110,7 @@ class MongoUserDataSource(
                 userIdFilter(userId),
                 Updates.combine(
                     Updates.set(User::emailVerification.name, emailVerification),
-                    generateUpdatedAtUpdate()
+                    setUpdatedAt()
                 )
             ).wasAcknowledged()
         } catch (e: Exception) {
@@ -128,7 +128,7 @@ class MongoUserDataSource(
                 userIdFilter(userId),
                 Updates.combine(
                     Updates.set(User::resetPasswordVerification.name, resetPasswordVerification),
-                    generateUpdatedAtUpdate()
+                    setUpdatedAt()
                 )
             ).wasAcknowledged()
         } catch (e: Exception) {
@@ -144,7 +144,7 @@ class MongoUserDataSource(
                 Updates.combine(
                     Updates.set(User::password.name, newPassword),
                     Updates.set(User::resetPasswordVerification.name, null),
-                    generateUpdatedAtUpdate()
+                    setUpdatedAt()
                 )
             ).wasAcknowledged()
         } catch (e: Exception) {
@@ -159,7 +159,7 @@ class MongoUserDataSource(
                 userIdFilter(userId),
                 Updates.combine(
                     Updates.set(User::info.name, userInfo),
-                    generateUpdatedAtUpdate()
+                    setUpdatedAt()
                 )
             ).wasAcknowledged()
         } catch (e: Exception) {
@@ -174,7 +174,7 @@ class MongoUserDataSource(
                 userIdFilter(userId),
                 Updates.combine(
                     Updates.set(User::pictureUrl.name, newPictureUrl),
-                    generateUpdatedAtUpdate()
+                    setUpdatedAt()
                 )
             ).wasAcknowledged()
         } catch (e: Exception) {
@@ -189,7 +189,7 @@ class MongoUserDataSource(
                 userIdFilter(userId),
                 Updates.combine(
                     Updates.set(User::isAccountActivated.name, isAccountActivated),
-                    generateUpdatedAtUpdate()
+                    setUpdatedAt()
                 )
             ).wasAcknowledged()
         } catch (e: Exception) {
@@ -210,7 +210,7 @@ class MongoUserDataSource(
         }
     }
 
-    override suspend fun getAllUsers(page: Int, limit: Int, searchQuery: String): Result<List<User>> {
+    override suspend fun getUsers(page: Int, limit: Int, searchQuery: String): Result<List<User>> {
         return try {
             val skip = (page - 1) * limit
             val pattern = ".*$searchQuery.*".toRegex(RegexOption.IGNORE_CASE).toPattern()
@@ -236,7 +236,7 @@ class MongoUserDataSource(
                 userIdFilter(userId),
                 Updates.combine(
                     Updates.set(User::deviceNotificationsToken.name, deviceNotificationsToken),
-                    generateUpdatedAtUpdate()
+                    setUpdatedAt()
                 )
             ).wasAcknowledged()
         } catch (e: Exception) {
@@ -262,7 +262,7 @@ class MongoUserDataSource(
                 userIdFilter(userId),
                 Updates.combine(
                     Updates.set(User::password.name, newPassword),
-                    generateUpdatedAtUpdate()
+                    setUpdatedAt()
                 )
             ).wasAcknowledged()
         } catch (e: Exception) {
@@ -275,7 +275,7 @@ class MongoUserDataSource(
         return Filters.eq("_id", ObjectId(userId))
     }
 
-    private fun generateUpdatedAtUpdate(): Bson {
+    private fun setUpdatedAt(): Bson {
         return Updates.set(User::updatedAt.name, BsonDateTime(Clock.System.now().toEpochMilliseconds()))
     }
 }

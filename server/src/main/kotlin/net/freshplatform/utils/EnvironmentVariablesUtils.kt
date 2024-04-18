@@ -15,6 +15,12 @@ data class EnvironmentVariables(
      * Used to have different behavior depending on if this a development mode or not
      * */
     val isProductionMode: Boolean,
+    /**
+     * For local development should be 8080 or the default server port used in the client app
+     * For production use it depends, for example on heroku you should not pass it
+     * as heroku will, and for other usages it really depends, you might use default port and forward
+     * all the requests to 80 or just use 80 directly
+     * */
     val serverPort: Int,
     val emailSmtpHost: String,
     val emailUsername: String,
@@ -27,7 +33,10 @@ data class EnvironmentVariables(
     val googleIosClientId: String,
     val firebaseProjectId: String,
     /**
-     * As plain text (json)
+     * As plain text (json), just copy the file contents
+     * when you download it from Firebase
+     * and paste it as one line value, the simplest way is to paste it into the
+     * web browser address text input field and copy it again
      * */
     val firebaseProjectServiceAccountKey: String,
     val zainCashMerchantId: String,

@@ -4,12 +4,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../logic/live_chat/admin/admin_live_chat_cubit.dart';
 import '../../../../utils/extensions/scaffold_messenger_ext.dart';
-import '../../../../widgets/errors/w_error.dart';
+import '../../../../widgets/errors/unknown_error.dart';
+import '../../../../widgets/no_data_found.dart';
 import '../../../../widgets/scroll_edge_detector.dart';
-import 'live_chat_room_tile.dart';
+import 'admin_live_chat_room_tile.dart';
 
-class LiveChatTab extends StatelessWidget {
-  const LiveChatTab({super.key});
+class AdminLiveChatTab extends StatelessWidget {
+  const AdminLiveChatTab({super.key});
 
   static const id = 'liveChatTab';
 
@@ -30,12 +31,17 @@ class LiveChatTab extends StatelessWidget {
           );
         }
         if (state is AdminLiveChatLoadRoomsFailure) {
-          return ErrorWithTryAgain(
+          return UnknownError(
             onTryAgain: () =>
                 context.read<AdminLiveChatCubit>().initLoadRooms(),
           );
         }
         final rooms = state.roomsState.rooms;
+        if (rooms.isEmpty) {
+          return NoDataFound(
+            onRefresh: () => context.read<AdminLiveChatCubit>().initLoadRooms(),
+          );
+        }
         return RefreshIndicator.adaptive(
           onRefresh: () async {
             await context.read<AdminLiveChatCubit>().initLoadRooms();
@@ -58,7 +64,7 @@ class LiveChatTab extends StatelessWidget {
                   );
                 }
                 final room = rooms[index];
-                return LiveChatRoomTile(
+                return AdminLiveChatRoomTile(
                   room: room,
                   index: index,
                 );

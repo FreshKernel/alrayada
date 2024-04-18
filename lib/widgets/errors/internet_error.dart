@@ -7,11 +7,7 @@ import 'package:lottie/lottie.dart';
 import '../../gen/assets.gen.dart';
 import '../../l10n/app_localizations.dart';
 
-final error = [
-  Assets.lottie.noInternet.noInternet1.path,
-  Assets.lottie.noInternet.noInternet2.path,
-  Assets.lottie.noInternet.noInternet3.path,
-];
+final _errors = Assets.lottie.noInternet.values.map((e) => e.path).toList();
 
 class InternetError extends StatelessWidget {
   const InternetError({
@@ -23,27 +19,26 @@ class InternetError extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final randomAsset = error[Random().nextInt(error.length)];
-    final items = [
-      Lottie.asset(randomAsset),
-      Text(
-        context.loc.pleaseCheckYourInternetConnectionMsg,
-        style: Theme.of(context).textTheme.titleLarge,
-        textAlign: TextAlign.center,
-      ),
-      if (onTryAgain != null) ...[
-        const SizedBox(height: 8),
-        PlatformElevatedButton(
-          onPressed: onTryAgain,
-          child: Text(context.loc.tryAgain),
-        ),
-      ]
-    ];
+    final randomAsset = _errors[Random().nextInt(_errors.length)];
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: items,
+        children: [
+          Lottie.asset(randomAsset),
+          Text(
+            context.loc.pleaseCheckYourInternetConnectionMsg,
+            style: Theme.of(context).textTheme.titleLarge,
+            textAlign: TextAlign.center,
+          ),
+          if (onTryAgain != null) ...[
+            const SizedBox(height: 8),
+            PlatformElevatedButton(
+              onPressed: onTryAgain,
+              child: Text(context.loc.tryAgain),
+            ),
+          ]
+        ],
       ),
     );
   }
@@ -57,21 +52,20 @@ class InternetErrorDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final translations = context.loc;
-    final randomAsset = error[Random().nextInt(error.length)];
-    final items = [
-      Lottie.asset(randomAsset),
-      Text(
-        context.loc.pleaseCheckYourInternetConnectionMsg,
-        style: Theme.of(context).textTheme.titleLarge,
-        textAlign: TextAlign.center,
-      ),
-    ];
+    final randomAsset = _errors[Random().nextInt(_errors.length)];
     return AlertDialog.adaptive(
       content: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
-        children: items,
+        children: [
+          Lottie.asset(randomAsset),
+          Text(
+            context.loc.pleaseCheckYourInternetConnectionMsg,
+            style: Theme.of(context).textTheme.titleLarge,
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
       actions: [
         PlatformDialogAction(

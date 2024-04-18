@@ -5,7 +5,7 @@ import '../../data/live_chat/live_chat_repository.dart';
 import '../../l10n/app_localizations.dart';
 import '../../logic/live_chat/live_chat_cubit.dart';
 import '../../utils/extensions/scaffold_messenger_ext.dart';
-import '../../widgets/errors/w_error.dart';
+import '../../widgets/errors/unknown_error.dart';
 import '../../widgets/scroll_edge_detector.dart';
 import 'live_chat_message_tile.dart';
 
@@ -42,7 +42,7 @@ class LiveChatMessagesList extends StatelessWidget {
           return const Center(child: CircularProgressIndicator.adaptive());
         }
         if (state is LiveChatConnectFailure) {
-          return ErrorWithTryAgain(
+          return UnknownError(
             onTryAgain: () =>
                 context.read<LiveChatCubit>().connect(connectionType),
           );

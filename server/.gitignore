@@ -35,4 +35,6 @@ out/
 ### VS Code ###
 .vscode/
 
+# For file upload which use local storage in development
+uploads/*
 .env

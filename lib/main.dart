@@ -140,7 +140,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => LiveChatCubit(
             liveChatRepository: LiveChatRepositoryImpl(),
-            authCubit: context.read<UserCubit>(),
+            userCubit: context.read<UserCubit>(),
           ),
         ),
         BlocProvider(

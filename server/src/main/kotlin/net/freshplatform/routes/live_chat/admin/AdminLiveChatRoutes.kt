@@ -17,114 +17,126 @@ import org.koin.ktor.ext.inject
 
 fun Route.adminLiveChatRoutes(controller: LiveChatRoomController) {
     route("/admin") {
-        adminLiveChat(controller)
-        getMessages()
-        getRooms()
-        deleteRoom()
-        roomsStatus(controller)
+        authenticate {
+            adminLiveChat(controller)
+            getMessages()
+            getRooms()
+            deleteRoom()
+            deleteAllRooms()
+            roomsStatus(controller)
+        }
     }
 }
 
 fun Route.adminLiveChat(controller: LiveChatRoomController) {
-    authenticate {
-        /**
-         * The id is [LiveChatRoom.roomClientUserId]
-         * */
-        webSocket("/{id}") {
-            val id: String by call.parameters
-            val currentUser = call.requireCurrentAdminUser()
+    /**
+     * The id is [LiveChatRoom.roomClientUserId]
+     * */
+    webSocket("/{id}") {
+        val id: String by call.parameters
+        val currentUser = call.requireCurrentAdminUser()
 
-            try {
-                controller.onJoin(
+        try {
+            controller.onJoin(
+                roomClientUserId = id,
+                session = this
+            )
+            for (frame in incoming) {
+                frame as? Frame.Text ?: continue
+                val receivedText = frame.readText()
+                controller.sendMessage(
+                    senderId = currentUser.id.toString(),
                     roomClientUserId = id,
-                    session = this
-                )
-                for (frame in incoming) {
-                    frame as? Frame.Text ?: continue
-                    val receivedText = frame.readText()
-                    controller.sendMessage(
-                        senderId = currentUser.id.toString(),
-                        roomClientUserId = id,
-                        text = receivedText
-                    )
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            } finally {
-                controller.disconnect(
-                    roomClientUserId = id,
-                    socketSession = this
+                    text = receivedText
                 )
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            controller.disconnect(
+                roomClientUserId = id,
+                socketSession = this
+            )
         }
     }
 }
 
 fun Route.getMessages() {
     val liveChatDataSource by inject<LiveChatDataSource>()
-    authenticate {
-        /**
-         * The id is [LiveChatRoom.roomClientUserId]
-         * */
-        get("/messages/{id}") {
-            call.requireCurrentAdminUser()
-            val id: String by call.parameters
-            val page: Int by call.request.queryParameters
-            val limit: Int by call.request.queryParameters
+    /**
+     * The id is [LiveChatRoom.roomClientUserId]
+     * */
+    get("/messages/{id}") {
+        call.requireCurrentAdminUser()
+        val id: String by call.parameters
+        val page: Int by call.request.queryParameters
+        val limit: Int by call.request.queryParameters
 
-            val messages = liveChatDataSource.getAllMessagesByRoomClientUserId(id, page, limit).getOrElse {
-                throw ErrorResponseException(
-                    HttpStatusCode.InternalServerError,
-                    "Unknown error while getting the messages.",
-                    "COULD_NOT_LOAD_MESSAGES"
-                )
-            }.map { it.toResponse() }
-            call.respond(messages)
-        }
+        val messages = liveChatDataSource.getMessagesByRoomClientUserId(id, page, limit).getOrElse {
+            throw ErrorResponseException(
+                HttpStatusCode.InternalServerError,
+                "Unknown error while getting the messages.",
+                "COULD_NOT_LOAD_MESSAGES"
+            )
+        }.map { it.toResponse() }
+        call.respond(messages)
     }
 }
 
 fun Route.getRooms() {
     val liveChatDataSource by inject<LiveChatDataSource>()
-    authenticate {
-        get("/rooms") {
-            call.requireCurrentAdminUser()
-            val page: Int by call.request.queryParameters
-            val limit: Int by call.request.queryParameters
+    get("/rooms") {
+        call.requireCurrentAdminUser()
+        val page: Int by call.request.queryParameters
+        val limit: Int by call.request.queryParameters
 
-            val rooms = liveChatDataSource.getAllRooms(page, limit).getOrElse {
-                throw ErrorResponseException(
-                    HttpStatusCode.InternalServerError,
-                    "Unknown error while loading the rooms: ${it.message}",
-                    "COULD_NOT_LOAD_ROOMS"
-                )
-            }.map { it.toResponse() }
+        val rooms = liveChatDataSource.getRooms(page, limit).getOrElse {
+            throw ErrorResponseException(
+                HttpStatusCode.InternalServerError,
+                "Unknown error while loading the rooms: ${it.message}",
+                "COULD_NOT_LOAD_ROOMS"
+            )
+        }.map { it.toResponse() }
 
-            call.respond(rooms)
-        }
+        call.respond(rooms)
     }
 }
 
 fun Route.deleteRoom() {
     val liveChatDataSource by inject<LiveChatDataSource>()
-    authenticate {
-        /**
-         * The id is [LiveChatRoom.id]
-         * */
-        delete("/rooms/{id}") {
-            call.requireCurrentAdminUser()
-            val id: String by call.parameters
+    /**
+     * The id is [LiveChatRoom.id]
+     * */
+    delete("/rooms/{id}") {
+        call.requireCurrentAdminUser()
+        val id: String by call.parameters
 
-            val isDeleteSuccess = liveChatDataSource.deleteRoomById(id)
-            if (!isDeleteSuccess) {
-                throw ErrorResponseException(
-                    HttpStatusCode.InternalServerError,
-                    "Unknown error while deleting the room with id: $id",
-                    "COULD_NOT_DELETE_ROOM"
-                )
-            }
-            call.respondText { "The room has been successfully deleted." }
+        val isDeleteSuccess = liveChatDataSource.deleteRoomById(id)
+        if (!isDeleteSuccess) {
+            throw ErrorResponseException(
+                HttpStatusCode.InternalServerError,
+                "Unknown error while deleting the room with id: $id",
+                "COULD_NOT_DELETE_ROOM"
+            )
         }
+        call.respondText { "The room has been successfully deleted." }
+    }
+}
+
+fun Route.deleteAllRooms() {
+    val liveChatDataSource by inject<LiveChatDataSource>()
+    delete("/rooms") {
+        call.requireCurrentAdminUser()
+
+        val isDeleteSuccess = liveChatDataSource.deleteAllRooms()
+        if (!isDeleteSuccess) {
+            throw ErrorResponseException(
+                HttpStatusCode.InternalServerError,
+                "Unknown error while deleting all the rooms",
+                "COULD_NOT_DELETE_ROOMS"
+            )
+        }
+        call.respondText { "All the rooms has been successfully deleted." }
     }
 }
 
@@ -132,14 +144,12 @@ fun Route.deleteRoom() {
 fun Route.roomsStatus(
     controller: LiveChatRoomController
 ) {
-    authenticate {
-        get("/rooms/status") {
-            call.requireCurrentAdminUser()
-            val message = buildString {
-                append("Rooms = ${controller.roomsCount()}\n")
-                controller.roomsStatusMessage()
-            }
-            call.respondText { message }
+    get("/rooms/status") {
+        call.requireCurrentAdminUser()
+        val message = buildString {
+            append("Rooms = ${controller.roomsCount()}\n")
+            append(controller.roomsStatusMessage())
         }
+        call.respondText { message }
     }
 }

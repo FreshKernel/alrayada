@@ -10,8 +10,8 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../logic/live_chat/admin/admin_live_chat_cubit.dart';
 import '../../../live_chat/live_chat_screen.dart';
 
-class LiveChatRoomTile extends StatelessWidget {
-  const LiveChatRoomTile({
+class AdminLiveChatRoomTile extends StatelessWidget {
+  const AdminLiveChatRoomTile({
     required this.room,
     required this.index,
     super.key,

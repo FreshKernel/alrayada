@@ -5,6 +5,7 @@ object Constants {
     const val APP_NAME = "Alrayada"
 
     const val PRODUCTION_WEBSITE = "https://alrayada.net"
+    const val MAXIMUM_IMAGE_UPLOAD_SIZE = 25 * 1024 * 1024L
 
     object JwtConfig {
         const val ISSUER = PRODUCTION_WEBSITE

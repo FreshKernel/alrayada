@@ -3,12 +3,16 @@ package net.freshplatform.di
 import io.ktor.server.application.*
 import net.freshplatform.data.live_chat.LiveChatDataSource
 import net.freshplatform.data.live_chat.MongoLiveChatDataSource
+import net.freshplatform.data.product.category.MongoProductCategoryDataSource
+import net.freshplatform.data.product.category.ProductCategoryDataSource
 import net.freshplatform.data.user.MongoUserDataSource
 import net.freshplatform.data.user.UserDataSource
 import net.freshplatform.plugins.databaseModule
 import net.freshplatform.services.email_sender.DevEmailSenderService
 import net.freshplatform.services.email_sender.EmailSenderService
 import net.freshplatform.services.email_sender.JavaEmailSenderService
+import net.freshplatform.services.image_storage.ImageStorageServiceFactory
+import net.freshplatform.services.image_storage.LocalImageStorageServiceFactory
 import net.freshplatform.services.ktor_client.HttpService
 import net.freshplatform.services.notifications.KtorFcmNotificationsService
 import net.freshplatform.services.notifications.NotificationsService
@@ -65,6 +69,9 @@ val servicesModule = module {
     single<NotificationsService> {
         KtorFcmNotificationsService(HttpService.client)
     }
+    single<ImageStorageServiceFactory> {
+        LocalImageStorageServiceFactory()
+    }
 }
 
 val dataSourcesModule = module {
@@ -73,5 +80,8 @@ val dataSourcesModule = module {
     }
     single<LiveChatDataSource> {
         MongoLiveChatDataSource(get())
+    }
+    single<ProductCategoryDataSource> {
+        MongoProductCategoryDataSource(get())
     }
 }

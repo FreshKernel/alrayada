@@ -26,13 +26,14 @@ class ProductCategoryRoutes(
         const val NAME = "categories"
     }
     private fun getCategoriesImagesFolder() = File(getImageFolder(), NAME)
+
     fun getAll() = router.get("/") {
         call.protectRouteToAppOnly()
         val responseList = productCategoryDataSource.getAll().map { parentCategory ->
             val id = parentCategory.id
             val childrenOfItem = productCategoryDataSource.getAllChildrenOf(id)
-                .map { it.toResponse(null, call) }
-            val response = parentCategory.toResponse(childrenOfItem, call)
+                .map { it.toResponse(call) }
+            val response = parentCategory.toResponse(call)
             response
         }
         call.respond(HttpStatusCode.OK, responseList)

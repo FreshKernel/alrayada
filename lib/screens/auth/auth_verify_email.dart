@@ -10,7 +10,7 @@ import '../../l10n/app_localizations.dart';
 import '../../logic/connectivity/connectivity_cubit.dart';
 import '../../logic/user/user_cubit.dart';
 import '../../utils/extensions/scaffold_messenger_ext.dart';
-import '../../widgets/errors/w_internet_error.dart';
+import '../../widgets/errors/internet_error.dart';
 
 class AuthVerifyEmailScreen extends StatelessWidget {
   const AuthVerifyEmailScreen({super.key});

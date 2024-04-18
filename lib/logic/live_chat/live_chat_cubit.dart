@@ -17,11 +17,11 @@ part 'live_chat_state.dart';
 class LiveChatCubit extends Cubit<LiveChatState> {
   LiveChatCubit({
     required this.liveChatRepository,
-    required this.authCubit,
+    required this.userCubit,
   }) : super(const LiveChatInitial());
 
   final LiveChatRepository liveChatRepository;
-  final UserCubit authCubit;
+  final UserCubit userCubit;
   late StreamSubscription<ChatMessage> _connectionSubscription;
 
   static const int _limit = 15;
@@ -36,7 +36,7 @@ class LiveChatCubit extends Cubit<LiveChatState> {
       );
       await liveChatRepository.connect(
         connectionType: connectionType,
-        accessToken: authCubit.state.requireUserCredential.accessToken,
+        accessToken: userCubit.state.userCredentialOrThrow.accessToken,
       );
       _connectionSubscription =
           liveChatRepository.incomingMessages().listen((message) {

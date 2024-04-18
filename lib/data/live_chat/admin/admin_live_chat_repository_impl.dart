@@ -48,4 +48,19 @@ class AdminLiveChatRepositoryImpl extends AdminLiveChatRepository {
       throw UnknownLiveChatException(message: e.toString());
     }
   }
+
+  @override
+  Future<void> deleteAllRooms() async {
+    try {
+      await _dio.delete(
+        ServerConfigurations.getRequestUrl(
+          RoutesConstants.liveChatRoutes.adminRoutes.deleteRooms,
+        ),
+      );
+    } on DioException catch (e) {
+      throw UnknownLiveChatException(message: e.message.toString());
+    } catch (e) {
+      throw UnknownLiveChatException(message: e.toString());
+    }
+  }
 }

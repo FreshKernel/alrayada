@@ -35,6 +35,8 @@ class $AssetsLottieGen {
 
   $AssetsLottieAuthGen get auth => const $AssetsLottieAuthGen();
   $AssetsLottieErrorsGen get errors => const $AssetsLottieErrorsGen();
+  $AssetsLottieNoDataFoundGen get noDataFound =>
+      const $AssetsLottieNoDataFoundGen();
   $AssetsLottieNoInternetGen get noInternet =>
       const $AssetsLottieNoInternetGen();
   $AssetsLottieOnboardingGen get onboarding =>
@@ -115,6 +117,21 @@ class $AssetsLottieErrorsGen {
 
   /// List of all assets
   List<LottieGenImage> get values => [noData, serverError, unknownError];
+}
+
+class $AssetsLottieNoDataFoundGen {
+  const $AssetsLottieNoDataFoundGen();
+
+  /// File path: assets/lottie/no_data_found/no_data_found_1.json
+  LottieGenImage get noDataFound1 =>
+      const LottieGenImage('assets/lottie/no_data_found/no_data_found_1.json');
+
+  /// File path: assets/lottie/no_data_found/no_data_found_2.json
+  LottieGenImage get noDataFound2 =>
+      const LottieGenImage('assets/lottie/no_data_found/no_data_found_2.json');
+
+  /// List of all assets
+  List<LottieGenImage> get values => [noDataFound1, noDataFound2];
 }
 
 class $AssetsLottieNoInternetGen {

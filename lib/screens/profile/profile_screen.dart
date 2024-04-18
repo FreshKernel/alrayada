@@ -11,7 +11,7 @@ import '../../logic/user/user_cubit.dart';
 import '../../utils/extensions/scaffold_messenger_ext.dart';
 import '../../utils/text_input_handler.dart';
 import '../../widgets/auth/user_info_text_inputs.dart';
-import '../../widgets/errors/w_internet_error.dart';
+import '../../widgets/errors/internet_error.dart';
 import 'delete_account_dialog.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -36,7 +36,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     final userInfo =
-        context.read<UserCubit>().state.requireUserCredential.user.info;
+        context.read<UserCubit>().state.userCredentialOrThrow.user.info;
     _labOwnerPhoneNumberInputHandler.controller.text =
         userInfo.labOwnerPhoneNumber;
     _labPhoneNumberController.text = userInfo.labPhoneNumber;

@@ -18,6 +18,11 @@ fun main() {
 }
 
 fun Application.module() {
+    log.info("User directory: ${System.getProperty("user.dir")}")
+    getEnvironmentVariables().apply {
+        log.info("Production mode: $isProductionMode")
+        log.info("Production server: $isProductionServer")
+    }
     dependencyInjection()
     configureHTTP()
     configureSockets()

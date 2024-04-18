@@ -2,7 +2,6 @@ package net.freshplatform.routes.user
 
 import io.ktor.http.*
 import io.ktor.server.application.*
-import io.ktor.server.auth.*
 import io.ktor.server.html.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
@@ -23,73 +22,71 @@ fun Route.sendEmailVerificationLink() {
     val tokenVerificationService by inject<TokenVerificationService>()
     val emailSenderService by inject<EmailSenderService>()
 
-    authenticate {
-        post("/sendEmailVerificationLink") {
-            val currentUser = call.requireCurrentUser()
+    post("/sendEmailVerificationLink") {
+        val currentUser = call.requireCurrentUser()
 
-            if (currentUser.isEmailVerified) throw ErrorResponseException(
-                HttpStatusCode.Conflict,
-                "Email is already verified.",
-                "EMAIL_ALREADY_VERIFIED",
-            )
+        if (currentUser.isEmailVerified) throw ErrorResponseException(
+            HttpStatusCode.Conflict,
+            "Email is already verified.",
+            "EMAIL_ALREADY_VERIFIED",
+        )
 
-            currentUser.emailVerification?.let {
-                if (!it.hasTokenExpired()) {
-                    throw ErrorResponseException(
-                        HttpStatusCode.Conflict,
-                        "The email verification token hasn't expired yet.",
-                        "EMAIL_VERIFICATION_LINK_ALREADY_SENT",
-                        mapOf("minutesToExpire" to it.minutesToExpire().toString())
-                    )
-                }
-            }
-
-            val emailVerification = tokenVerificationService.generate(
-                UserUtils.EMAIL_VERIFICATION_TOKEN_EXPIRATION
-            )
-
-            val isUpdateSuccess = userDataSource.updateEmailVerificationStatusById(
-                currentUser.id.toString(),
-                emailVerification
-            )
-
-            if (!isUpdateSuccess) {
+        currentUser.emailVerification?.let {
+            if (!it.hasTokenExpired()) {
                 throw ErrorResponseException(
-                    HttpStatusCode.InternalServerError,
-                    "Unknown error while updating the email verification object in the database.",
-                    "UNKNOWN_ERROR"
+                    HttpStatusCode.Conflict,
+                    "The email verification token hasn't expired yet.",
+                    "EMAIL_VERIFICATION_LINK_ALREADY_SENT",
+                    mapOf("minutesToExpire" to it.minutesToExpire().toString())
                 )
             }
-
-            val verificationLink =
-                UserUtils.createEmailVerificationLink(
-                    baseUrl = call.request.baseUrl(),
-                    userId = currentUser.id.toString(),
-                    token = emailVerification.token // Use this instead of the one from currentUser
-                )
-
-            val isSendEmailSuccess = emailSenderService.sendEmail(
-                EmailMessage(
-                    to = currentUser.email,
-                    subject = "Verify your email account",
-                    body = "Hi, you have requested to verify your email address.\n" +
-                            " To confirm your email, please open the following link:\n" +
-                            "$verificationLink\n\nIf you didn't request this verification," +
-                            " please ignore this message."
-                )
-            )
-
-            if (!isSendEmailSuccess) {
-                throw ErrorResponseException(
-                    HttpStatusCode.InternalServerError,
-                    "Unknown error while sending email verification to your email. Please try again later or contact us.",
-                    "UNKNOWN_ERROR"
-                )
-            }
-
-            call.respondText { "We have successfully sent email verification link. Please check your email inbox" }
-
         }
+
+        val emailVerification = tokenVerificationService.generate(
+            UserUtils.EMAIL_VERIFICATION_TOKEN_EXPIRATION
+        )
+
+        val isUpdateSuccess = userDataSource.updateEmailVerificationStatusById(
+            currentUser.id.toString(),
+            emailVerification
+        )
+
+        if (!isUpdateSuccess) {
+            throw ErrorResponseException(
+                HttpStatusCode.InternalServerError,
+                "Unknown error while updating the email verification object in the database.",
+                "UNKNOWN_ERROR"
+            )
+        }
+
+        val verificationLink =
+            UserUtils.createEmailVerificationLink(
+                baseUrl = call.request.baseUrl(),
+                userId = currentUser.id.toString(),
+                token = emailVerification.token // Use this instead of the one from currentUser
+            )
+
+        val isSendEmailSuccess = emailSenderService.sendEmail(
+            EmailMessage(
+                to = currentUser.email,
+                subject = "Verify your email account",
+                body = "Hi, you have requested to verify your email address.\n" +
+                        " To confirm your email, please open the following link:\n" +
+                        "$verificationLink\n\nIf you didn't request this verification," +
+                        " please ignore this message."
+            )
+        )
+
+        if (!isSendEmailSuccess) {
+            throw ErrorResponseException(
+                HttpStatusCode.InternalServerError,
+                "Unknown error while sending email verification to your email. Please try again later or contact us.",
+                "UNKNOWN_ERROR"
+            )
+        }
+
+        call.respondText { "We have successfully sent email verification link. Please check your email inbox" }
+
     }
 }
 

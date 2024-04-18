@@ -9,6 +9,7 @@ import '../../../../logic/user/admin/admin_user_cubit.dart';
 import '../../../../utils/extensions/scaffold_messenger_ext.dart';
 import '../../../../utils/validators/global_validator.dart';
 
+/// For Admin only
 class SendNotificationToUserDialog extends StatefulWidget {
   const SendNotificationToUserDialog({required this.userId, super.key});
 

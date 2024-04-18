@@ -136,7 +136,7 @@ class UserCubit extends Cubit<UserState> {
         userInfo: null,
       );
     } on SignInWithAppleException catch (e) {
-      // TODO: emit the [AuthSocialLoginAborted]
+      // TODO: emit the [UserSocialLoginAborted]
       if (e is SignInWithAppleAuthorizationException) {
         // TODO: Test and remove this later
         AppLogger.info('Sign in with apple result is ${e.code}');
@@ -257,8 +257,8 @@ class UserCubit extends Cubit<UserState> {
       await userRepository.updateUserInfo(userInfo);
       emit(
         UserUpdateUserSuccess(
-          userCredential: state.requireUserCredential.copyWith(
-            user: state.requireUserCredential.user.copyWith(
+          userCredential: state.userCredentialOrThrow.copyWith(
+            user: state.userCredentialOrThrow.user.copyWith(
               info: userInfo,
             ),
           ),

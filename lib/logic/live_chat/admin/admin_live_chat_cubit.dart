@@ -93,4 +93,20 @@ class AdminLiveChatCubit extends Cubit<AdminLiveChatState> {
       emit(AdminLiveChatActionFailure(e, roomsState: state.roomsState));
     }
   }
+
+  Future<void> deleteAllRooms() async {
+    try {
+      emit(AdminLiveChatDeleteAllRoomsInProgress(
+        roomsState: state.roomsState,
+      ));
+      await adminLiveChatRepository.deleteAllRooms();
+      emit(AdminLiveChatDeleteAllRoomsSuccess(
+        roomsState: state.roomsState.copyWith(
+          rooms: [],
+        ),
+      ));
+    } on LiveChatException catch (e) {
+      emit(AdminLiveChatDeleteAllRoomsFailure(e, roomsState: state.roomsState));
+    }
+  }
 }

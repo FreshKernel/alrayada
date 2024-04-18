@@ -2,6 +2,13 @@
 
 An ecommerce application developed by Fresh Platform for Alrayada company.
 
+## Table of contents
+- [Alrayada](#alrayada)
+  - [Table of contents](#table-of-contents)
+  - [Build](#build)
+  - [Third party Apis](#third-party-apis)
+  - [Todos](#todos)
+
 ## Build
 
 1. First of all you need to setup the [Server](./server/README.md)
@@ -9,9 +16,10 @@ An ecommerce application developed by Fresh Platform for Alrayada company.
 3. Provide the values, if you can't understand some of the variables, go to
    this [File](./lib/utils/env.dart)
 4. Change the values in the [Constants](./lib/constants.dart) file
-5. Setup Firebase using [Firebase Flutter CLI](https://firebase.google.com/docs/flutter/setup)
-6. Setup the [Apis](#third-party-apis)
-7. Setup App Links on both Android and iOS
+5. Setup App Signing for both Android and iOS
+6. Setup Firebase using [Firebase Flutter CLI](https://firebase.google.com/docs/flutter/setup)
+7. Setup the [Apis](#third-party-apis)
+8. Setup App Links for both Android and iOS
 
 ## Third party Apis
 
@@ -25,3 +33,4 @@ An ecommerce application developed by Fresh Platform for Alrayada company.
 
 1. I might add a way to choose whatever to enter already existing user auth form inputs data on debug mode only for development mode
 2. Make that when the user open the notification it will navigate to the correct screen, for example when the user account is activated, then trigger the code to update the state
+3. I might add profile picture upload so users with email and password can benefit from it

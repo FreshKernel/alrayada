@@ -71,6 +71,10 @@ dependencies {
     implementation("com.auth0:jwks-rsa:0.22.1")
 
     implementation("io.github.smiley4:ktor-swagger-ui:2.7.4")
+    // Around 2MB
+    implementation(libs.scrimage.core)
+    // This library size is quite big (around 8MB) just keep that in mind
+    implementation(libs.scrimage.webp)
 }
 
 // For Heroku deployment
