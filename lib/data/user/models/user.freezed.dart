@@ -20,9 +20,9 @@ User _$UserFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$User {
+  String get id => throw _privateConstructorUsedError;
   String get email => throw _privateConstructorUsedError;
   UserInfo get info => throw _privateConstructorUsedError;
-  String get userId => throw _privateConstructorUsedError;
   String? get pictureUrl => throw _privateConstructorUsedError;
   bool get isAccountActivated => throw _privateConstructorUsedError;
   bool get isEmailVerified => throw _privateConstructorUsedError;
@@ -43,9 +43,9 @@ abstract class $UserCopyWith<$Res> {
       _$UserCopyWithImpl<$Res, User>;
   @useResult
   $Res call(
-      {String email,
+      {String id,
+      String email,
       UserInfo info,
-      String userId,
       String? pictureUrl,
       bool isAccountActivated,
       bool isEmailVerified,
@@ -71,9 +71,9 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? email = null,
     Object? info = null,
-    Object? userId = null,
     Object? pictureUrl = freezed,
     Object? isAccountActivated = null,
     Object? isEmailVerified = null,
@@ -83,6 +83,10 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
     Object? updatedAt = null,
   }) {
     return _then(_value.copyWith(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
       email: null == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
@@ -91,10 +95,6 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
           ? _value.info
           : info // ignore: cast_nullable_to_non_nullable
               as UserInfo,
-      userId: null == userId
-          ? _value.userId
-          : userId // ignore: cast_nullable_to_non_nullable
-              as String,
       pictureUrl: freezed == pictureUrl
           ? _value.pictureUrl
           : pictureUrl // ignore: cast_nullable_to_non_nullable
@@ -152,9 +152,9 @@ abstract class _$$UserImplCopyWith<$Res> implements $UserCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {String email,
+      {String id,
+      String email,
       UserInfo info,
-      String userId,
       String? pictureUrl,
       bool isAccountActivated,
       bool isEmailVerified,
@@ -179,9 +179,9 @@ class __$$UserImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? email = null,
     Object? info = null,
-    Object? userId = null,
     Object? pictureUrl = freezed,
     Object? isAccountActivated = null,
     Object? isEmailVerified = null,
@@ -191,6 +191,10 @@ class __$$UserImplCopyWithImpl<$Res>
     Object? updatedAt = null,
   }) {
     return _then(_$UserImpl(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
       email: null == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
@@ -199,10 +203,6 @@ class __$$UserImplCopyWithImpl<$Res>
           ? _value.info
           : info // ignore: cast_nullable_to_non_nullable
               as UserInfo,
-      userId: null == userId
-          ? _value.userId
-          : userId // ignore: cast_nullable_to_non_nullable
-              as String,
       pictureUrl: freezed == pictureUrl
           ? _value.pictureUrl
           : pictureUrl // ignore: cast_nullable_to_non_nullable
@@ -239,9 +239,9 @@ class __$$UserImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$UserImpl implements _User {
   const _$UserImpl(
-      {required this.email,
+      {required this.id,
+      required this.email,
       required this.info,
-      required this.userId,
       required this.pictureUrl,
       required this.isAccountActivated,
       required this.isEmailVerified,
@@ -254,11 +254,11 @@ class _$UserImpl implements _User {
       _$$UserImplFromJson(json);
 
   @override
+  final String id;
+  @override
   final String email;
   @override
   final UserInfo info;
-  @override
-  final String userId;
   @override
   final String? pictureUrl;
   @override
@@ -276,7 +276,7 @@ class _$UserImpl implements _User {
 
   @override
   String toString() {
-    return 'User(email: $email, info: $info, userId: $userId, pictureUrl: $pictureUrl, isAccountActivated: $isAccountActivated, isEmailVerified: $isEmailVerified, role: $role, deviceNotificationsToken: $deviceNotificationsToken, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'User(id: $id, email: $email, info: $info, pictureUrl: $pictureUrl, isAccountActivated: $isAccountActivated, isEmailVerified: $isEmailVerified, role: $role, deviceNotificationsToken: $deviceNotificationsToken, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -284,9 +284,9 @@ class _$UserImpl implements _User {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$UserImpl &&
+            (identical(other.id, id) || other.id == id) &&
             (identical(other.email, email) || other.email == email) &&
             (identical(other.info, info) || other.info == info) &&
-            (identical(other.userId, userId) || other.userId == userId) &&
             (identical(other.pictureUrl, pictureUrl) ||
                 other.pictureUrl == pictureUrl) &&
             (identical(other.isAccountActivated, isAccountActivated) ||
@@ -307,9 +307,9 @@ class _$UserImpl implements _User {
   @override
   int get hashCode => Object.hash(
       runtimeType,
+      id,
       email,
       info,
-      userId,
       pictureUrl,
       isAccountActivated,
       isEmailVerified,
@@ -334,9 +334,9 @@ class _$UserImpl implements _User {
 
 abstract class _User implements User {
   const factory _User(
-      {required final String email,
+      {required final String id,
+      required final String email,
       required final UserInfo info,
-      required final String userId,
       required final String? pictureUrl,
       required final bool isAccountActivated,
       required final bool isEmailVerified,
@@ -348,11 +348,11 @@ abstract class _User implements User {
   factory _User.fromJson(Map<String, dynamic> json) = _$UserImpl.fromJson;
 
   @override
+  String get id;
+  @override
   String get email;
   @override
   UserInfo get info;
-  @override
-  String get userId;
   @override
   String? get pictureUrl;
   @override
@@ -699,17 +699,15 @@ class __$$UserDeviceNotificationsTokenImplCopyWithImpl<$Res>
 class _$UserDeviceNotificationsTokenImpl
     implements _UserDeviceNotificationsToken {
   const _$UserDeviceNotificationsTokenImpl(
-      {this.firebase = '', this.oneSignal = ''});
+      {required this.firebase, required this.oneSignal});
 
   factory _$UserDeviceNotificationsTokenImpl.fromJson(
           Map<String, dynamic> json) =>
       _$$UserDeviceNotificationsTokenImplFromJson(json);
 
   @override
-  @JsonKey()
   final String firebase;
   @override
-  @JsonKey()
   final String oneSignal;
 
   @override
@@ -751,8 +749,8 @@ class _$UserDeviceNotificationsTokenImpl
 abstract class _UserDeviceNotificationsToken
     implements UserDeviceNotificationsToken {
   const factory _UserDeviceNotificationsToken(
-      {final String firebase,
-      final String oneSignal}) = _$UserDeviceNotificationsTokenImpl;
+      {required final String firebase,
+      required final String oneSignal}) = _$UserDeviceNotificationsTokenImpl;
 
   factory _UserDeviceNotificationsToken.fromJson(Map<String, dynamic> json) =
       _$UserDeviceNotificationsTokenImpl.fromJson;

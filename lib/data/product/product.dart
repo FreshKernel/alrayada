@@ -1,39 +1,53 @@
-import 'package:flutter/foundation.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:meta/meta.dart';
 
-part 'product.freezed.dart';
-part 'product.g.dart';
+@immutable
+class Product {
+  const Product({
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.originalPrice,
+    required this.discountPercentage,
+    required this.imageNames,
+    required this.categoryIds,
+    required this.createdAt,
+    required this.updatedAt,
+  });
 
-@freezed
-class Product with _$Product {
-  const factory Product({
-    required String id,
-    required String name,
-    required String description,
-    required double originalPrice,
-    required double discountPercentage,
-    required List<String> imageUrls,
-    required List<String> categories,
-    required bool isFavorite,
-    required DateTime createdAt,
-    required DateTime updatedAt,
-  }) = _Product;
+  factory Product.fromJson(Map<String, Object?> json) => Product(
+        id: json['id'] as String,
+        name: json['name'] as String,
+        description: json['description'] as String,
+        originalPrice: json['originalPrice'] as double,
+        discountPercentage: json['discountPercentage'] as double,
+        imageNames: List<String>.from(json['imageNames'] as List<String>),
+        categoryIds: Set<String>.from(json['categoryIds'] as Set<String>),
+        createdAt: DateTime.parse(json['createdAt'] as String),
+        updatedAt: DateTime.parse(json['updatedAt'] as String),
+      );
 
-  factory Product.fromJson(Map<String, Object> json) => _$ProductFromJson(json);
-}
+  Map<String, Object?> toJson() => {
+        'id': id,
+        'name': name,
+        'description': description,
+        'originalPrice': originalPrice,
+        'discountPercentage': discountPercentage,
+        'imageNames': imageNames,
+        'categoryIds': categoryIds.toList(),
+        'createdAt': createdAt.toIso8601String(),
+        'updatedAt': updatedAt.toIso8601String(),
+      };
 
-extension ProductExt on Product {
+  final String id;
+  final String name;
+  final String description;
+  final double originalPrice;
+  final double discountPercentage;
+  final List<String> imageNames;
+  final Set<String> categoryIds;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+
   double get salePrice =>
       originalPrice - (originalPrice * (discountPercentage / 100));
-}
-
-@freezed
-class ProductFavorite with _$ProductFavorite {
-  const factory ProductFavorite({
-    required String productId,
-    required DateTime createdAt,
-  }) = _ProductFavorite;
-
-  factory ProductFavorite.fromJson(Map<String, Object> json) =>
-      _$ProductFavoriteFromJson(json);
 }

@@ -10,7 +10,7 @@ import '../../data/user/user_exceptions.dart';
 import '../../l10n/app_localizations.dart';
 import '../../logic/settings/settings_cubit.dart';
 import '../../logic/user/user_cubit.dart';
-import '../../utils/env.dart';
+import '../../utils/environment_variables.dart';
 import '../../utils/extensions/scaffold_messenger_ext.dart';
 import '../../utils/text_input_handler.dart';
 import '../../widgets/auth/email_text_field.dart';

@@ -15,8 +15,7 @@ import '../../../gen/assets.gen.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../logic/user/user_cubit.dart';
 import '../../../utils/extensions/scaffold_messenger_ext.dart';
-import '../../../utils/server.dart';
-import '../../admin/admin_dashboard_screen.dart';
+import '../../admin_dashboard/admin_dashboard_screen.dart';
 import '../../auth/auth_screen.dart';
 import '../../profile/profile_screen.dart';
 import '../../settings/settings_screen.dart';
@@ -117,10 +116,9 @@ class _AccountTabState extends State<AccountTab> {
                                 backgroundColor: Colors.white,
                                 radius: 47,
                                 backgroundImage: CachedNetworkImageProvider(
-                                  ServerConfigurations.getImageUrl(userCredential
-                                          .user.pictureUrl ??
+                                  userCredential.user.pictureUrl ??
                                       (throw StateError(
-                                          'The iamge url should not be null'))),
+                                          'The iamge url should not be null')),
                                 ),
                               ),
                         if (userCredential.user.isAccountActivated)

@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../l10n/app_localizations.dart';
-import '../../data/live_chat/live_chat_repository.dart';
+import '../../data/live_chat/live_chat_api.dart';
 import '../../logic/user/user_cubit.dart';
 import '../../utils/extensions/scaffold_messenger_ext.dart';
 import '../live_chat/live_chat_screen.dart';

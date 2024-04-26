@@ -127,7 +127,8 @@ class AuthVerifyEmailScreen extends StatelessWidget {
                       }
                     },
                     builder: (context, state) {
-                      if (state is UserFetchUserInProgress) {
+                      if (state is UserFetchUserInProgress ||
+                          state is UserResendEmailVerificationInProgress) {
                         return const CircularProgressIndicator.adaptive();
                       }
                       return Column(

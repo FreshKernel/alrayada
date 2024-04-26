@@ -3,7 +3,7 @@ import 'dart:async' show StreamSubscription;
 import 'package:bloc/bloc.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:equatable/equatable.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:meta/meta.dart';
 
 part 'connectivity_state.dart';
 

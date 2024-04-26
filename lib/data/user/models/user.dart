@@ -8,9 +8,9 @@ part 'user.freezed.dart';
 @freezed
 class User with _$User {
   const factory User({
+    required String id,
     required String email,
     required UserInfo info,
-    required String userId,
     required String? pictureUrl,
     required bool isAccountActivated,
     required bool isEmailVerified,
@@ -150,8 +150,8 @@ enum IraqGovernorate {
 @freezed
 class UserDeviceNotificationsToken with _$UserDeviceNotificationsToken {
   const factory UserDeviceNotificationsToken({
-    @Default('') String firebase,
-    @Default('') String oneSignal,
+    required String firebase,
+    required String oneSignal,
   }) = _UserDeviceNotificationsToken;
 
   factory UserDeviceNotificationsToken.fromJson(Map<String, Object?> json) =>

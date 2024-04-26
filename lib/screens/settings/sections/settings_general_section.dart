@@ -61,11 +61,9 @@ class SettingsGeneralSection extends StatelessWidget {
               // widget rebuilt, then we need to it ourseleves
               return BlocSelector<SettingsCubit, SettingsState, AppThemeMode>(
                 selector: (state) => state.themeMode,
-                builder: (context, state) {
-                  return SelectThemeModeDialog(
-                    themeMode: state,
-                  );
-                },
+                builder: (context, state) => SelectThemeModeDialog(
+                  themeMode: state,
+                ),
               );
             },
           ),

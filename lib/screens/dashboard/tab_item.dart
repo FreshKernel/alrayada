@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart'
-    show NavigationDestination, NavigationRailDestination;
+    show NavigationDestination, NavigationRailDestination, FloatingActionButton;
 import 'package:flutter/widgets.dart'
     show
         BottomNavigationBarItem,
@@ -28,6 +28,8 @@ class TabItem {
   final Widget icon;
   final String? tooltip;
   final TabItemActionsBuilder? actionsBuilder;
+
+  /// It's usually the [FloatingActionButton]
   final TabItemActionButtonBuilder? actionButtonBuilder;
 
   BottomNavigationBarItem toBottomNavigationBarItem() =>
@@ -41,7 +43,7 @@ class TabItem {
         icon: icon,
         label: label,
         tooltip: tooltip,
-        key: ValueKey(tooltip),
+        key: ValueKey(id),
       );
 
   NavigationRailDestination toNavigationRailDestination() =>
@@ -59,4 +61,4 @@ typedef TabItemActionButtonBuilder = Widget Function(
   BuildContext context,
 );
 
-typedef TabItemOnNavigateToTabCallback = Function(String newTabId);
+typedef TabItemOnNavigateToTabCallback = void Function(String newTabId);

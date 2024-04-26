@@ -34,3 +34,6 @@ An ecommerce application developed by Fresh Platform for Alrayada company.
 1. I might add a way to choose whatever to enter already existing user auth form inputs data on debug mode only for development mode
 2. Make that when the user open the notification it will navigate to the correct screen, for example when the user account is activated, then trigger the code to update the state
 3. I might add profile picture upload so users with email and password can benefit from it
+4. I might create a image widget that share common code such as error handling and loading indiactor. Update: Already done but it needs futher update
+5. I might create a skeleton widget that share common code for pagination to avoid duplication (for categories example)
+6. For now, the categories ui in both admin and user dashboard is separated, but I might merge them in one code

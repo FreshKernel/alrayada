@@ -7,10 +7,12 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
 import kotlinx.datetime.Clock
-import net.freshplatform.data.product.category.*
+import net.freshplatform.data.product.category.CreateProductCategoryRequest
+import net.freshplatform.data.product.category.ProductCategoryDataSource
+import net.freshplatform.data.product.category.ProductCategoryDb
+import net.freshplatform.data.product.category.UpdateProductCategoryRequest
 import net.freshplatform.services.image_storage.ImageStorageServiceFactory
 import net.freshplatform.utils.ErrorResponseException
-import net.freshplatform.utils.extensions.baseUrl
 import net.freshplatform.utils.extensions.requireCurrentAdminUser
 import net.freshplatform.utils.receiveBodyWithImage
 import net.freshplatform.utils.receiveBodyWithNullableImage
@@ -21,12 +23,12 @@ fun Route.productCategoriesRoutes() {
         authenticate {
             // For admin only routes
             createCategory()
-            updateCategory()
-            deleteCategory()
+            updateCategoryById()
+            deleteCategoryById()
         }
         getTopLevelCategories()
-        getChildCategories()
-        getCategory()
+        getChildCategoriesByParentId()
+        getCategoryById()
     }
 }
 
@@ -46,17 +48,20 @@ private fun Route.createCategory() {
 
         // If the new category to create has a parent then it should exist
         if (requestBody.parentId != null) {
-            productCategoryDataSource.getCategoryById(requestBody.parentId).getOrElse {
+            val isParentCategoryExist = productCategoryDataSource.isCategoryExist(requestBody.parentId).getOrElse {
                 throw ErrorResponseException(
                     HttpStatusCode.InternalServerError,
                     "Unknown error while getting category by id when validating the parent of this category",
                     "COULD_NOT_GET_CATEGORY"
                 )
-            } ?: throw ErrorResponseException(
-                HttpStatusCode.Conflict,
-                "The parent category for this category to create doesn't exist",
-                "PARENT_CATEGORY_NOT_FOUND"
-            )
+            }
+            if (!isParentCategoryExist) {
+                throw ErrorResponseException(
+                    HttpStatusCode.NotFound,
+                    "The parent category for this category to create doesn't exist",
+                    "PARENT_CATEGORY_NOT_FOUND"
+                )
+            }
         }
 
         val imageName = imageStorageService.saveImage(
@@ -70,7 +75,7 @@ private fun Route.createCategory() {
             )
         }
 
-        val category = DbProductCategory(
+        val category = ProductCategoryDb(
             name = requestBody.name,
             parentId = requestBody.parentId,
             description = requestBody.description,
@@ -92,13 +97,12 @@ private fun Route.createCategory() {
         call.respond(
             category.toResponse(
                 call = call,
-                children = emptyList(),
             )
         )
     }
 }
 
-private fun Route.updateCategory() {
+private fun Route.updateCategoryById() {
     val productCategoryDataSource by inject<ProductCategoryDataSource>()
     val imageStorageService = ProductCategoryUtils.getImageStorageService(inject<ImageStorageServiceFactory>().value)
 
@@ -164,22 +168,23 @@ private fun Route.updateCategory() {
             )
         }
 
+        // TODO: I might change this
         val newCategory = currentCategory.copy(
             name = requestBody.name,
             description = requestBody.description,
             imageNames = newImageNames,
+            updatedAt = Clock.System.now(),
         )
 
         val response = newCategory.toResponse(
             call = call,
-            children = null
         )
 
         call.respond(response)
     }
 }
 
-private fun Route.deleteCategory() {
+private fun Route.deleteCategoryById() {
     val productCategoryDataSource by inject<ProductCategoryDataSource>()
     val imageStorageService = ProductCategoryUtils.getImageStorageService(inject<ImageStorageServiceFactory>().value)
 
@@ -196,47 +201,57 @@ private fun Route.deleteCategory() {
         } ?: throw ErrorResponseException(
             HttpStatusCode.NotFound,
             "There is no category with this id: $id",
-            "NOT_FOUND"
+            "CATEGORY_NOT_FOUND"
         )
 
-        // First we need to delete everything that is related to that category then we will remove it
-        // We can start by deleting the sub-categories of that category
+        // First we need to delete everything that is related
+        // to that category then we will remove the category
 
-        // TODO: The delete everything related to the category is not finished yet
-        val childrenOfSubCategory = ProductCategoryUtils.getChildrenRecursively(
+        // 1. Delete the child-categories of that category
+
+        productCategoryDataSource.getChildCategoryImages(
             parentId = category.id.toString(),
-            call = call
         ).getOrElse {
             throw ErrorResponseException(
                 HttpStatusCode.InternalServerError,
-                "Unknown error while getting the children of this category: $id",
-                "COULD_NOT_GET_CATEGORY_CHILDREN"
+                "Unknown error while getting the images of sub-categories of this category ${id}: ${it.message}",
+                "COULD_NOT_GET_SUB_CATEGORIES_IMAGES"
             )
-        }
-
-        val baseUrl = call.request.baseUrl()
-        suspend fun deleteSubCategoriesImages(categories: List<ProductCategoryResponse>) {
-            categories.forEach { subCategory ->
-                subCategory.children?.let {
-                    deleteSubCategoriesImages(it)
-                }
-                subCategory.imageUrls.forEach {
-
+        }.forEach { images ->
+            images.forEach { image ->
+                imageStorageService.deleteImage(image).getOrElse { exception ->
+                    throw ErrorResponseException(
+                        HttpStatusCode.InternalServerError,
+                        "Unknown error while deleting an image of a sub category: ${exception.message}",
+                        "COULD_NOT_DELETE_SUB_CATEGORY_IMAGE"
+                    )
                 }
             }
         }
-        deleteSubCategoriesImages(childrenOfSubCategory)
 
-        // After that, delete all the products of that category && sub-category
+        val isDeleteSubCategoriesSuccess = productCategoryDataSource.deleteChildCategories(
+            parentId = category.id.toString()
+        )
 
-        // Finally removing the category with its images
+        if (!isDeleteSubCategoriesSuccess) {
+            throw ErrorResponseException(
+                HttpStatusCode.InternalServerError,
+                "Unknown error while deleting categories with parent id: ${category.id}",
+                "COULD_NOT_DELETE_SUB_CATEGORIES"
+            )
+        }
+
+        // 2. Delete the products of the category && sub-categories
+
+        // TODO: Do it when you complete the products feature
+
+        // 3. Remove the category itself
 
         category.imageNames.forEach {
-            // TODO: Test file deletion
-            imageStorageService.deleteImage(it).getOrElse { _ ->
+            imageStorageService.deleteImage(it).getOrElse { exception ->
                 throw ErrorResponseException(
                     HttpStatusCode.InternalServerError,
-                    "Unknown error while deleting the image `$it` for this category.",
+                    "Unknown error while deleting the image `$it` for this category: ${exception.message}",
                     "COULD_NOT_DELETE_CATEGORY_IMAGES"
                 )
             }
@@ -273,14 +288,13 @@ private fun Route.getTopLevelCategories() {
         }.map {
             it.toResponse(
                 call = call,
-                children = null
             )
         }
         call.respond(categories)
     }
 }
 
-private fun Route.getChildCategories() {
+private fun Route.getChildCategoriesByParentId() {
     val productCategoryDataSource by inject<ProductCategoryDataSource>()
 
     get("/{id}/children") {
@@ -288,7 +302,7 @@ private fun Route.getChildCategories() {
         val page: Int by call.request.queryParameters
         val limit: Int by call.request.queryParameters
 
-        val categories = productCategoryDataSource.getChildCategories(id, page, limit).getOrElse {
+        val categories = productCategoryDataSource.getChildCategoriesByParentId(id, page, limit).getOrElse {
             throw ErrorResponseException(
                 HttpStatusCode.InternalServerError,
                 "Unknown error while loading the categories",
@@ -297,14 +311,13 @@ private fun Route.getChildCategories() {
         }.map {
             it.toResponse(
                 call = call,
-                children = null
             )
         }
         call.respond(categories)
     }
 }
 
-private fun Route.getCategory() {
+private fun Route.getCategoryById() {
     val productCategoryDataSource by inject<ProductCategoryDataSource>()
 
     get("/{id}") {
@@ -312,17 +325,16 @@ private fun Route.getCategory() {
         val category = productCategoryDataSource.getCategoryById(id).getOrElse {
             throw ErrorResponseException(
                 HttpStatusCode.InternalServerError,
-                "Unknown error while getting the category with id: $id",
+                "Unknown error while getting the category with id $id: ${it.message}",
                 "COULD_NOT_GET_CATEGORY"
             )
         } ?: throw ErrorResponseException(
             HttpStatusCode.NotFound,
             "There is no category with this id: $id",
-            "NOT_FOUND"
+            "CATEGORY_NOT_FOUND"
         )
         val response = category.toResponse(
             call = call,
-            children = null
         )
 
         call.respond(response)

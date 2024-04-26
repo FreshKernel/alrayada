@@ -7,9 +7,9 @@ part of 'user.dart';
 // **************************************************************************
 
 _$UserImpl _$$UserImplFromJson(Map<String, dynamic> json) => _$UserImpl(
+      id: json['id'] as String,
       email: json['email'] as String,
       info: UserInfo.fromJson(json['info'] as Map<String, dynamic>),
-      userId: json['userId'] as String,
       pictureUrl: json['pictureUrl'] as String?,
       isAccountActivated: json['isAccountActivated'] as bool,
       isEmailVerified: json['isEmailVerified'] as bool,
@@ -22,9 +22,9 @@ _$UserImpl _$$UserImplFromJson(Map<String, dynamic> json) => _$UserImpl(
 
 Map<String, dynamic> _$$UserImplToJson(_$UserImpl instance) =>
     <String, dynamic>{
+      'id': instance.id,
       'email': instance.email,
       'info': instance.info,
-      'userId': instance.userId,
       'pictureUrl': instance.pictureUrl,
       'isAccountActivated': instance.isAccountActivated,
       'isEmailVerified': instance.isEmailVerified,
@@ -80,8 +80,8 @@ const _$IraqGovernorateEnumMap = {
 _$UserDeviceNotificationsTokenImpl _$$UserDeviceNotificationsTokenImplFromJson(
         Map<String, dynamic> json) =>
     _$UserDeviceNotificationsTokenImpl(
-      firebase: json['firebase'] as String? ?? '',
-      oneSignal: json['oneSignal'] as String? ?? '',
+      firebase: json['firebase'] as String,
+      oneSignal: json['oneSignal'] as String,
     );
 
 Map<String, dynamic> _$$UserDeviceNotificationsTokenImplToJson(

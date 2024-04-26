@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../data/live_chat/live_chat_repository.dart';
+import '../../data/live_chat/live_chat_api.dart';
 import '../../l10n/app_localizations.dart';
 import '../../logic/connectivity/connectivity_cubit.dart';
 import '../../logic/live_chat/live_chat_cubit.dart';

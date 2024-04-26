@@ -1,9 +1,10 @@
+import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
 import 'user_social_login.dart';
 
 @immutable
-sealed class UserException implements Exception {
+sealed class UserException extends Equatable implements Exception {
   const UserException({
     required this.message,
   });
@@ -11,6 +12,9 @@ sealed class UserException implements Exception {
 
   @override
   String toString() => message;
+
+  @override
+  List<Object?> get props => [message];
 }
 
 // Sign In
@@ -40,6 +44,9 @@ class EmailVerificationLinkAlreadySentUserException extends UserException {
   });
 
   final int minutesToExpire;
+
+  @override
+  List<Object?> get props => [minutesToExpire, ...super.props];
 }
 
 class ResetPasswordLinkAlreadySentUserException extends UserException {
@@ -49,6 +56,9 @@ class ResetPasswordLinkAlreadySentUserException extends UserException {
   });
 
   final int minutesToExpire;
+
+  @override
+  List<Object?> get props => [minutesToExpire, ...super.props];
 }
 
 class EmailAlreadyVerifiedUserException extends UserException {
@@ -100,4 +110,7 @@ class SocialMissingSignUpDataUserException extends UserException {
   /// When handle this exception, will request the sign up data then use this
   /// and send the request to the server once again.
   final SocialLogin socialLogin;
+
+  @override
+  List<Object?> get props => [socialLogin, ...super.props];
 }

@@ -11,6 +11,7 @@ import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.resources.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import kotlinx.coroutines.delay
 import kotlinx.serialization.SerializationException
 import net.freshplatform.routes.live_chat.liveChatRoutes
 import net.freshplatform.routes.products.productsRoutes
@@ -19,6 +20,7 @@ import net.freshplatform.utils.ErrorResponse
 import net.freshplatform.utils.ErrorResponseException
 import net.freshplatform.utils.FilePaths
 import net.freshplatform.utils.getEnvironmentVariables
+import kotlin.time.Duration.Companion.milliseconds
 
 fun Application.configureRouting() {
 
@@ -98,6 +100,12 @@ fun Application.configureRouting() {
                 swaggerUrl = "swagger-ui"
                 forwardRoot = true
             }
+        }
+    }
+
+    if (!getEnvironmentVariables().isProductionServer && !getEnvironmentVariables().isProductionMode) {
+        intercept(ApplicationCallPipeline.Call) {
+            delay(300.milliseconds)
         }
     }
 

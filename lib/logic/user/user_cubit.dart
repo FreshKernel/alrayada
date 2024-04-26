@@ -7,18 +7,18 @@ import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../../data/user/models/auth_credential.dart';
 import '../../data/user/models/user.dart';
+import '../../data/user/user_api.dart';
 import '../../data/user/user_exceptions.dart';
-import '../../data/user/user_repository.dart';
 import '../../data/user/user_social_login.dart';
 import '../../utils/app_logger.dart';
 
 part 'user_state.dart';
 
 class UserCubit extends Cubit<UserState> {
-  UserCubit({required this.userRepository}) : super(const UserInitial()) {
+  UserCubit({required this.userApi}) : super(const UserInitial()) {
     fetchSavedUser();
   }
-  final UserRepository userRepository;
+  final UserApi userApi;
 
   Future<void> signInWithEmailAndPassword({
     required String email,
@@ -26,7 +26,7 @@ class UserCubit extends Cubit<UserState> {
   }) async {
     try {
       emit(const UserLoginInProgress());
-      final userCredential = await userRepository.signInWithEmailAndPassword(
+      final userCredential = await userApi.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -43,7 +43,7 @@ class UserCubit extends Cubit<UserState> {
   }) async {
     try {
       emit(const UserLoginInProgress());
-      final userCredential = await userRepository.signUpWithEmailAndPassword(
+      final userCredential = await userApi.signUpWithEmailAndPassword(
         email: email,
         password: password,
         userInfo: userInfo,
@@ -184,7 +184,7 @@ class UserCubit extends Cubit<UserState> {
       // Make sure we are in the in progress state
       // will be useful when we request the user to enter the data and re-try again
       emit(const UserSocialLoginInProgress());
-      final userCredential = await userRepository.authenticateWithSocialLogin(
+      final userCredential = await userApi.authenticateWithSocialLogin(
         socialLogin,
         userInfo: userInfo,
       );
@@ -196,7 +196,7 @@ class UserCubit extends Cubit<UserState> {
 
   Future<void> fetchSavedUser() async {
     try {
-      final userCredential = await userRepository.fetchSavedUserCredential();
+      final userCredential = await userApi.fetchSavedUserCredential();
       if (userCredential == null) {
         emit(const UserLoggedOut());
         return;
@@ -213,7 +213,7 @@ class UserCubit extends Cubit<UserState> {
   }
 
   Future<void> fetchUser() async {
-    final savedUserCredential = await userRepository.fetchSavedUserCredential();
+    final savedUserCredential = await userApi.fetchSavedUserCredential();
     if (savedUserCredential == null) {
       throw StateError(
         'The user needs to be logged in in order to fetch the user',
@@ -221,7 +221,7 @@ class UserCubit extends Cubit<UserState> {
     }
     try {
       emit(UserFetchUserInProgress(userCredential: savedUserCredential));
-      final user = await userRepository.fetchUser();
+      final user = await userApi.fetchUser();
       if (user == null) {
         // For the current impl of auth repository, we don't need to logout (clear the tokens etc..)
         // we only need to update the state but we will do it just in case
@@ -238,7 +238,7 @@ class UserCubit extends Cubit<UserState> {
 
   Future<void> logout() async {
     try {
-      await userRepository.logout();
+      await userApi.logout();
       emit(const UserLoggedOut());
     } catch (e) {
       // TODO: Handle this error
@@ -254,7 +254,7 @@ class UserCubit extends Cubit<UserState> {
   ) async {
     try {
       emit(UserUpdateUserInProgress(userCredential: state.userCredential));
-      await userRepository.updateUserInfo(userInfo);
+      await userApi.updateUserInfo(userInfo);
       emit(
         UserUpdateUserSuccess(
           userCredential: state.userCredentialOrThrow.copyWith(
@@ -273,7 +273,7 @@ class UserCubit extends Cubit<UserState> {
   Future<void> sendResetPasswordLink({required String email}) async {
     try {
       emit(const UserForgotPasswordInProgress());
-      await userRepository.sendResetPasswordLink(email: email);
+      await userApi.sendResetPasswordLink(email: email);
       emit(const UserForgotPasswordSuccess());
     } on UserException catch (e) {
       emit(UserForgotPasswordFailure(e));
@@ -285,7 +285,7 @@ class UserCubit extends Cubit<UserState> {
       emit(UserResendEmailVerificationInProgress(
         userCredential: state.userCredential,
       ));
-      await userRepository.sendEmailVerificationLink();
+      await userApi.sendEmailVerificationLink();
       emit(
         UserResendEmailVerificationSuccess(
             userCredential: state.userCredential),
@@ -301,7 +301,7 @@ class UserCubit extends Cubit<UserState> {
   Future<void> deleteAccount() async {
     try {
       emit(UserDeleteInProgress(userCredential: state.userCredential));
-      await userRepository.deleteAccount();
+      await userApi.deleteAccount();
       // No need to logout as it do that internally by clearing the local data
       emit(const UserDeleteSuccess());
     } on UserException catch (e) {

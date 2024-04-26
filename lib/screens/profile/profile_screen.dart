@@ -61,7 +61,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               builder: (context, state) {
                 // This should be nullable since once user logout
                 // it will take very short time before go back to the previous screen
-                // and the user will be nullable in that case
+                // and the user will be null in that moment
                 final user = state.userCredential?.user;
                 return ListView(
                   padding: const EdgeInsets.all(8),

@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../logic/settings/settings_cubit.dart';
 import '../logic/settings/settings_data.dart';
-import '../screens/admin/admin_dashboard_screen.dart';
+import '../screens/admin_dashboard/admin_dashboard_screen.dart';
 import '../screens/dashboard/dashboard_screen.dart';
 import '../screens/dashboard/tab_item.dart';
 
@@ -13,7 +13,7 @@ import '../screens/dashboard/tab_item.dart';
 /// it will use [NavigationRail] on bigger screens
 /// and [NavigationBar] in smaller screens
 ///
-/// It doesn't define the tabs or the navigation bar items (I call those tabs)
+/// It doesn't define the tabs or the navigation bar items (or the tabs)
 class ResponsiveNavbar extends StatelessWidget {
   const ResponsiveNavbar({
     required this.tabs,

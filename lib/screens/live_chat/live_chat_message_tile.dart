@@ -17,7 +17,7 @@ class LiveChatMessageTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = context.read<UserCubit>().state.userCredential?.user ??
         (throw StateError('You need to be authenticated in order to chat'));
-    final isMe = message.isMe(user.userId);
+    final isMe = message.isMe(user.id);
     final messageAlignment = isMe ? Alignment.topRight : Alignment.topLeft;
     if (context.read<SettingsCubit>().state.useClassicMsgBubble) {
       return Align(

@@ -21,20 +21,22 @@ class NoDataFound extends StatelessWidget {
   Widget build(BuildContext context) {
     final randomAsset = _assets[Random().nextInt(_assets.length)];
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Lottie.asset(randomAsset),
-          const SizedBox(height: 32),
-          SizedBox(
-            width: 200,
-            child: PlatformElevatedButton(
-              onPressed: onRefresh,
-              child: Text(context.loc.refresh),
-            ),
-          )
-        ],
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Lottie.asset(randomAsset),
+            const SizedBox(height: 32),
+            SizedBox(
+              width: 200,
+              child: PlatformElevatedButton(
+                onPressed: onRefresh,
+                child: Text(context.loc.refresh),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

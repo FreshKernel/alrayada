@@ -1,6 +1,7 @@
 package net.freshplatform.data.product.category
 
 import com.mongodb.client.model.Filters
+import com.mongodb.client.model.Projections
 import com.mongodb.client.model.Sorts
 import com.mongodb.client.model.Updates
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
@@ -8,15 +9,16 @@ import kotlinx.coroutines.flow.singleOrNull
 import kotlinx.coroutines.flow.toList
 import kotlinx.datetime.Clock
 import org.bson.BsonDateTime
+import org.bson.Document
 import org.bson.conversions.Bson
 import org.bson.types.ObjectId
 
 class MongoProductCategoryDataSource(
     database: MongoDatabase
 ) : ProductCategoryDataSource {
-    private val categories = database.getCollection<DbProductCategory>("productCategories")
+    private val categories = database.getCollection<ProductCategoryDb>("productCategories")
 
-    override suspend fun insertCategory(category: DbProductCategory): Boolean {
+    override suspend fun insertCategory(category: ProductCategoryDb): Boolean {
         return try {
             categories.insertOne(
                 category
@@ -46,9 +48,9 @@ class MongoProductCategoryDataSource(
             categories.updateOne(
                 categoryIdFilter(id),
                 Updates.combine(
-                    Updates.set(DbProductCategory::name.name, name),
-                    Updates.set(DbProductCategory::description.name, description),
-                    Updates.set(DbProductCategory::imageNames.name, imageNames),
+                    Updates.set(ProductCategoryDb::name.name, name),
+                    Updates.set(ProductCategoryDb::description.name, description),
+                    Updates.set(ProductCategoryDb::imageNames.name, imageNames),
                     setUpdatedAt()
                 )
             ).wasAcknowledged()
@@ -58,7 +60,42 @@ class MongoProductCategoryDataSource(
         }
     }
 
-    override suspend fun getCategoryById(id: String): Result<DbProductCategory?> {
+    override suspend fun deleteChildCategories(parentId: String): Boolean {
+        return try {
+            categories
+                .deleteMany(Filters.eq(ProductCategoryDb::parentId.name, parentId))
+                .wasAcknowledged()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+
+    override suspend fun isCategoryExist(categoryId: String): Result<Boolean> {
+        return try {
+            Result.success(
+                categories.countDocuments(Filters.eq("_id", ObjectId(categoryId)))
+                        > 0
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun isCategoryHasChildren(parentId: String): Result<Boolean> {
+        return try {
+            val value = categories.countDocuments(
+                Filters.eq(ProductCategoryDb::parentId.name, parentId)
+            ) > 0
+            Result.success(value)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun getCategoryById(id: String): Result<ProductCategoryDb?> {
         return try {
             Result.success(
                 categories.find(categoryIdFilter(id)).singleOrNull()
@@ -69,12 +106,12 @@ class MongoProductCategoryDataSource(
         }
     }
 
-    override suspend fun getTopLevelCategories(page: Int, limit: Int): Result<List<DbProductCategory>> {
+    override suspend fun getTopLevelCategories(page: Int, limit: Int): Result<List<ProductCategoryDb>> {
         return try {
             val skip = (page - 1) * limit
             Result.success(
-                categories.find(Filters.eq(DbProductCategory::parentId.name, null))
-                    .sort(Sorts.descending(DbProductCategory::updatedAt.name))
+                categories.find(Filters.eq(ProductCategoryDb::parentId.name, null))
+                    .sort(Sorts.descending(ProductCategoryDb::updatedAt.name))
                     .skip(skip)
                     .limit(limit)
                     .toList()
@@ -85,16 +122,29 @@ class MongoProductCategoryDataSource(
         }
     }
 
-    override suspend fun getChildCategories(parentId: String, page: Int, limit: Int): Result<List<DbProductCategory>> {
+    override suspend fun getChildCategoriesByParentId(parentId: String, page: Int, limit: Int): Result<List<ProductCategoryDb>> {
         return try {
             val skip = (page - 1) * limit
             Result.success(
-                categories.find(Filters.eq(DbProductCategory::parentId.name, parentId))
-                    .sort(Sorts.descending(DbProductCategory::updatedAt.name))
+                categories.find(Filters.eq(ProductCategoryDb::parentId.name, parentId))
+                    .sort(Sorts.descending(ProductCategoryDb::updatedAt.name))
                     .skip(skip)
                     .limit(limit)
                     .toList()
             )
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun getChildCategoryImages(parentId: String): Result<List<List<String>>> {
+        return try {
+            val images = categories.find<Document>(Filters.eq(ProductCategoryDb::parentId.name, parentId))
+                .projection(Projections.include(ProductCategoryDb::imageNames.name, parentId))
+                .toList()
+                .map { it.getList(ProductCategoryDb::imageNames.name, String::class.java) }
+            Result.success(images)
         } catch (e: Exception) {
             e.printStackTrace()
             Result.failure(e)
@@ -106,6 +156,6 @@ class MongoProductCategoryDataSource(
     }
 
     private fun setUpdatedAt(): Bson {
-        return Updates.set(DbProductCategory::updatedAt.name, BsonDateTime(Clock.System.now().toEpochMilliseconds()))
+        return Updates.set(ProductCategoryDb::updatedAt.name, BsonDateTime(Clock.System.now().toEpochMilliseconds()))
     }
 }

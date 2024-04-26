@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../widgets/image_slider_with_page_indicator.dart';
+import '../../../../widgets/image_slider/image_slider_with_page_indicator.dart';
+import '../../../../widgets/image_slider/simple_image_slider_tile.dart';
 import 'chart_list.dart';
 
 class HomeTab extends StatefulWidget {
@@ -26,10 +27,10 @@ class _HomeTabState extends State<HomeTab> {
     return SingleChildScrollView(
       child: Column(
         children: [
-          ImageSliderWithPageIndicator(
+          ImageSliderWithPageIndicator.simple(
             items: imageList
                 .map(
-                  (e) => ImageSliderItem(
+                  (e) => SimpleImageSliderItem(
                     title: 'No. ${imageList.indexOf(e)} Image',
                     imageUrl: e,
                   ),

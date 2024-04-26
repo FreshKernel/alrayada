@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../data/live_chat/live_chat_repository.dart';
+import '../../data/live_chat/live_chat_api.dart';
 import '../../l10n/app_localizations.dart';
 import '../../logic/settings/settings_cubit.dart';
 import '../../logic/user/user_cubit.dart';
@@ -16,7 +16,7 @@ import 'dashboard_drawer.dart';
 import 'tab_item.dart';
 import 'tabs/account_tab.dart';
 import 'tabs/cart_tab.dart';
-import 'tabs/categories_tab.dart';
+import 'tabs/categories/categories_tab.dart';
 import 'tabs/home/home_tab.dart';
 import 'tabs/orders/orders_tab.dart';
 

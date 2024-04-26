@@ -4,10 +4,9 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../../data/live_chat/live_chat_api.dart';
 import '../../data/live_chat/live_chat_exceptions.dart';
-import '../../data/live_chat/live_chat_repository.dart';
 import '../../data/live_chat/models/chat_message.dart';
-import '../user/user_cubit.dart';
 import './admin/admin_live_chat_cubit.dart';
 
 part 'live_chat_state.dart';
@@ -16,12 +15,10 @@ part 'live_chat_state.dart';
 /// Also see [AdminLiveChatCubit]
 class LiveChatCubit extends Cubit<LiveChatState> {
   LiveChatCubit({
-    required this.liveChatRepository,
-    required this.userCubit,
+    required this.liveChatApi,
   }) : super(const LiveChatInitial());
 
-  final LiveChatRepository liveChatRepository;
-  final UserCubit userCubit;
+  final LiveChatApi liveChatApi;
   late StreamSubscription<ChatMessage> _connectionSubscription;
 
   static const int _limit = 15;
@@ -29,17 +26,16 @@ class LiveChatCubit extends Cubit<LiveChatState> {
   Future<void> connect(LiveChatConnectionType connectionType) async {
     try {
       emit(const LiveChatConnectInProgress());
-      final currentMessages = await liveChatRepository.getMessages(
+      final currentMessages = await liveChatApi.getMessages(
         connectionType: connectionType,
         page: 1,
         limit: _limit,
       );
-      await liveChatRepository.connect(
+      await liveChatApi.connect(
         connectionType: connectionType,
-        accessToken: userCubit.state.userCredentialOrThrow.accessToken,
       );
       _connectionSubscription =
-          liveChatRepository.incomingMessages().listen((message) {
+          liveChatApi.incomingMessages().listen((message) {
         emit(LiveChatNewMessageReceived(
           messagesState: LiveChatMessagesState(
             messages: [...state.messagesState.messages, message],
@@ -59,7 +55,7 @@ class LiveChatCubit extends Cubit<LiveChatState> {
   Future<void> disconnect() async {
     try {
       emit(const LiveChatDisconnectInProgress());
-      await liveChatRepository.disconnect();
+      await liveChatApi.disconnect();
       _connectionSubscription.cancel();
       emit(const LiveChatDisconnectSuccess());
     } on LiveChatException catch (e) {
@@ -74,7 +70,7 @@ class LiveChatCubit extends Cubit<LiveChatState> {
           messagesState: state.messagesState,
         ),
       );
-      await liveChatRepository.sendMessage(text: text);
+      await liveChatApi.sendMessage(text: text);
       emit(LiveChatSendMessageSuccess(
         messagesState: state.messagesState,
       ));
@@ -97,7 +93,7 @@ class LiveChatCubit extends Cubit<LiveChatState> {
           page: state.messagesState.page + 1,
         ),
       ));
-      final moreMessages = await liveChatRepository.getMessages(
+      final moreMessages = await liveChatApi.getMessages(
         connectionType: connectionType,
         page: state.messagesState.page,
         limit: _limit,

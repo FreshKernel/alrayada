@@ -7,6 +7,8 @@ import '../../l10n/app_localizations.dart';
 import '../../logic/user/user_cubit.dart';
 import './profile_screen.dart';
 
+// TODO: Should I use OkCancelDialog?
+
 /// To be used in [ProfileScreen]
 class DeleteAccountDialog extends StatefulWidget {
   const DeleteAccountDialog({super.key});
@@ -48,7 +50,7 @@ class _DeleteAccountDialogState extends State<DeleteAccountDialog> {
       ),
       actions: [
         PlatformDialogAction(
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => context.pop(),
           child: Text(context.loc.cancel),
         ),
         BlocBuilder<UserCubit, UserState>(
@@ -62,6 +64,14 @@ class _DeleteAccountDialogState extends State<DeleteAccountDialog> {
                     }
                   : null,
               child: Text(context.loc.delete),
+              material: (context, platform) => MaterialDialogActionData(
+                style: TextButton.styleFrom(
+                  foregroundColor: Theme.of(context).colorScheme.error,
+                ),
+              ),
+              cupertino: (context, platform) => CupertinoDialogActionData(
+                isDefaultAction: true,
+              ),
             );
           },
         ),

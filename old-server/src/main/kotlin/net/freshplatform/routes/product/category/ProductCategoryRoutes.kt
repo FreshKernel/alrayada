@@ -32,8 +32,8 @@ class ProductCategoryRoutes(
         val responseList = productCategoryDataSource.getAll().map { parentCategory ->
             val id = parentCategory.id
             val childrenOfItem = productCategoryDataSource.getAllChildrenOf(id)
-                .map { it.toResponse(call) }
-            val response = parentCategory.toResponse(call)
+                .map { it.toResponse(null, call) }
+            val response = parentCategory.toResponse(childrenOfItem, call)
             response
         }
         call.respond(HttpStatusCode.OK, responseList)

@@ -399,5 +399,9 @@
    "notificationHasBeenSuccessfullySent": "Notification has been successfully sent",
    "admin": "Admin",
    "dynamicColors": "Dynamic Colors",
-   "automaticallyAdaptToSystemColors": "Automatically adapt to system colors"
+   "automaticallyAdaptToSystemColors": "Automatically adapt to system colors",
+   "productHub": "Product Hub",
+   "products": "Products",
+   "deleteCategoryConfirmation": "Deleting this category will also remove all its sub-categories and products.",
+   "add": "Add"
 }

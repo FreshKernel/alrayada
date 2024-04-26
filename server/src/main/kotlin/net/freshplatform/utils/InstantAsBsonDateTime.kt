@@ -12,6 +12,12 @@ import org.bson.BsonDateTime
 import org.bson.codecs.kotlinx.BsonDecoder
 import org.bson.codecs.kotlinx.BsonEncoder
 
+/**
+ * See this [link](https://www.mongodb.com/docs/drivers/kotlin/coroutine/current/fundamentals/data-formats/serialization/#custom-serializer-example)
+ * The original [question](https://jira.mongodb.org/browse/JAVA-5296)
+ *
+ * Should be used in all the [Instant] fields from [kotlinx.datetime.Instant]
+ * */
 object InstantAsBsonDateTime : KSerializer<Instant> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("InstantAsBsonDateTime", PrimitiveKind.STRING)
 

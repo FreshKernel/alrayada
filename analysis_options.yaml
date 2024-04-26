@@ -26,3 +26,5 @@ linter:
     sort_unnamed_constructors_first: true
     unnecessary_parenthesis: true
     unnecessary_string_interpolations: true
+    only_throw_errors: true
+    avoid_dynamic_calls: true

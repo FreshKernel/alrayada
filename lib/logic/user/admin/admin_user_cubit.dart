@@ -2,27 +2,27 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
+import '../../../data/user/admin/admin_user_api.dart';
 import '../../../data/user/admin/admin_user_exceptions.dart';
-import '../../../data/user/admin/admin_user_repository.dart';
 import '../../../data/user/models/user.dart';
 
 part 'admin_user_state.dart';
 
 class AdminUserCubit extends Cubit<AdminUserState> {
   AdminUserCubit({
-    required this.adminUserRepository,
+    required this.adminUserApi,
   }) : super(const AdminUserInitial()) {
-    initLoadUsers();
+    loadUsers();
   }
 
-  final AdminUserRepository adminUserRepository;
+  final AdminUserApi adminUserApi;
 
   static const _limit = 10;
 
-  Future<void> initLoadUsers() async {
+  Future<void> loadUsers() async {
     try {
       emit(const AdminUserLoadUsersInProgress());
-      final users = await adminUserRepository.getAllUsers(
+      final users = await adminUserApi.getAllUsers(
         searchQuery: '',
         page: 1,
         limit: _limit,
@@ -30,7 +30,7 @@ class AdminUserCubit extends Cubit<AdminUserState> {
       emit(AdminUserLoadUsersSuccess(
         usersState: AdminUserUsersState(
           users: users,
-          page: 1,
+          hasReachedLastPage: users.isEmpty,
         ),
       ));
     } on AdminUserException catch (e) {
@@ -52,7 +52,7 @@ class AdminUserCubit extends Cubit<AdminUserState> {
           page: state.usersState.page + 1,
         ),
       ));
-      final moreUsers = await adminUserRepository.getAllUsers(
+      final moreUsers = await adminUserApi.getAllUsers(
         searchQuery: state.usersState.searchQuery,
         page: state.usersState.page,
         limit: _limit,
@@ -74,7 +74,7 @@ class AdminUserCubit extends Cubit<AdminUserState> {
   Future<void> searchAllUsers({required String searchQuery}) async {
     try {
       emit(const AdminUserLoadUsersInProgress());
-      final users = await adminUserRepository.getAllUsers(
+      final users = await adminUserApi.getAllUsers(
         searchQuery: searchQuery,
         page: 1,
         limit: _limit,
@@ -98,12 +98,12 @@ class AdminUserCubit extends Cubit<AdminUserState> {
         userId: userId,
         usersState: state.usersState,
       ));
-      await adminUserRepository.setAccountActivated(
+      await adminUserApi.setAccountActivated(
         userId: userId,
         value: value,
       );
       final users = state.usersState.users.map((user) {
-        if (user.userId == userId) {
+        if (user.id == userId) {
           return user.copyWith(isAccountActivated: value);
         }
         return user;
@@ -129,11 +129,11 @@ class AdminUserCubit extends Cubit<AdminUserState> {
         userId: userId,
         usersState: state.usersState,
       ));
-      await adminUserRepository.deleteUserAccount(
+      await adminUserApi.deleteUserAccount(
         userId: userId,
       );
       final users = [...state.usersState.users]..removeWhere(
-          (user) => user.userId == userId,
+          (user) => user.id == userId,
         );
       emit(AdminUserActionSuccess(
           usersState: state.usersState.copyWith(
@@ -157,7 +157,7 @@ class AdminUserCubit extends Cubit<AdminUserState> {
         userId: userId,
         usersState: state.usersState,
       ));
-      await adminUserRepository.sendNotificationToUser(
+      await adminUserApi.sendNotificationToUser(
         userId: userId,
         title: title,
         body: body,

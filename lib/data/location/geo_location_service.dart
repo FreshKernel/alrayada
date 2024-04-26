@@ -3,20 +3,21 @@ import 'dart:convert' show jsonEncode, jsonDecode;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'geo_location.dart';
-import 'ip_location_impl.dart';
-import 'location_repository.dart';
+import 'geo_location_api.dart';
+import 'geo_location_exceptions.dart';
+import 'ip_api_geo_location_api.dart';
 
-class GeoLocationService implements LocationRepository {
+class GeoLocationService implements GeoLocationApi {
   const GeoLocationService._();
   static const instance = GeoLocationService._();
 
-  final LocationRepository _impl = const IpLocationImpl();
+  final GeoLocationApi _geoLocationApi = const IpApiGeoLocationApi();
 
   @override
   Future<GeoLocation> getLocation() async {
-    final geoLocation = await _impl.getLocation();
-    await _saveCachedIpLocation(geoLocation);
-    return geoLocation;
+    final location = await _geoLocationApi.getLocation();
+    await _saveCachedIpLocation(location);
+    return location;
   }
 
   static const _locationKeyPrefKey = 'locationIp';
@@ -36,7 +37,7 @@ class GeoLocationService implements LocationRepository {
       if (jsonValue == null) return null;
       return GeoLocation.fromJson(jsonDecode(jsonValue));
     } catch (e) {
-      throw GeoLocationException(e.toString());
+      throw UnknownGeoLocationException(message: e.toString());
     }
   }
 }

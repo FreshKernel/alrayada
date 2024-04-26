@@ -13,7 +13,7 @@ class DioService {
   Dio? _dio;
   Dio get dio {
     _dio ??= _createDio();
-    return _dio ?? (throw 'You forgot to create instance for dio');
+    return _dio ?? (throw Exception('You forgot to create instance for dio'));
   }
 
   Dio _createDio() {
@@ -21,6 +21,7 @@ class DioService {
     if (kDebugMode) {
       dio.interceptors.add(PrettyDioLogger(
         requestBody: true,
+        responseBody: true,
       ));
     }
     dio.interceptors.add(
@@ -52,6 +53,7 @@ class DioService {
   }
 
   String? _accessToken;
+  String? get accessToken => _accessToken;
   // ignore: unused_field, remove this in the future when implement refresh token
   String? _refreshToken;
   VoidCallback? _onInvalidToken;

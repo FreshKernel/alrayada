@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../logic/settings/settings_cubit.dart';
@@ -31,7 +32,7 @@ class SettingsDataSection extends StatelessWidget {
               PlatformElevatedButton(
                 onPressed: () async {
                   context.read<SettingsCubit>().clearAllPrefs();
-                  Navigator.of(context).pop();
+                  context.pop();
                 },
                 child: Text(context.loc.clearPreferences),
                 cupertino: (context, platform) => CupertinoElevatedButtonData(

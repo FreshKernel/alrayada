@@ -5,12 +5,10 @@ sealed class RoutesConstants {
   const RoutesConstants();
 
   static const userRoutes = UserRoutes._();
-  static const productsRoutes = ProductsRoutes._();
-  static const productsCategoryRoutes = ProductCategoryRoutes._();
-  static const offersRoutes = OffersRoutes._();
-  static const ordersRoutes = OrdersRoutes._();
-
   static const liveChatRoutes = LiveChatRoutes._();
+
+  static const productsRoutes = ProductsRoutes._();
+  // static const ordersRoutes = OrdersRoutes._();
 }
 
 class UserRoutes extends RoutesConstants {
@@ -43,69 +41,6 @@ class AdminUserRoutes extends RoutesConstants {
   final sendNotificationToUser = '$root/sendNotificationToUser';
 }
 
-class ProductsRoutes extends RoutesConstants {
-  const ProductsRoutes._();
-  static const root = 'products/';
-
-  final getProducts = root;
-  final addProduct = root;
-  String getProductsByCategory(String id) {
-    return '${root}byCategory/$id';
-  }
-
-  String deleteProduct(String id) {
-    return root + id;
-  }
-
-  String updateProduct(String id) {
-    return root + id;
-  }
-}
-
-class ProductCategoryRoutes extends RoutesConstants {
-  const ProductCategoryRoutes._();
-  static const root = 'products/categories/';
-  final getCategories = root;
-  final addCategory = root;
-  String deleteCategory(String id) {
-    return root + id;
-  }
-
-  String updateCategory(String id) {
-    return root + id;
-  }
-}
-
-class OffersRoutes extends RoutesConstants {
-  const OffersRoutes._();
-  static const root = 'offers/';
-
-  final getOffers = root;
-  final addOffer = root;
-  String deleteOffer(String id) {
-    return root + id;
-  }
-}
-
-class OrdersRoutes extends RoutesConstants {
-  const OrdersRoutes._();
-  static const root = 'orders/';
-  final getOrders = root;
-  final checkout = '${root}checkout';
-  final getStatistics = '${root}statistics';
-  final cancelOrder = '${root}cancelOrder';
-  final isOrderPaid = '${root}isOrderPaid';
-  final adminRoutes = const OrdersAdminRoutes._();
-}
-
-class OrdersAdminRoutes extends RoutesConstants {
-  const OrdersAdminRoutes._();
-  static const root = '${OrdersRoutes.root}admin';
-  final deleteOrder = '$root/deleteOrder';
-  final approveOrder = '$root/approveOrder';
-  final rejectOrder = '$root/rejectOrder';
-}
-
 class LiveChatRoutes extends RoutesConstants {
   const LiveChatRoutes._();
   static const root = 'liveChat';
@@ -132,3 +67,68 @@ class AdminLiveChatRoutes extends RoutesConstants {
     return '$root/rooms/$roomId';
   }
 }
+
+class ProductsRoutes extends RoutesConstants {
+  const ProductsRoutes._();
+  static const root = 'products';
+
+  final categoryRoutes = const ProductCategoryRoutes._();
+
+  // final getProducts = root;
+  // final addProduct = root;
+  // String getProductsByCategory(String id) {
+  //   return '${root}byCategory/$id';
+  // }
+
+  // String deleteProduct(String id) {
+  //   return root + id;
+  // }
+
+  // String updateProduct(String id) {
+  //   return root + id;
+  // }
+}
+
+class ProductCategoryRoutes extends RoutesConstants {
+  const ProductCategoryRoutes._();
+
+  static const root = '${ProductsRoutes.root}/categories';
+
+  final createCategory = root;
+  String updateCategoryById({required String id}) => '$root/$id';
+  String deleteCategoryById({required String id}) => '$root/$id';
+  final getTopLevelCategories = '$root/topLevel';
+  String getChildCategoriesByParentId({required String parentId}) =>
+      '$root/$parentId/children';
+  String getCategoryById({required String id}) => '$root/$id';
+}
+
+class OffersRoutes extends RoutesConstants {
+  const OffersRoutes._();
+  static const root = 'offers/';
+
+  final getOffers = root;
+  final addOffer = root;
+  String deleteOffer(String id) {
+    return root + id;
+  }
+}
+
+// class OrdersRoutes extends RoutesConstants {
+//   const OrdersRoutes._();
+//   static const root = 'orders/';
+//   final getOrders = root;
+//   final checkout = '${root}checkout';
+//   final getStatistics = '${root}statistics';
+//   final cancelOrder = '${root}cancelOrder';
+//   final isOrderPaid = '${root}isOrderPaid';
+//   final adminRoutes = const OrdersAdminRoutes._();
+// }
+
+// class OrdersAdminRoutes extends RoutesConstants {
+//   const OrdersAdminRoutes._();
+//   static const root = '${OrdersRoutes.root}admin';
+//   final deleteOrder = '$root/deleteOrder';
+//   final approveOrder = '$root/approveOrder';
+//   final rejectOrder = '$root/rejectOrder';
+// }

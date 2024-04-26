@@ -1,17 +1,18 @@
 import 'dart:convert' show jsonEncode;
 
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:json_annotation/json_annotation.dart';
+import 'package:meta/meta.dart';
 
-part 'geo_location.freezed.dart';
 part 'geo_location.g.dart';
 
-@freezed
-class GeoLocation with _$GeoLocation {
-  const factory GeoLocation({
+@immutable
+@JsonSerializable()
+class GeoLocation {
+  const GeoLocation({
     // required String ip,
     // required String network,
     // required String version,
-    required String city,
+    required this.city,
     // required String region,
     // @JsonValue('region_code') required String regionCode,
     // required String country,
@@ -35,13 +36,15 @@ class GeoLocation with _$GeoLocation {
     // @JsonValue('country_population') required int countryPopulation,
     // required String asn,
     // required String org,
-  }) = _GeoLocation;
+  });
 
   factory GeoLocation.fromJson(Map<String, Object?> json) =>
       _$GeoLocationFromJson(json);
 
+  Map<String, Object?> toJson() => _$GeoLocationToJson(this);
+
+  final String city;
+
   @override
-  String toString() {
-    return jsonEncode(toJson());
-  }
+  String toString() => jsonEncode(toJson());
 }

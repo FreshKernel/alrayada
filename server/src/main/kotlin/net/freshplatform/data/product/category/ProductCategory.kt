@@ -15,7 +15,7 @@ import org.bson.types.ObjectId
 import org.koin.ktor.ext.inject
 
 @Serializable
-data class DbProductCategory(
+data class ProductCategoryDb(
     @SerialName("_id")
     @Contextual
     val id: ObjectId = ObjectId(),
@@ -31,13 +31,11 @@ data class DbProductCategory(
 ) {
     fun toResponse(
         call: ApplicationCall,
-        children: List<ProductCategoryResponse>?
     ) = ProductCategoryResponse(
         id = id.toString(),
         name = name,
         parentId = parentId,
         description = description,
-        children = children,
         imageUrls = imageNames.map {
             if (it.isHttpUrl()) {
                 return@map it
@@ -61,25 +59,6 @@ data class DbProductCategory(
         createdAt = createdAt,
         updatedAt = updatedAt,
     )
-
-    suspend fun toResponseWithChildren(
-        call: ApplicationCall
-    ): ProductCategoryResponse {
-        val children = ProductCategoryUtils.getChildrenRecursively(
-            parentId = id.toString(),
-            call = call
-        ).getOrElse {
-            throw ErrorResponseException(
-                HttpStatusCode.InternalServerError,
-                "Unknown error while getting children recursively for category with id: $id",
-                "COULD_NOT_GET_CHILDREN_RECURSIVELY"
-            )
-        }
-        return toResponse(
-            call = call,
-            children = children
-        )
-    }
 }
 
 @Serializable
@@ -92,8 +71,8 @@ data class ProductCategoryResponse(
     val parentId: String?,
     val description: String,
     val imageUrls: List<String>,
-    // TODO: I might change or remove the children completely
-    val children: List<ProductCategoryResponse>?,
+    // TODO: I might want to add a field `hasChildren` so we don't do a request everytime
+    // we open a category in the client
     val createdAt: Instant,
     val updatedAt: Instant
 )

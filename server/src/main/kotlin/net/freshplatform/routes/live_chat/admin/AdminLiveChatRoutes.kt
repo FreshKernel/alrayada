@@ -22,7 +22,7 @@ fun Route.adminLiveChatRoutes(controller: LiveChatRoomController) {
             getMessages()
             getRooms()
             deleteRoom()
-            deleteAllRooms()
+            deleteRooms()
             roomsStatus(controller)
         }
     }
@@ -123,7 +123,7 @@ fun Route.deleteRoom() {
     }
 }
 
-fun Route.deleteAllRooms() {
+fun Route.deleteRooms() {
     val liveChatDataSource by inject<LiveChatDataSource>()
     delete("/rooms") {
         call.requireCurrentAdminUser()

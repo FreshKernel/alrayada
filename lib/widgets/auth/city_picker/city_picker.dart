@@ -40,10 +40,10 @@ class _CityPickerFormFieldState extends State<CityPickerFormField> {
     if (!widget.loadCachedCity) {
       return;
     }
-    GeoLocationService.instance.getCachedLocation().then((geoLocation) {
-      if (geoLocation == null) return;
+    GeoLocationService.instance.getCachedLocation().then((location) {
+      if (location == null) return;
       setState(() {
-        _selectedCity = IraqGovernorate.fromString(geoLocation.city);
+        _selectedCity = IraqGovernorate.fromString(location.city);
       });
     });
   }
@@ -51,9 +51,9 @@ class _CityPickerFormFieldState extends State<CityPickerFormField> {
   Future<void> _setCurrentLocation() async {
     setState(() => _isLoading = true);
     try {
-      final geoLocation = await GeoLocationService.instance.getLocation();
+      final location = await GeoLocationService.instance.getLocation();
       setState(() {
-        _selectedCity = IraqGovernorate.fromString(geoLocation.city);
+        _selectedCity = IraqGovernorate.fromString(location.city);
         _isLoading = false;
       });
     } catch (e) {

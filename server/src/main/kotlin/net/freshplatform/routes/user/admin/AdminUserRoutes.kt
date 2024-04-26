@@ -39,7 +39,7 @@ fun Route.getUsers() {
                 "COULD_NOT_LOAD_USERS"
             )
             // I might filter the result using the database code instead, so we don't return 9 item in some cases
-        }.map { it.toResponse() }.filterNot { it.userId == currentUser.id.toString() }
+        }.map { it.toResponse() }.filterNot { it.id == currentUser.id.toString() }
         call.respond(HttpStatusCode.OK, users)
     }
 }

@@ -291,5 +291,9 @@
    "notificationHasBeenSuccessfullySent": "تم إرسال الإشعار بنجاح",
    "admin": "مسؤول",
    "dynamicColors": "الألوان الديناميكية",
-   "automaticallyAdaptToSystemColors": "التكيف تلقائيا مع ألوان النظام"
+   "automaticallyAdaptToSystemColors": "التكيف تلقائيا مع ألوان النظام",
+   "productHub": "مركز المنتج",
+   "products": "منتجات",
+   "deleteCategoryConfirmation": "سيؤدي حذف هذه الفئة أيضًا إلى إزالة جميع فئاتها الفرعية ومنتجاتها.",
+   "add": "إضافة"
 }

@@ -10,7 +10,7 @@ import '../../data/user/user_social_login.dart';
 import '../../gen/assets.gen.dart';
 import '../../l10n/app_localizations.dart';
 import '../../logic/user/user_cubit.dart';
-import '../../utils/env.dart';
+import '../../utils/environment_variables.dart';
 import '../../utils/extensions/scaffold_messenger_ext.dart';
 import '../../utils/text_input_handler.dart';
 import '../../widgets/auth/privacy_policy_field.dart';

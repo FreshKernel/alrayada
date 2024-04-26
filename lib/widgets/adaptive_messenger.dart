@@ -20,10 +20,7 @@ class AdaptiveMessenger {
         await ScaffoldMessenger.of(context)
             .showSnackBar(
               SnackBar(
-                content: Semantics(
-                  label: message,
-                  child: Text(message),
-                ),
+                content: Text(message),
               ),
             )
             .closed;

@@ -35,7 +35,7 @@ data class User(
     }
 
     fun toResponse() = UserResponse(
-        userId = id.toString(),
+        id = id.toString(),
         email = email,
         isEmailVerified = isEmailVerified,
         isAccountActivated = isAccountActivated,
@@ -134,7 +134,7 @@ enum class UserRole {
 
 @Serializable
 data class UserResponse(
-    val userId: String,
+    val id: String,
     val email: String,
     val isEmailVerified: Boolean,
     val isAccountActivated: Boolean,

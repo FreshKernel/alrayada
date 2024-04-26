@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart'
     show TargetPlatform, defaultTargetPlatform, kDebugMode, kIsWeb;
 
 import '../constants.dart';
-import 'env.dart';
+import 'environment_variables.dart';
 
 /// Configurations for the app server
 class ServerConfigurations {
@@ -48,6 +48,9 @@ class ServerConfigurations {
   ///
   /// This should be only used for the images that's
   /// might coming from the app server
+  @Deprecated(
+    'No longer need to be used since the server will return the image urls based on the request base url',
+  )
   static String getImageUrl(String imageUrl) {
     final uri = Uri.parse(imageUrl);
     if (kDebugMode && uri.host == 'localhost') {

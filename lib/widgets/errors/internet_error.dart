@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../gen/assets.gen.dart';
@@ -21,24 +22,26 @@ class InternetError extends StatelessWidget {
   Widget build(BuildContext context) {
     final randomAsset = _errors[Random().nextInt(_errors.length)];
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Lottie.asset(randomAsset),
-          Text(
-            context.loc.pleaseCheckYourInternetConnectionMsg,
-            style: Theme.of(context).textTheme.titleLarge,
-            textAlign: TextAlign.center,
-          ),
-          if (onTryAgain != null) ...[
-            const SizedBox(height: 8),
-            PlatformElevatedButton(
-              onPressed: onTryAgain,
-              child: Text(context.loc.tryAgain),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Lottie.asset(randomAsset),
+            Text(
+              context.loc.pleaseCheckYourInternetConnectionMsg,
+              style: Theme.of(context).textTheme.titleLarge,
+              textAlign: TextAlign.center,
             ),
-          ]
-        ],
+            if (onTryAgain != null) ...[
+              const SizedBox(height: 8),
+              PlatformElevatedButton(
+                onPressed: onTryAgain,
+                child: Text(context.loc.tryAgain),
+              ),
+            ]
+          ],
+        ),
       ),
     );
   }
@@ -69,7 +72,7 @@ class InternetErrorDialog extends StatelessWidget {
       ),
       actions: [
         PlatformDialogAction(
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => context.pop(),
           child: Text(translations.close),
         )
       ],

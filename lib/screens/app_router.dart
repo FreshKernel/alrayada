@@ -1,10 +1,13 @@
 import 'package:go_router/go_router.dart';
 
-import 'admin/admin_dashboard_screen.dart';
+import '../data/product/category/product_category.dart';
+import 'admin_dashboard/admin_dashboard_screen.dart';
+import 'admin_dashboard/tabs/product_hub/categories/admin_category_details_screen.dart';
 import 'auth/auth_forgot_password.dart';
 import 'auth/auth_screen.dart';
 import 'auth/auth_social_login_sign_up.dart';
 import 'dashboard/dashboard_screen.dart';
+import 'dashboard/tabs/categories/category_details_screen.dart';
 import 'live_chat/live_chat_screen.dart';
 import 'notifications/notifications_screen.dart';
 import 'profile/profile_screen.dart';
@@ -54,9 +57,25 @@ class AppRouter {
         ),
       ),
       GoRoute(
-        path: AdminDashboardScreen.routeName,
-        builder: (context, state) => const AdminDashboardScreen(),
+        path: CategoryDetailsScreen.routeName,
+        builder: (context, state) => CategoryDetailsScreen(
+          category: state.extra as ProductCategory,
+        ),
       ),
+      ..._adminRoutes,
     ],
   );
+
+  static final _adminRoutes = <GoRoute>[
+    GoRoute(
+      path: AdminDashboardScreen.routeName,
+      builder: (context, state) => const AdminDashboardScreen(),
+    ),
+    GoRoute(
+      path: AdminCategoryDetailsScreen.routeName,
+      builder: (context, state) => AdminCategoryDetailsScreen(
+        category: state.extra as ProductCategory,
+      ),
+    ),
+  ];
 }

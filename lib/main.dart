@@ -1,5 +1,4 @@
 import 'package:connectivity_plus/connectivity_plus.dart' show Connectivity;
-import 'package:dynamic_color/dynamic_color.dart' show DynamicColorBuilder;
 import 'package:firebase_core/firebase_core.dart' show Firebase;
 import 'package:firebase_crashlytics/firebase_crashlytics.dart'
     show FirebaseCrashlytics;
@@ -9,26 +8,33 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart' show dotenv;
 import 'package:hydrated_bloc/hydrated_bloc.dart'
     show HydratedBloc, HydratedStorage;
+import 'package:image_picker_android/image_picker_android.dart'
+    show ImagePickerAndroid;
+import 'package:image_picker_platform_interface/image_picker_platform_interface.dart'
+    show ImagePickerPlatform;
 import 'package:path_provider/path_provider.dart'
     show getApplicationDocumentsDirectory;
 
-import 'data/live_chat/admin/admin_live_chat_repository_impl.dart';
-import 'data/live_chat/live_chat_repository_impl.dart';
-import 'data/user/admin/admin_user_repository_impl.dart';
-import 'data/user/user_repository_impl.dart';
+import 'data/live_chat/admin/remote_admin_live_chat_api.dart';
+import 'data/live_chat/remote_live_chat_api.dart';
+import 'data/product/category/remote_product_category_api.dart';
+import 'data/user/admin/remote_admin_user_api.dart';
+import 'data/user/remote_user_api.dart';
 import 'firebase_options.dart';
 import 'l10n/app_localizations.dart';
 import 'logic/connectivity/connectivity_cubit.dart';
 import 'logic/live_chat/admin/admin_live_chat_cubit.dart';
 import 'logic/live_chat/live_chat_cubit.dart';
+import 'logic/products/category/product_category_cubit.dart';
 import 'logic/settings/settings_cubit.dart';
 import 'logic/settings/settings_data.dart';
 import 'logic/user/admin/admin_user_cubit.dart';
 import 'logic/user/user_cubit.dart';
 import 'screens/app_router.dart';
 import 'utils/app_logger.dart';
-import 'utils/env.dart';
+import 'utils/environment_variables.dart';
 import 'utils/server.dart';
+import 'widgets/my_dynamic_color_builder.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -53,6 +59,12 @@ Future<void> main() async {
     if (kDebugMode && getEnvironmentVariables().useDevServer) {
       ServerConfigurations.baseUrl =
           await ServerConfigurations.getDevelopmentBaseUrl();
+    }
+
+    final ImagePickerPlatform imagePickerImplementation =
+        ImagePickerPlatform.instance;
+    if (imagePickerImplementation is ImagePickerAndroid) {
+      imagePickerImplementation.useAndroidPhotoPicker = true;
     }
 
     runApp(const MyApp());
@@ -85,40 +97,12 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  MaterialApp _getMaterialApp({
-    required SettingsState state,
-    required ColorScheme lightColorScheme,
-    required ColorScheme darkColorScheme,
-  }) =>
-      MaterialApp.router(
-        debugShowCheckedModeBanner: false,
-        onGenerateTitle: (context) => context.loc.appName,
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        routerConfig: AppRouter.router,
-        theme: ThemeData(
-          useMaterial3: state.themeSystem == AppThemeSystem.material3,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-          colorScheme: lightColorScheme,
-        ),
-        darkTheme: ThemeData(
-          useMaterial3: state.themeSystem == AppThemeSystem.material3,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-          colorScheme: darkColorScheme,
-        ),
-        themeMode: state.themeMode.toMaterialThemeMode(
-          darkDuringDayInAutoMode: state.darkDuringDayInAutoMode,
-        ),
-        locale: state.appLanguague == AppLanguague.system
-            ? null
-            : Locale(state.appLanguague.name),
-      );
-
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
+          lazy: false,
           create: (context) => ConnectivityCubit(
             connectivity: Connectivity(),
           ),
@@ -129,25 +113,29 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           lazy: false,
           create: (context) => UserCubit(
-            userRepository: UserRepositoryImpl(),
+            userApi: RemoteUserApi(),
           ),
         ),
         BlocProvider(
           create: (context) => AdminUserCubit(
-            adminUserRepository: AdminUserRepositoryImpl(),
+            adminUserApi: RemoteAdminUserApi(),
           ),
         ),
         BlocProvider(
           create: (context) => LiveChatCubit(
-            liveChatRepository: LiveChatRepositoryImpl(),
-            userCubit: context.read<UserCubit>(),
+            liveChatApi: RemoteLiveChatApi(),
           ),
         ),
         BlocProvider(
           create: (context) => AdminLiveChatCubit(
-            adminLiveChatRepository: AdminLiveChatRepositoryImpl(),
+            adminLiveChatApi: RemoteAdminLiveChatApi(),
           ),
-        )
+        ),
+        BlocProvider(
+          create: (context) => ProductCategoryCubit(
+            productCategoryApi: RemoteProductCategoryApi(),
+          ),
+        ),
       ],
       child: BlocBuilder<SettingsCubit, SettingsState>(
         buildWhen: (previous, current) =>
@@ -158,31 +146,39 @@ class MyApp extends StatelessWidget {
             previous.themeSystem != current.themeSystem ||
             previous.useDynamicColors != current.useDynamicColors,
         builder: (context, state) {
-          // Default color schemes will be used if user don't want dynamic colors
-          // or if we can't get the dynamic colors for some reason
-          final lightColorScheme = ColorScheme.fromSeed(
-            seedColor: Colors.green,
-            brightness: Brightness.light,
-          );
-          final darkColorScheme = ColorScheme.fromSeed(
-            seedColor: Colors.green,
-            brightness: Brightness.dark,
-          );
-          if (!state.useDynamicColors) {
-            return _getMaterialApp(
-              state: state,
-              lightColorScheme: lightColorScheme,
-              darkColorScheme: darkColorScheme,
-            );
-          }
-          return DynamicColorBuilder(
-            builder: (lightDynamic, darkDynamic) {
-              return _getMaterialApp(
-                state: state,
-                lightColorScheme: lightDynamic ?? lightColorScheme,
-                darkColorScheme: darkDynamic ?? darkColorScheme,
-              );
-            },
+          return MyDynamicColorBuilder(
+            isEnabled: state.useDynamicColors,
+            builder: (lightDynamic, darkDynamic) => MaterialApp.router(
+              debugShowCheckedModeBanner: false,
+              onGenerateTitle: (context) => context.loc.appName,
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              routerConfig: AppRouter.router,
+              theme: ThemeData(
+                useMaterial3: state.themeSystem == AppThemeSystem.material3,
+                visualDensity: VisualDensity.adaptivePlatformDensity,
+                colorScheme: lightDynamic ??
+                    ColorScheme.fromSeed(
+                      seedColor: Colors.green,
+                      brightness: Brightness.light,
+                    ),
+              ),
+              darkTheme: ThemeData(
+                useMaterial3: state.themeSystem == AppThemeSystem.material3,
+                visualDensity: VisualDensity.adaptivePlatformDensity,
+                colorScheme: darkDynamic ??
+                    ColorScheme.fromSeed(
+                      seedColor: Colors.green,
+                      brightness: Brightness.dark,
+                    ),
+              ),
+              themeMode: state.themeMode.toMaterialThemeMode(
+                darkDuringDayInAutoMode: state.darkDuringDayInAutoMode,
+              ),
+              locale: state.appLanguague == AppLanguague.system
+                  ? null
+                  : Locale(state.appLanguague.name),
+            ),
           );
         },
       ),

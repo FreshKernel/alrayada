@@ -31,7 +31,7 @@ suspend inline fun <reified T> ApplicationRequest.receiveBodyWithNullableImage()
                 if (part.contentType?.contentType != ContentType.Image.Any.contentType) {
                     throw ErrorResponseException(
                         HttpStatusCode.BadRequest,
-                        "This file type ${part.contentType?.contentType} is not allowed, only image.",
+                        "This file type `${part.contentType?.contentType}` is not allowed, only image.",
                         "FILE_MUST_BE_IMAGE"
                     )
                 }

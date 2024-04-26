@@ -9,24 +9,6 @@
           "kind": "build",
           "isDefault": true
         }
-      },
-      {
-        "label": "Deploy Firestore rules",
-        "type": "shell",
-        "command": "(cd firebase && firebase deploy --only firestore:rules)",
-        "group": {
-          "kind": "build",
-          "isDefault": true
-        }
-      },
-      {
-        "label": "Run Firebase emulators",
-        "type": "shell",
-        "command": "(cd firebase && firebase emulators:start)",
-        "group": {
-          "kind": "build",
-          "isDefault": true
-        }
       }
     ]
   }
