@@ -3,7 +3,7 @@ package net.freshplatform
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
-import net.freshplatform.di.dependencyInjection
+import net.freshplatform.di.configureDependencyInjection
 import net.freshplatform.plugins.*
 import net.freshplatform.utils.getEnvironmentVariables
 
@@ -23,7 +23,8 @@ fun Application.module() {
         log.info("Production mode: $isProductionMode")
         log.info("Production server: $isProductionServer")
     }
-    dependencyInjection()
+    configureDependencyInjection()
+    configureDatabase()
     configureHTTP()
     configureSockets()
     configureSerialization()

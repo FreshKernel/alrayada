@@ -20,12 +20,15 @@ interface ProductCategoryDataSource {
     suspend fun isCategoryHasChildren(parentId: String): Result<Boolean>
 
     suspend fun getCategoryById(id: String): Result<ProductCategoryDb?>
-    suspend fun getTopLevelCategories(page: Int, limit: Int): Result<List<ProductCategoryDb>>
-    suspend fun getChildCategoriesByParentId(parentId: String, page: Int, limit: Int): Result<List<ProductCategoryDb>>
+    suspend fun getCategories(
+        page: Int,
+        limit: Int,
+        parentId: String?,
+    ): Result<List<ProductCategoryDb>>
 
     /**
      * Get the images for all the categories by [parentId]
      * @return A list of [ProductCategoryDb] but including only [ProductCategoryDb.imageNames] field
      * */
-    suspend fun getChildCategoryImages(parentId: String): Result<List<List<String>>>
+    suspend fun getCategoryImages(parentId: String?): Result<List<List<String>>>
 }

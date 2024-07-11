@@ -19,7 +19,9 @@ A server application for the client app
 
 ## Todos
 
-1. TODO: Optimize the server database operations performance by getting only what we need, for example in the
+<!-- TODO: Finish all the todos -->
+
+1. Optimize the server database operations performance by getting only what we need, for example in the
    sendNotificationsToUser
    route, by getting only what we need (userDeviceNotifications property in this case), there is no need to get the
    whole user, take a look
@@ -36,4 +38,4 @@ and the route paths
 7. In the future I might make services for the routes like `UserRoutes` or `ProductCategoryRoutes` to share common code
 Again, the Route files should only contain `Route` functions and not functions that share common code
 8. The extension function `authenticate` in the routes, made the nesting unnecessarily complex, I might change that
-9. I might need to improve the way I handle the errors using `Result` by `.getOrElse {}`
+9. I might need to improve the way I handle the errors using `Result` by `result.getOrElse {}`, maybe `result.getOrThrowHttpError()`?

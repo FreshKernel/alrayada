@@ -22,19 +22,19 @@ class ProductCategoryCubit extends Cubit<ProductCategoryState> {
 
   Future<void> loadTopLevelCategories() async {
     try {
-      emit(const ProductCategoryTopLevelLoadInProgress());
-      final categories = await productCategoryApi.getTopLevelCategories(
+      emit(const ProductCategoryLoadTopLevelInProgress());
+      final categories = await productCategoryApi.getCategories(
         page: 1,
         limit: _limit,
       );
-      emit(ProductCategoryTopLevelLoadSuccess(
+      emit(ProductCategoryLoadTopLevelSuccess(
         topLevelCategoriesState: ProductCategoryCategoriesState(
           categories: categories,
           hasReachedLastPage: categories.isEmpty,
         ),
       ));
     } on ProductCategoryException catch (e) {
-      emit(ProductCategoryTopLevelLoadFailure(e));
+      emit(ProductCategoryLoadTopLevelFailure(e));
     }
   }
 
@@ -42,20 +42,20 @@ class ProductCategoryCubit extends Cubit<ProductCategoryState> {
     if (state.topLevelCategoriesState.hasReachedLastPage) {
       return;
     }
-    if (state is ProductCategoryTopLevelLoadMoreInProgress) {
+    if (state is ProductCategoryLoadTopLevelMoreInProgress) {
       // In case if the function called more than once
       return;
     }
-    emit(ProductCategoryTopLevelLoadMoreInProgress(
+    emit(ProductCategoryLoadTopLevelMoreInProgress(
       topLevelCategoriesState: state.topLevelCategoriesState.copyWith(
         page: state.topLevelCategoriesState.page + 1,
       ),
     ));
-    final moreCategories = await productCategoryApi.getTopLevelCategories(
+    final moreCategories = await productCategoryApi.getCategories(
       page: state.topLevelCategoriesState.page,
       limit: _limit,
     );
-    emit(ProductCategoryTopLevelLoadSuccess(
+    emit(ProductCategoryLoadTopLevelSuccess(
       topLevelCategoriesState: state.topLevelCategoriesState.copyWith(
         categories: [
           ...state.topLevelCategoriesState.categories,
@@ -222,7 +222,7 @@ class ProductCategoryCubit extends Cubit<ProductCategoryState> {
     }
   }
 
-  Future<void> loadSubCategories({
+  Future<void> loadChildCategories({
     required String parentId,
     bool isSkipIfLoaded = false,
   }) async {
@@ -233,26 +233,25 @@ class ProductCategoryCubit extends Cubit<ProductCategoryState> {
           return;
         }
       }
-      emit(ProductCategoryChildLoadInProgress(
+      emit(ProductCategoryLoadChildInProgress(
         childCategoriesStateMap: state.childCategoriesStateMap,
         topLevelCategoriesState: state.topLevelCategoriesState,
       ));
-      final subCategories =
-          await productCategoryApi.getChildCategoriesByParentId(
+      final childCategories = await productCategoryApi.getCategories(
         parentId: parentId,
         page: 1,
         limit: _limit,
       );
-      emit(ProductCategoryChildLoadSuccess(
+      emit(ProductCategoryLoadChildSuccess(
         childCategoriesStateMap: {...state.childCategoriesStateMap}
           ..[parentId] = ProductCategoryCategoriesState(
-            categories: subCategories,
-            hasReachedLastPage: subCategories.isEmpty,
+            categories: childCategories,
+            hasReachedLastPage: childCategories.isEmpty,
           ),
         topLevelCategoriesState: state.topLevelCategoriesState,
       ));
     } on ProductCategoryException catch (e) {
-      emit(ProductCategoryChildLoadFailure(
+      emit(ProductCategoryLoadChildFailure(
         e,
         childCategoriesStateMap: state.childCategoriesStateMap,
         topLevelCategoriesState: state.topLevelCategoriesState,
@@ -260,7 +259,7 @@ class ProductCategoryCubit extends Cubit<ProductCategoryState> {
     }
   }
 
-  Future<void> loadMoreSubCategories({
+  Future<void> loadMoreChildCategories({
     required String parentId,
   }) async {
     final childCategoriesState =
@@ -269,36 +268,35 @@ class ProductCategoryCubit extends Cubit<ProductCategoryState> {
       if (childCategoriesState.hasReachedLastPage) {
         return;
       }
-      if (state is ProductCategoryChildLoadMoreInProgress) {
+      if (state is ProductCategoryLoadChildMoreInProgress) {
         // In case if the function called more than once
         return;
       }
-      emit(ProductCategoryChildLoadMoreInProgress(
+      emit(ProductCategoryLoadChildMoreInProgress(
         childCategoriesStateMap: {...state.childCategoriesStateMap}
           ..[parentId] = childCategoriesState.copyWith(
             page: childCategoriesState.page + 1,
           ),
         topLevelCategoriesState: state.topLevelCategoriesState,
       ));
-      final moreSubCategories =
-          await productCategoryApi.getChildCategoriesByParentId(
+      final moreChildCategories = await productCategoryApi.getCategories(
         parentId: parentId,
         page: childCategoriesState.page,
         limit: _limit,
       );
-      emit(ProductCategoryChildLoadSuccess(
+      emit(ProductCategoryLoadChildSuccess(
         childCategoriesStateMap: {...state.childCategoriesStateMap}
           ..[parentId] = childCategoriesState.copyWith(
             categories: [
               ...childCategoriesState.categories,
-              ...moreSubCategories
+              ...moreChildCategories
             ],
-            hasReachedLastPage: moreSubCategories.isEmpty,
+            hasReachedLastPage: moreChildCategories.isEmpty,
           ),
         topLevelCategoriesState: state.topLevelCategoriesState,
       ));
     } on ProductCategoryException catch (e) {
-      emit(ProductCategoryChildLoadFailure(
+      emit(ProductCategoryLoadChildFailure(
         e,
         childCategoriesStateMap: state.childCategoriesStateMap,
         topLevelCategoriesState: state.topLevelCategoriesState,

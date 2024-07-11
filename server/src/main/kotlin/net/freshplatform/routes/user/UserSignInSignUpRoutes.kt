@@ -18,7 +18,7 @@ import net.freshplatform.services.security.social_login.SocialLoginService
 import net.freshplatform.services.security.social_login.SocialLoginUserData
 import net.freshplatform.services.security.token_verification.TokenVerificationService
 import net.freshplatform.services.telegram_bot.TelegramBotService
-import net.freshplatform.utils.ErrorResponseException
+import net.freshplatform.utils.response.ErrorResponseException
 import net.freshplatform.utils.extensions.baseUrl
 import org.koin.ktor.ext.inject
 

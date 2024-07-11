@@ -4,7 +4,7 @@ import kotlinx.datetime.Instant
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import net.freshplatform.utils.InstantAsBsonDateTime
+import net.freshplatform.utils.serialization.InstantAsBsonDateTime
 import org.bson.types.ObjectId
 
 @Serializable

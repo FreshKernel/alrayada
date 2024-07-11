@@ -18,14 +18,10 @@ abstract class ProductCategoryApi {
   Future<void> deleteCategoryById({
     required String id,
   });
-  Future<List<ProductCategory>> getTopLevelCategories({
+  Future<List<ProductCategory>> getCategories({
     required int page,
     required int limit,
-  });
-  Future<List<ProductCategory>> getChildCategoriesByParentId({
-    required String parentId,
-    required int page,
-    required int limit,
+    String? parentId,
   });
   Future<ProductCategory> getCategoryById({
     required String id,

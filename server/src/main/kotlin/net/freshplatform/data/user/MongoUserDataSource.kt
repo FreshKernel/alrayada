@@ -210,12 +210,12 @@ class MongoUserDataSource(
         }
     }
 
-    override suspend fun getUsers(page: Int, limit: Int, searchQuery: String): Result<List<User>> {
+    override suspend fun getUsers(page: Int, limit: Int, search: String): Result<List<User>> {
         return try {
             val skip = (page - 1) * limit
-            val pattern = ".*$searchQuery.*".toRegex(RegexOption.IGNORE_CASE).toPattern()
+            val pattern = ".*$search.*".toRegex(RegexOption.IGNORE_CASE).toPattern()
             val filter = Filters.regex("${User::info.name}.${UserInfo::labName.name}", pattern)
-            val users = (if (searchQuery.isBlank()) users.find() else users.find(filter))
+            val users = (if (search.isBlank()) users.find() else users.find(filter))
                 .sort(Sorts.descending(User::updatedAt.name))
                 .skip(skip)
                 .limit(limit)

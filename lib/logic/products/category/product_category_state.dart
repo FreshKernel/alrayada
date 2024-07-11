@@ -7,7 +7,7 @@ class ProductCategoryCategoriesState extends Equatable {
     this.categories = const [],
     this.page = 1,
     this.hasReachedLastPage = false,
-    // TODO: I might add searchQuery
+    // TODO: I might add search
   });
 
   final List<ProductCategory> categories;
@@ -60,24 +60,24 @@ class ProductCategoryInitial extends ProductCategoryState {
 
 // Load top-level categories that has no parent
 
-class ProductCategoryTopLevelLoadInProgress extends ProductCategoryState {
-  const ProductCategoryTopLevelLoadInProgress();
+class ProductCategoryLoadTopLevelInProgress extends ProductCategoryState {
+  const ProductCategoryLoadTopLevelInProgress();
 }
 
-class ProductCategoryTopLevelLoadMoreInProgress extends ProductCategoryState {
-  const ProductCategoryTopLevelLoadMoreInProgress({
+class ProductCategoryLoadTopLevelMoreInProgress extends ProductCategoryState {
+  const ProductCategoryLoadTopLevelMoreInProgress({
     required super.topLevelCategoriesState,
   });
 }
 
-class ProductCategoryTopLevelLoadSuccess extends ProductCategoryState {
-  const ProductCategoryTopLevelLoadSuccess({
+class ProductCategoryLoadTopLevelSuccess extends ProductCategoryState {
+  const ProductCategoryLoadTopLevelSuccess({
     required super.topLevelCategoriesState,
   });
 }
 
-class ProductCategoryTopLevelLoadFailure extends ProductCategoryState {
-  const ProductCategoryTopLevelLoadFailure(this.exception);
+class ProductCategoryLoadTopLevelFailure extends ProductCategoryState {
+  const ProductCategoryLoadTopLevelFailure(this.exception);
 
   final ProductCategoryException exception;
 
@@ -87,29 +87,29 @@ class ProductCategoryTopLevelLoadFailure extends ProductCategoryState {
 
 // Load sub-categories where they have parent
 
-class ProductCategoryChildLoadInProgress extends ProductCategoryState {
-  const ProductCategoryChildLoadInProgress({
+class ProductCategoryLoadChildInProgress extends ProductCategoryState {
+  const ProductCategoryLoadChildInProgress({
     required super.childCategoriesStateMap,
     required super.topLevelCategoriesState,
   });
 }
 
-class ProductCategoryChildLoadMoreInProgress extends ProductCategoryState {
-  const ProductCategoryChildLoadMoreInProgress({
+class ProductCategoryLoadChildMoreInProgress extends ProductCategoryState {
+  const ProductCategoryLoadChildMoreInProgress({
     required super.childCategoriesStateMap,
     required super.topLevelCategoriesState,
   });
 }
 
-class ProductCategoryChildLoadSuccess extends ProductCategoryState {
-  const ProductCategoryChildLoadSuccess({
+class ProductCategoryLoadChildSuccess extends ProductCategoryState {
+  const ProductCategoryLoadChildSuccess({
     required super.childCategoriesStateMap,
     required super.topLevelCategoriesState,
   });
 }
 
-class ProductCategoryChildLoadFailure extends ProductCategoryState {
-  const ProductCategoryChildLoadFailure(
+class ProductCategoryLoadChildFailure extends ProductCategoryState {
+  const ProductCategoryLoadChildFailure(
     this.exception, {
     required super.childCategoriesStateMap,
     required super.topLevelCategoriesState,

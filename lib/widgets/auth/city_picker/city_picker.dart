@@ -160,29 +160,34 @@ class _CityPickerFormFieldState extends State<CityPickerFormField> {
         },
       );
     }
-    return DropdownButtonFormField<IraqGovernorate>(
-      value: _selectedCity,
-      onSaved: widget.onSaved,
-      onChanged: (value) =>
-          setState(() => _selectedCity = value ?? IraqGovernorate.defaultCity),
-      items: IraqGovernorate.values
+    return DropdownMenu<IraqGovernorate>(
+      initialSelection: _selectedCity,
+      onSelected: (value) {
+        setState(
+          () => _selectedCity = value ?? IraqGovernorate.defaultCity,
+        );
+        widget.onSaved(_selectedCity);
+      },
+      dropdownMenuEntries: IraqGovernorate.values
           .map(
-            (e) => DropdownMenuItem<IraqGovernorate>(
+            (e) => DropdownMenuEntry<IraqGovernorate>(
               value: e,
-              child: Text(e.getTranslatedCityName(
+              label: e.getTranslatedCityName(
                 localizations: context.loc,
-              )),
+              ),
             ),
           )
           .toList(),
-      decoration: InputDecoration(
-        labelText: context.loc.city,
-        suffixIcon: const Icon(Icons.location_city),
-        icon: IconButton(
-          onPressed: (_isLoading ? null : _setCurrentLocation),
-          icon: const Icon(Icons.gps_fixed),
-        ),
+      label: Text(context.loc.city),
+      trailingIcon: const Icon(Icons.location_city),
+      leadingIcon: IconButton(
+        onPressed: (_isLoading ? null : _setCurrentLocation),
+        icon: const Icon(Icons.gps_fixed),
       ),
+      inputDecorationTheme: const InputDecorationTheme(
+        border: UnderlineInputBorder(),
+      ),
+      expandedInsets: const EdgeInsets.all(0),
     );
   }
 }

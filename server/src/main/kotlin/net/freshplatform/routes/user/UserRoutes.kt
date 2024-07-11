@@ -11,8 +11,8 @@ import net.freshplatform.data.user.UserDataSource
 import net.freshplatform.data.user.UserDeviceNotificationsToken
 import net.freshplatform.routes.user.admin.adminUserRoutes
 import net.freshplatform.services.telegram_bot.TelegramBotService
-import net.freshplatform.utils.ErrorResponseException
 import net.freshplatform.utils.extensions.requireCurrentUser
+import net.freshplatform.utils.response.ErrorResponseException
 import org.koin.ktor.ext.inject
 
 fun Route.userRoutes() {

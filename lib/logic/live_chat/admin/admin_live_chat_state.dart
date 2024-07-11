@@ -107,7 +107,8 @@ class AdminLiveChatDeleteAllRoomsInProgress extends AdminLiveChatState {
 }
 
 class AdminLiveChatDeleteAllRoomsSuccess extends AdminLiveChatState {
-  const AdminLiveChatDeleteAllRoomsSuccess({required super.roomsState});
+  const AdminLiveChatDeleteAllRoomsSuccess()
+      : super(roomsState: const AdminLiveChatRoomsState());
 }
 
 class AdminLiveChatDeleteAllRoomsFailure extends AdminLiveChatState {

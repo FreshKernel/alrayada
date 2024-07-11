@@ -22,10 +22,9 @@ class AdminUsersTab extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: SearchBar(
-            onSubmitted: (value) =>
-                context.read<AdminUserCubit>().searchAllUsers(
-                      searchQuery: value,
-                    ),
+            onSubmitted: (value) => context.read<AdminUserCubit>().searchUsers(
+                  search: value,
+                ),
             hintText: context.loc.search,
             leading: Icon(PlatformIcons(context).search),
             padding: MaterialStateProperty.all(
@@ -49,19 +48,23 @@ class _UsersList extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<AdminUserCubit, AdminUserState>(
       listener: (context, state) {
-        if (state is AdminUserActionFailure) {
+        final status = state.status;
+        if (status is AdminUserActionFailure) {
           ScaffoldMessenger.of(context).showSnackBarText(
-            context.loc.unknownErrorWithMsg(state.exception.toString()),
+            context.loc.unknownErrorWithMsg(
+              status.exception.toString(),
+            ),
           );
         }
       },
       builder: (context, state) {
-        if (state is AdminUserLoadUsersInProgress) {
+        final status = state.status;
+        if (status is AdminUserLoadUsersInProgress) {
           return const Center(
             child: CircularProgressIndicator.adaptive(),
           );
         }
-        if (state is AdminUserLoadUsersFailure) {
+        if (status is AdminUserLoadUsersFailure) {
           return UnknownError(
             onTryAgain: () => context.read<AdminUserCubit>().loadUsers(),
           );
@@ -77,7 +80,7 @@ class _UsersList extends StatelessWidget {
               physics: const BouncingScrollPhysics(
                 parent: AlwaysScrollableScrollPhysics(),
               ),
-              itemCount: state is AdminUserLoadMoreUsersInProgress
+              itemCount: status is AdminUserUsersLoadMoreInProgress
                   ? users.length + 1
                   : users.length,
               itemBuilder: (context, index) {
@@ -91,8 +94,8 @@ class _UsersList extends StatelessWidget {
                 return AdminUserTile(
                   user: user,
                   index: index,
-                  isLoading: state is AdminUserActionInProgress &&
-                      state.userId == user.id,
+                  isLoading: status is AdminUserActionInProgress &&
+                      status.userId == user.id,
                 );
               },
             ),

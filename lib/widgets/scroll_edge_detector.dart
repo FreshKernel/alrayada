@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// TODO: The widget behavior is not like I expexted it to be
 class ScrollEdgeDetector extends StatelessWidget {
   const ScrollEdgeDetector({
     required this.child,
@@ -19,12 +20,12 @@ class ScrollEdgeDetector extends StatelessWidget {
         if (!scrollEnd.metrics.atEdge) {
           return true;
         }
-        final isTop = scrollEnd.metrics.pixels == 0;
-        if (isTop) {
+        final isTopEdge = scrollEnd.metrics.pixels == 0;
+        if (isTopEdge) {
           onTop?.call();
-          return true;
+        } else {
+          onBottom?.call();
         }
-        onBottom?.call();
         return true;
       },
       child: child,

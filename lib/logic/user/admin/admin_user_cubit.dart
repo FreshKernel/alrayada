@@ -11,7 +11,7 @@ part 'admin_user_state.dart';
 class AdminUserCubit extends Cubit<AdminUserState> {
   AdminUserCubit({
     required this.adminUserApi,
-  }) : super(const AdminUserInitial()) {
+  }) : super(const AdminUserState()) {
     loadUsers();
   }
 
@@ -21,20 +21,23 @@ class AdminUserCubit extends Cubit<AdminUserState> {
 
   Future<void> loadUsers() async {
     try {
-      emit(const AdminUserLoadUsersInProgress());
+      emit(const AdminUserState(status: AdminUserLoadUsersInProgress()));
       final users = await adminUserApi.getAllUsers(
-        searchQuery: '',
         page: 1,
         limit: _limit,
+        search: '',
       );
-      emit(AdminUserLoadUsersSuccess(
+      emit(AdminUserState(
+        status: const AdminUserLoadUsersSuccess(),
         usersState: AdminUserUsersState(
           users: users,
           hasReachedLastPage: users.isEmpty,
         ),
       ));
     } on AdminUserException catch (e) {
-      emit(AdminUserLoadUsersFailure(e));
+      emit(AdminUserState(
+        status: AdminUserLoadUsersFailure(e),
+      ));
     }
   }
 
@@ -42,22 +45,24 @@ class AdminUserCubit extends Cubit<AdminUserState> {
     if (state.usersState.hasReachedLastPage) {
       return;
     }
-    if (state is AdminUserLoadMoreUsersInProgress) {
+    if (state is AdminUserUsersLoadMoreInProgress) {
       // In case if the function called more than once
       return;
     }
     try {
-      emit(AdminUserLoadMoreUsersInProgress(
+      emit(state.copyWith(
+        status: const AdminUserUsersLoadMoreInProgress(),
         usersState: state.usersState.copyWith(
           page: state.usersState.page + 1,
         ),
       ));
       final moreUsers = await adminUserApi.getAllUsers(
-        searchQuery: state.usersState.searchQuery,
+        search: state.usersState.search,
         page: state.usersState.page,
         limit: _limit,
       );
-      emit(AdminUserLoadUsersSuccess(
+      emit(state.copyWith(
+        status: const AdminUserLoadUsersSuccess(),
         usersState: state.usersState.copyWith(
           users: [
             ...state.usersState.users,
@@ -67,25 +72,35 @@ class AdminUserCubit extends Cubit<AdminUserState> {
         ),
       ));
     } on AdminUserException catch (e) {
-      emit(AdminUserLoadUsersFailure(e));
+      emit(state.copyWith(
+        status: AdminUserLoadUsersFailure(e),
+      ));
     }
   }
 
-  Future<void> searchAllUsers({required String searchQuery}) async {
+  Future<void> searchUsers({required String search}) async {
     try {
-      emit(const AdminUserLoadUsersInProgress());
+      emit(state.copyWith(
+        status: const AdminUserLoadUsersInProgress(),
+        usersState: AdminUserUsersState(
+          search: search,
+        ),
+      ));
       final users = await adminUserApi.getAllUsers(
-        searchQuery: searchQuery,
-        page: 1,
+        search: state.usersState.search,
+        page: state.usersState.page,
         limit: _limit,
       );
-      emit(AdminUserLoadUsersSuccess(
-          usersState: AdminUserUsersState(
-        users: users,
-        searchQuery: searchQuery, // So pagination work when searching
-      )));
+      emit(state.copyWith(
+        status: const AdminUserLoadUsersSuccess(),
+        usersState: state.usersState.copyWith(
+          users: users,
+        ),
+      ));
     } on AdminUserException catch (e) {
-      emit(AdminUserLoadUsersFailure(e));
+      emit(state.copyWith(
+        status: AdminUserLoadUsersFailure(e),
+      ));
     }
   }
 
@@ -94,9 +109,8 @@ class AdminUserCubit extends Cubit<AdminUserState> {
     required bool value,
   }) async {
     try {
-      emit(AdminUserActionInProgress(
-        userId: userId,
-        usersState: state.usersState,
+      emit(state.copyWith(
+        status: AdminUserActionInProgress(userId: userId),
       ));
       await adminUserApi.setAccountActivated(
         userId: userId,
@@ -108,15 +122,15 @@ class AdminUserCubit extends Cubit<AdminUserState> {
         }
         return user;
       }).toList();
-      emit(AdminUserActionSuccess(
+      emit(state.copyWith(
+        status: const AdminUserActionSuccess(),
         usersState: state.usersState.copyWith(
           users: users,
         ),
       ));
     } on AdminUserException catch (e) {
-      emit(AdminUserActionFailure(
-        e,
-        usersState: state.usersState,
+      emit(state.copyWith(
+        status: AdminUserActionFailure(e),
       ));
     }
   }
@@ -125,9 +139,8 @@ class AdminUserCubit extends Cubit<AdminUserState> {
     required String userId,
   }) async {
     try {
-      emit(AdminUserActionInProgress(
-        userId: userId,
-        usersState: state.usersState,
+      emit(state.copyWith(
+        status: AdminUserActionInProgress(userId: userId),
       ));
       await adminUserApi.deleteUserAccount(
         userId: userId,
@@ -135,14 +148,15 @@ class AdminUserCubit extends Cubit<AdminUserState> {
       final users = [...state.usersState.users]..removeWhere(
           (user) => user.id == userId,
         );
-      emit(AdminUserActionSuccess(
-          usersState: state.usersState.copyWith(
-        users: users,
-      )));
+      emit(state.copyWith(
+        status: const AdminUserActionSuccess(),
+        usersState: state.usersState.copyWith(
+          users: users,
+        ),
+      ));
     } on AdminUserException catch (e) {
-      emit(AdminUserActionFailure(
-        e,
-        usersState: state.usersState,
+      emit(state.copyWith(
+        status: AdminUserActionFailure(e),
       ));
     }
   }
@@ -153,20 +167,20 @@ class AdminUserCubit extends Cubit<AdminUserState> {
     required String body,
   }) async {
     try {
-      emit(AdminUserActionInProgress(
-        userId: userId,
-        usersState: state.usersState,
+      emit(state.copyWith(
+        status: AdminUserActionInProgress(userId: userId),
       ));
       await adminUserApi.sendNotificationToUser(
         userId: userId,
         title: title,
         body: body,
       );
-      emit(AdminUserActionSuccess(usersState: state.usersState));
+      emit(state.copyWith(
+        status: const AdminUserActionSuccess(),
+      ));
     } on AdminUserException catch (e) {
-      emit(AdminUserActionFailure(
-        e,
-        usersState: state.usersState,
+      emit(state.copyWith(
+        status: AdminUserActionFailure(e),
       ));
     }
   }

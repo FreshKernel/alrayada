@@ -12,7 +12,7 @@ import net.freshplatform.data.user.UserDataSource
 import net.freshplatform.services.email_sender.EmailMessage
 import net.freshplatform.services.email_sender.EmailSenderService
 import net.freshplatform.services.security.token_verification.TokenVerificationService
-import net.freshplatform.utils.ErrorResponseException
+import net.freshplatform.utils.response.ErrorResponseException
 import net.freshplatform.utils.extensions.baseUrl
 import net.freshplatform.utils.extensions.requireCurrentUser
 import org.koin.ktor.ext.inject

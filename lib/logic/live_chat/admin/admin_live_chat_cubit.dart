@@ -100,11 +100,7 @@ class AdminLiveChatCubit extends Cubit<AdminLiveChatState> {
         roomsState: state.roomsState,
       ));
       await adminLiveChatApi.deleteAllRooms();
-      emit(AdminLiveChatDeleteAllRoomsSuccess(
-        roomsState: state.roomsState.copyWith(
-          rooms: [],
-        ),
-      ));
+      emit(const AdminLiveChatDeleteAllRoomsSuccess());
     } on LiveChatException catch (e) {
       emit(AdminLiveChatDeleteAllRoomsFailure(e, roomsState: state.roomsState));
     }

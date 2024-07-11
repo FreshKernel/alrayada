@@ -115,45 +115,20 @@ class RemoteProductCategoryApi extends ProductCategoryApi {
   }
 
   @override
-  Future<List<ProductCategory>> getChildCategoriesByParentId({
-    required String parentId,
+  Future<List<ProductCategory>> getCategories({
     required int page,
     required int limit,
+    String? parentId,
   }) async {
     try {
       final response = await _dio.get<List>(
         ServerConfigurations.getRequestUrl(
-          RoutesConstants.productsRoutes.categoryRoutes
-              .getChildCategoriesByParentId(parentId: parentId),
+          RoutesConstants.productsRoutes.categoryRoutes.getCategories,
         ),
         queryParameters: {
           'page': page,
           'limit': limit,
-        },
-      );
-      return response.dataOrThrow
-          .map((e) => ProductCategory.fromJson(e))
-          .toList();
-    } on DioException catch (e) {
-      throw UnknownProductCategoryException(message: e.message.toString());
-    } catch (e) {
-      throw UnknownProductCategoryException(message: e.toString());
-    }
-  }
-
-  @override
-  Future<List<ProductCategory>> getTopLevelCategories({
-    required int page,
-    required int limit,
-  }) async {
-    try {
-      final response = await _dio.get<List>(
-        ServerConfigurations.getRequestUrl(
-          RoutesConstants.productsRoutes.categoryRoutes.getTopLevelCategories,
-        ),
-        queryParameters: {
-          'page': page,
-          'limit': limit,
+          if (parentId != null) 'parentId': parentId,
         },
       );
 

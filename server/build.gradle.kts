@@ -38,7 +38,6 @@ dependencies {
     implementation("io.ktor:ktor-server-auth-jvm")
     implementation("io.ktor:ktor-server-auth-jwt-jvm")
     implementation("io.ktor:ktor-server-html-builder-jvm")
-//    implementation("io.ktor:ktor-server-request-validation-jvm")
     testImplementation("io.ktor:ktor-server-tests-jvm")
     implementation(libs.logback.classic)
 

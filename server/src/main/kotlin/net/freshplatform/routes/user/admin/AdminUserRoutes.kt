@@ -10,8 +10,9 @@ import io.ktor.server.util.*
 import net.freshplatform.data.user.User
 import net.freshplatform.data.user.UserDataSource
 import net.freshplatform.services.notifications.NotificationsService
-import net.freshplatform.utils.ErrorResponseException
+import net.freshplatform.utils.extensions.limit
 import net.freshplatform.utils.extensions.requireCurrentAdminUser
+import net.freshplatform.utils.response.ErrorResponseException
 import org.koin.ktor.ext.inject
 
 fun Route.adminUserRoutes() {
@@ -29,10 +30,14 @@ fun Route.getUsers() {
     val userDataSource by inject<UserDataSource>()
     get("/users") {
         val currentUser = call.requireCurrentAdminUser() // Important
-        val searchQuery: String by call.request.queryParameters
         val page: Int by call.request.queryParameters
-        val limit: Int by call.request.queryParameters
-        val users = userDataSource.getUsers(page, limit, searchQuery).getOrElse {
+        val limit = call.request.queryParameters.limit
+        val search: String by call.request.queryParameters
+        val users = userDataSource.getUsers(
+            page = page,
+            limit = limit,
+            search = search,
+        ).getOrElse {
             throw ErrorResponseException(
                 HttpStatusCode.InternalServerError,
                 "Unknown error while getting the users: ${it.message}",

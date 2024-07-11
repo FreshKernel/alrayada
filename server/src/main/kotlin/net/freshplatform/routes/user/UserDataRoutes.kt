@@ -7,7 +7,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import net.freshplatform.data.user.UserDataSource
 import net.freshplatform.data.user.UserInfo
-import net.freshplatform.utils.ErrorResponseException
+import net.freshplatform.utils.response.ErrorResponseException
 import net.freshplatform.utils.extensions.requireCurrentUser
 import org.koin.ktor.ext.inject
 

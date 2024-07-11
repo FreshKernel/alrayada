@@ -38,7 +38,8 @@ interface UserDataSource {
     suspend fun isAccountActivatedById(userId: String): Result<Boolean?>
 
     /**
-     * The [searchQuery] filter the results using [UserInfo.labName]
+     * @param search Filter the results using [UserInfo.labName]
+     * @return the data sorted by [User.updatedAt]
      * */
-    suspend fun getUsers(page: Int, limit: Int, searchQuery: String): Result<List<User>>
+    suspend fun getUsers(page: Int, limit: Int, search: String): Result<List<User>>
 }

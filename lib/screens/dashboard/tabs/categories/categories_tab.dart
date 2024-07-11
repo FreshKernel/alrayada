@@ -16,12 +16,12 @@ class CategoriesTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ProductCategoryCubit, ProductCategoryState>(
       builder: (context, state) {
-        if (state is ProductCategoryTopLevelLoadInProgress) {
+        if (state is ProductCategoryLoadTopLevelInProgress) {
           return const Center(
             child: CircularProgressIndicator.adaptive(),
           );
         }
-        if (state is ProductCategoryTopLevelLoadFailure) {
+        if (state is ProductCategoryLoadTopLevelFailure) {
           return UnknownError(
             onTryAgain: () =>
                 context.read<ProductCategoryCubit>().loadTopLevelCategories(),
@@ -53,7 +53,7 @@ class CategoriesTab extends StatelessWidget {
                 crossAxisSpacing: 20,
               ),
               padding: const EdgeInsets.all(12),
-              itemCount: state is ProductCategoryTopLevelLoadMoreInProgress
+              itemCount: state is ProductCategoryLoadTopLevelMoreInProgress
                   ? categories.length + 1
                   : categories.length,
               itemBuilder: (context, index) {

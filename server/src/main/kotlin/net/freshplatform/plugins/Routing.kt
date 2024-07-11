@@ -16,10 +16,10 @@ import kotlinx.serialization.SerializationException
 import net.freshplatform.routes.live_chat.liveChatRoutes
 import net.freshplatform.routes.products.productsRoutes
 import net.freshplatform.routes.user.userRoutes
-import net.freshplatform.utils.ErrorResponse
-import net.freshplatform.utils.ErrorResponseException
-import net.freshplatform.utils.FilePaths
+import net.freshplatform.utils.file.FilePaths
 import net.freshplatform.utils.getEnvironmentVariables
+import net.freshplatform.utils.response.ErrorResponse
+import net.freshplatform.utils.response.ErrorResponseException
 import kotlin.time.Duration.Companion.milliseconds
 
 fun Application.configureRouting() {
@@ -113,7 +113,6 @@ fun Application.configureRouting() {
         get("/") {
             call.respondText("Welcome, to our api!")
         }
-
         userRoutes()
         liveChatRoutes()
         productsRoutes()

@@ -106,23 +106,7 @@ class MongoProductCategoryDataSource(
         }
     }
 
-    override suspend fun getTopLevelCategories(page: Int, limit: Int): Result<List<ProductCategoryDb>> {
-        return try {
-            val skip = (page - 1) * limit
-            Result.success(
-                categories.find(Filters.eq(ProductCategoryDb::parentId.name, null))
-                    .sort(Sorts.descending(ProductCategoryDb::updatedAt.name))
-                    .skip(skip)
-                    .limit(limit)
-                    .toList()
-            )
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Result.failure(e)
-        }
-    }
-
-    override suspend fun getChildCategoriesByParentId(parentId: String, page: Int, limit: Int): Result<List<ProductCategoryDb>> {
+    override suspend fun getCategories(page: Int, limit: Int, parentId: String?): Result<List<ProductCategoryDb>> {
         return try {
             val skip = (page - 1) * limit
             Result.success(
@@ -138,7 +122,7 @@ class MongoProductCategoryDataSource(
         }
     }
 
-    override suspend fun getChildCategoryImages(parentId: String): Result<List<List<String>>> {
+    override suspend fun getCategoryImages(parentId: String?): Result<List<List<String>>> {
         return try {
             val images = categories.find<Document>(Filters.eq(ProductCategoryDb::parentId.name, parentId))
                 .projection(Projections.include(ProductCategoryDb::imageNames.name, parentId))

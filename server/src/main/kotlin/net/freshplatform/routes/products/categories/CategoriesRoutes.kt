@@ -12,10 +12,11 @@ import net.freshplatform.data.product.category.ProductCategoryDataSource
 import net.freshplatform.data.product.category.ProductCategoryDb
 import net.freshplatform.data.product.category.UpdateProductCategoryRequest
 import net.freshplatform.services.image_storage.ImageStorageServiceFactory
-import net.freshplatform.utils.ErrorResponseException
+import net.freshplatform.utils.extensions.limit
 import net.freshplatform.utils.extensions.requireCurrentAdminUser
-import net.freshplatform.utils.receiveBodyWithImage
-import net.freshplatform.utils.receiveBodyWithNullableImage
+import net.freshplatform.utils.file.receiveBodyWithImage
+import net.freshplatform.utils.file.receiveBodyWithNullableImage
+import net.freshplatform.utils.response.ErrorResponseException
 import org.koin.ktor.ext.inject
 
 fun Route.productCategoriesRoutes() {
@@ -26,8 +27,7 @@ fun Route.productCategoriesRoutes() {
             updateCategoryById()
             deleteCategoryById()
         }
-        getTopLevelCategories()
-        getChildCategoriesByParentId()
+        getCategories()
         getCategoryById()
     }
 }
@@ -64,9 +64,9 @@ private fun Route.createCategory() {
             }
         }
 
-        val imageName = imageStorageService.saveImage(
-            filePrefix = requestBodyWithImage.imageData.imageName,
-            imageBytes = requestBodyWithImage.imageData.imageBytes,
+        val imageFileName = imageStorageService.saveImage(
+            filePrefix = requestBodyWithImage.imageData.imageFileName,
+            imageBytes = requestBodyWithImage.imageData.imageFileBytes,
         ).getOrElse {
             throw ErrorResponseException(
                 HttpStatusCode.InternalServerError,
@@ -79,7 +79,7 @@ private fun Route.createCategory() {
             name = requestBody.name,
             parentId = requestBody.parentId,
             description = requestBody.description,
-            imageNames = listOf(imageName),
+            imageNames = listOf(imageFileName),
             createdAt = Clock.System.now(),
             updatedAt = Clock.System.now(),
         )
@@ -95,6 +95,7 @@ private fun Route.createCategory() {
         }
 
         call.respond(
+            status = HttpStatusCode.Created,
             category.toResponse(
                 call = call,
             )
@@ -140,8 +141,8 @@ private fun Route.updateCategoryById() {
                 imageStorageService.deleteImage(it)
             }
             newImageName = imageStorageService.saveImage(
-                filePrefix = requestBodyWithImage.imageData.imageName,
-                imageBytes = requestBodyWithImage.imageData.imageBytes,
+                filePrefix = requestBodyWithImage.imageData.imageFileName,
+                imageBytes = requestBodyWithImage.imageData.imageFileBytes,
             ).getOrElse {
                 throw ErrorResponseException(
                     HttpStatusCode.InternalServerError,
@@ -209,7 +210,7 @@ private fun Route.deleteCategoryById() {
 
         // 1. Delete the child-categories of that category
 
-        productCategoryDataSource.getChildCategoryImages(
+        productCategoryDataSource.getCategoryImages(
             parentId = category.id.toString(),
         ).getOrElse {
             throw ErrorResponseException(
@@ -229,11 +230,11 @@ private fun Route.deleteCategoryById() {
             }
         }
 
-        val isDeleteSubCategoriesSuccess = productCategoryDataSource.deleteChildCategories(
+        val isDeleteChildCategoriesSuccess = productCategoryDataSource.deleteChildCategories(
             parentId = category.id.toString()
         )
 
-        if (!isDeleteSubCategoriesSuccess) {
+        if (!isDeleteChildCategoriesSuccess) {
             throw ErrorResponseException(
                 HttpStatusCode.InternalServerError,
                 "Unknown error while deleting categories with parent id: ${category.id}",
@@ -272,47 +273,31 @@ private fun Route.deleteCategoryById() {
     }
 }
 
-private fun Route.getTopLevelCategories() {
+private fun Route.getCategories() {
     val productCategoryDataSource by inject<ProductCategoryDataSource>()
 
-    get("/topLevel") {
+    get {
         val page: Int by call.request.queryParameters
-        val limit: Int by call.request.queryParameters
+        val limit = call.request.queryParameters.limit
+        println(limit)
+        val parentId: String? = call.request.queryParameters["parentId"]
 
-        val categories = productCategoryDataSource.getTopLevelCategories(page, limit).getOrElse {
-            throw ErrorResponseException(
-                HttpStatusCode.InternalServerError,
-                "Unknown error while loading the categories",
-                "COULD_NOT_LOAD_CATEGORIES"
-            )
-        }.map {
-            it.toResponse(
-                call = call,
-            )
-        }
-        call.respond(categories)
-    }
-}
-
-private fun Route.getChildCategoriesByParentId() {
-    val productCategoryDataSource by inject<ProductCategoryDataSource>()
-
-    get("/{id}/children") {
-        val id: String by call.parameters
-        val page: Int by call.request.queryParameters
-        val limit: Int by call.request.queryParameters
-
-        val categories = productCategoryDataSource.getChildCategoriesByParentId(id, page, limit).getOrElse {
-            throw ErrorResponseException(
-                HttpStatusCode.InternalServerError,
-                "Unknown error while loading the categories",
-                "COULD_NOT_LOAD_CATEGORIES"
-            )
-        }.map {
-            it.toResponse(
-                call = call,
-            )
-        }
+        val categories =
+            productCategoryDataSource.getCategories(
+                page = page,
+                limit = limit,
+                parentId = parentId
+            ).getOrElse {
+                throw ErrorResponseException(
+                    HttpStatusCode.InternalServerError,
+                    "Unknown error while loading the categories",
+                    "COULD_NOT_LOAD_CATEGORIES"
+                )
+            }.map {
+                it.toResponse(
+                    call = call,
+                )
+            }
         call.respond(categories)
     }
 }

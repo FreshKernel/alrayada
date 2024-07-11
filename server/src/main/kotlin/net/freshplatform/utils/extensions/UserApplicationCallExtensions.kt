@@ -6,7 +6,7 @@ import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import net.freshplatform.data.user.User
 import net.freshplatform.data.user.UserDataSource
-import net.freshplatform.utils.ErrorResponseException
+import net.freshplatform.utils.response.ErrorResponseException
 import org.koin.ktor.ext.inject
 
 fun ApplicationCall.getCurrentUserNullableId(): String? {

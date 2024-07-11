@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
+@Deprecated('I might refactor this and use it or not using it at all')
 class PlatformAdaptiveIcon extends StatelessWidget {
   const PlatformAdaptiveIcon({
     required this.iconData,

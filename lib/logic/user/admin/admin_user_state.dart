@@ -1,69 +1,98 @@
 part of 'admin_user_cubit.dart';
 
+// TODO: Might rename this and similar classes to AdminUserSharedState, or we could
+//   move all properties of AdminUserUsersState directly to AdminUserState.
+//   We're mixing the subclass and single class approachs suggested by bloc library
+//   only for this example, we might change the others or only change this instead
+//   to ensure consistency.
+
+@immutable
 class AdminUserUsersState extends Equatable {
   const AdminUserUsersState({
     this.users = const [],
     this.page = 1,
     this.hasReachedLastPage = false,
-    this.searchQuery = '',
+    this.search = '',
   });
 
   final List<User> users;
   final int page;
   final bool hasReachedLastPage;
-  final String searchQuery;
+  final String search;
 
   @override
   List<Object?> get props => [
         users,
         page,
         hasReachedLastPage,
-        searchQuery,
+        search,
       ];
 
   AdminUserUsersState copyWith({
     List<User>? users,
     int? page,
     bool? hasReachedLastPage,
-    String? searchQuery,
+    String? search,
   }) {
     return AdminUserUsersState(
       users: users ?? this.users,
       page: page ?? this.page,
       hasReachedLastPage: hasReachedLastPage ?? this.hasReachedLastPage,
-      searchQuery: searchQuery ?? this.searchQuery,
+      search: search ?? this.search,
     );
   }
 }
 
 @immutable
-sealed class AdminUserState extends Equatable {
+class AdminUserState extends Equatable {
   const AdminUserState({
     this.usersState = const AdminUserUsersState(),
+    this.status = const AdminUserInitial(),
   });
 
   final AdminUserUsersState usersState;
+  // TODO: We might rename `status` to something else, see the first todo in this file
+  final AdminUserStatus status;
   @override
   List<Object?> get props => [
         usersState,
+        status,
       ];
+
+  AdminUserState copyWith({
+    AdminUserUsersState? usersState,
+    AdminUserStatus? status,
+  }) {
+    return AdminUserState(
+      usersState: usersState ?? this.usersState,
+      status: status ?? this.status,
+    );
+  }
 }
 
-class AdminUserInitial extends AdminUserState {
+@immutable
+sealed class AdminUserStatus extends Equatable {
+  const AdminUserStatus();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class AdminUserInitial extends AdminUserStatus {
   const AdminUserInitial();
 }
 
 // For loading the users
 
-class AdminUserLoadUsersInProgress extends AdminUserState {
+class AdminUserLoadUsersInProgress extends AdminUserStatus {
   const AdminUserLoadUsersInProgress();
 }
 
-class AdminUserLoadUsersSuccess extends AdminUserState {
-  const AdminUserLoadUsersSuccess({required super.usersState});
+class AdminUserLoadUsersSuccess extends AdminUserStatus {
+  const AdminUserLoadUsersSuccess();
 }
 
-class AdminUserLoadUsersFailure extends AdminUserState {
+class AdminUserLoadUsersFailure extends AdminUserStatus {
   const AdminUserLoadUsersFailure(this.exception);
 
   final AdminUserException exception;
@@ -72,31 +101,32 @@ class AdminUserLoadUsersFailure extends AdminUserState {
   List<Object?> get props => [exception, ...super.props];
 }
 
-class AdminUserLoadMoreUsersInProgress extends AdminUserState {
-  const AdminUserLoadMoreUsersInProgress({required super.usersState});
+class AdminUserUsersLoadMoreInProgress extends AdminUserStatus {
+  const AdminUserUsersLoadMoreInProgress();
 }
 
 // For user actions such as delete user etc...
 
-class AdminUserActionInProgress extends AdminUserState {
+class AdminUserActionInProgress extends AdminUserStatus {
   const AdminUserActionInProgress({
-    required super.usersState,
     required this.userId,
   });
 
-  /// The user id for that each tile
+  /// The user id for that tile
   final String userId;
+
+  @override
+  List<Object?> get props => [userId, ...super.props];
 }
 
-class AdminUserActionSuccess extends AdminUserState {
-  const AdminUserActionSuccess({required super.usersState});
+class AdminUserActionSuccess extends AdminUserStatus {
+  const AdminUserActionSuccess();
 }
 
-class AdminUserActionFailure extends AdminUserState {
+class AdminUserActionFailure extends AdminUserStatus {
   const AdminUserActionFailure(
-    this.exception, {
-    required super.usersState,
-  });
+    this.exception,
+  );
 
   final AdminUserException exception;
 

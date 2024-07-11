@@ -2,9 +2,9 @@ import '../models/user.dart';
 
 abstract class AdminUserApi {
   Future<List<User>> getAllUsers({
-    required String searchQuery,
     required int page,
     required int limit,
+    required String search,
   });
   Future<void> deleteUserAccount({required String userId});
   Future<void> setAccountActivated({

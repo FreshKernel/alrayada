@@ -8,7 +8,7 @@ import io.ktor.server.plugins.ratelimit.*
 import io.ktor.server.response.*
 import net.freshplatform.Constants
 import net.freshplatform.services.security.jwt.JwtService
-import net.freshplatform.utils.ErrorResponse
+import net.freshplatform.utils.response.ErrorResponse
 import org.koin.ktor.ext.inject
 import kotlin.time.Duration.Companion.minutes
 

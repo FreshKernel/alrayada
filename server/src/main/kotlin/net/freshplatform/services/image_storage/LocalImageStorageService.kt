@@ -31,10 +31,10 @@ class LocalImageStorageService(
                 if (!file.parentFile.exists()) {
                     file.parentFile.mkdirs()
                 }
-                if (file.canWrite()) {
+                file.createNewFile()
+                if (!file.canWrite()) {
                     throw SecurityException("Insufficient permissions to write to storage")
                 }
-                file.createNewFile()
 //                file.writeBytes(imageBytes)
                 ImmutableImage.loader().fromBytes(imageBytes).output(WebpWriter.DEFAULT, file)
                 Result.success(fileName)

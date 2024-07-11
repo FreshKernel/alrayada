@@ -32,7 +32,7 @@ import org.koin.dsl.module
 import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
 
-fun Application.dependencyInjection() {
+fun Application.configureDependencyInjection() {
     install(Koin) {
         slf4jLogger()
         modules(databaseModule, servicesModule, dataSourcesModule)

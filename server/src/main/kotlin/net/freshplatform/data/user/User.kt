@@ -5,7 +5,7 @@ import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import net.freshplatform.services.security.token_verification.TokenVerification
-import net.freshplatform.utils.InstantAsBsonDateTime
+import net.freshplatform.utils.serialization.InstantAsBsonDateTime
 import net.freshplatform.utils.extensions.isValidPhoneNumber
 import org.bson.types.ObjectId
 

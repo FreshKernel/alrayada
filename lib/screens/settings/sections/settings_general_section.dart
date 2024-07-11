@@ -27,20 +27,20 @@ class SettingsGeneralSection extends StatelessWidget {
           title: Text(context.loc.appLanguage),
           subtitle: Text(context.loc.appLanguageDesc),
           leading: const Icon(Icons.language),
-          trailing: DropdownButton<AppLanguague>(
-            value: state.appLanguague,
-            items: AppLanguague.values
+          trailing: DropdownMenu<AppLanguague>(
+            initialSelection: state.appLanguague,
+            dropdownMenuEntries: AppLanguague.values
                 .map(
-                  (e) => DropdownMenuItem<AppLanguague>(
+                  (e) => DropdownMenuEntry<AppLanguague>(
                     value: e,
-                    child: Text(e.valueName.replaceFirst(
+                    label: e.valueName.replaceFirst(
                       AppLanguague.system.valueName,
                       context.loc.system,
-                    )),
+                    ),
                   ),
                 )
                 .toList(),
-            onChanged: (newLanguague) {
+            onSelected: (newLanguague) {
               if (newLanguague == null) {
                 return;
               }
@@ -148,17 +148,18 @@ class SettingsGeneralSection extends StatelessWidget {
           title: Text(context.loc.layoutMode),
           subtitle: Text(context.loc.layoutModeDesc),
           leading: const Icon(Icons.view_module),
-          trailing: DropdownButton<AppLayoutMode>(
-            value: state.layoutMode,
-            items: AppLayoutMode.values
+          // TODO: There is a bug in DropdownMenu widgets in this file when open it
+          trailing: DropdownMenu<AppLayoutMode>(
+            initialSelection: state.layoutMode,
+            dropdownMenuEntries: AppLayoutMode.values
                 .map(
-                  (e) => DropdownMenuItem<AppLayoutMode>(
+                  (e) => DropdownMenuEntry<AppLayoutMode>(
                     value: e,
-                    child: Text(e.getLabel(context.loc)),
+                    label: e.getLabel(context.loc),
                   ),
                 )
                 .toList(),
-            onChanged: (newLayout) {
+            onSelected: (newLayout) {
               if (newLayout == null) {
                 return;
               }

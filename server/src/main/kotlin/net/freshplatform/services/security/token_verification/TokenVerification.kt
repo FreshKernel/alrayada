@@ -3,7 +3,7 @@ package net.freshplatform.services.security.token_verification
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
-import net.freshplatform.utils.InstantAsBsonDateTime
+import net.freshplatform.utils.serialization.InstantAsBsonDateTime
 
 @Serializable
 data class TokenVerification(

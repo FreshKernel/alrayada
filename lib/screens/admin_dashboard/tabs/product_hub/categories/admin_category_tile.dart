@@ -32,7 +32,7 @@ class AdminCategoryTile extends StatelessWidget {
       borderRadius: BorderRadius.circular(12),
       child: GestureDetector(
         onTap: () {
-          context.read<ProductCategoryCubit>().loadSubCategories(
+          context.read<ProductCategoryCubit>().loadChildCategories(
                 parentId: category.id,
                 isSkipIfLoaded: true,
               );

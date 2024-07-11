@@ -8,9 +8,9 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import net.freshplatform.routes.products.categories.ProductCategoryUtils
 import net.freshplatform.services.image_storage.ImageStorageServiceFactory
-import net.freshplatform.utils.ErrorResponseException
-import net.freshplatform.utils.InstantAsBsonDateTime
 import net.freshplatform.utils.extensions.isHttpUrl
+import net.freshplatform.utils.response.ErrorResponseException
+import net.freshplatform.utils.serialization.InstantAsBsonDateTime
 import org.bson.types.ObjectId
 import org.koin.ktor.ext.inject
 

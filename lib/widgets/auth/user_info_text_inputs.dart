@@ -127,6 +127,7 @@ class UserInfoTextInputs extends StatelessWidget {
             errorMessage: context.loc.pleaseEnterTheLabOwnerName,
           ),
         ),
+        const SizedBox(height: 8),
         // TODO: Update how the CityPickerFormField work, don't use onSaved to avoid some bugs
         CityPickerFormField(
           onSaved: cityInputHandler.onSaved,

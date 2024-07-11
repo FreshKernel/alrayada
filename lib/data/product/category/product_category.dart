@@ -1,6 +1,10 @@
+import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
+part 'product_category.g.dart';
+
 @immutable
+@JsonSerializable()
 class ProductCategory {
   const ProductCategory({
     required this.id,
@@ -13,25 +17,9 @@ class ProductCategory {
   });
 
   factory ProductCategory.fromJson(Map<String, Object?> json) =>
-      ProductCategory(
-        id: json['id'] as String,
-        name: json['name'] as String,
-        parentId: json['parentId'] as String?,
-        description: json['description'] as String,
-        imageUrls: List<String>.from(json['imageUrls'] as List),
-        createdAt: DateTime.parse(json['createdAt'] as String),
-        updatedAt: DateTime.parse(json['updatedAt'] as String),
-      );
+      _$ProductCategoryFromJson(json);
 
-  Map<String, Object?> toJson() => {
-        'id': id,
-        'name': name,
-        'parentId': parentId,
-        'description': description,
-        'imageUrls': imageUrls,
-        'createdAt': createdAt.toIso8601String(),
-        'updatedAt': updatedAt.toIso8601String(),
-      };
+  Map<String, Object?> toJson() => _$ProductCategoryToJson(this);
 
   final String id;
   final String name;

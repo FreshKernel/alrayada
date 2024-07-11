@@ -10,8 +10,9 @@ import io.ktor.server.websocket.*
 import io.ktor.websocket.*
 import net.freshplatform.data.live_chat.LiveChatDataSource
 import net.freshplatform.routes.live_chat.admin.adminLiveChatRoutes
-import net.freshplatform.utils.ErrorResponseException
+import net.freshplatform.utils.extensions.limit
 import net.freshplatform.utils.extensions.requireCurrentUser
+import net.freshplatform.utils.response.ErrorResponseException
 import org.koin.ktor.ext.inject
 
 fun Route.liveChatRoutes() {
@@ -61,7 +62,7 @@ fun Route.getMessages() {
     get("/messages") {
         val user = call.requireCurrentUser()
         val page: Int by call.request.queryParameters
-        val limit: Int by call.request.queryParameters
+        val limit = call.request.queryParameters.limit
 
         val messages = liveChatDataSource.getMessagesByRoomClientUserId(user.id.toString(), page, limit).getOrElse {
             throw ErrorResponseException(

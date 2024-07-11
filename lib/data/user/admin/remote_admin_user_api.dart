@@ -29,9 +29,9 @@ class RemoteAdminUserApi extends AdminUserApi {
 
   @override
   Future<List<User>> getAllUsers({
-    required String searchQuery,
     required int page,
     required int limit,
+    required String search,
   }) async {
     try {
       final response = await _dio.get<List>(
@@ -39,9 +39,9 @@ class RemoteAdminUserApi extends AdminUserApi {
           RoutesConstants.userRoutes.adminRoutes.getAllUsers,
         ),
         queryParameters: {
-          'searchQuery': searchQuery,
           'page': page,
           'limit': limit,
+          'search': search,
         },
       );
       return response.dataOrThrow.map((e) => User.fromJson(e)).toList();

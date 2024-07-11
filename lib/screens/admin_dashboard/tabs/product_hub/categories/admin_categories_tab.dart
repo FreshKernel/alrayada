@@ -61,12 +61,12 @@ class AdminCategoriesTab extends StatelessWidget {
               }
             },
             builder: (context, state) {
-              if (state is ProductCategoryTopLevelLoadInProgress) {
+              if (state is ProductCategoryLoadTopLevelInProgress) {
                 return const Center(
                   child: CircularProgressIndicator.adaptive(),
                 );
               }
-              if (state is ProductCategoryTopLevelLoadFailure) {
+              if (state is ProductCategoryLoadTopLevelFailure) {
                 return UnknownError(
                   onTryAgain: () => context
                       .read<ProductCategoryCubit>()
@@ -104,7 +104,7 @@ class AdminCategoriesTab extends StatelessWidget {
                     ),
                     padding: const EdgeInsets.all(12),
                     itemCount:
-                        state is ProductCategoryTopLevelLoadMoreInProgress
+                        state is ProductCategoryLoadTopLevelMoreInProgress
                             ? categories.length + 1
                             : categories.length,
                     itemBuilder: (context, index) {

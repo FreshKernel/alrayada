@@ -97,9 +97,7 @@ class ProductCategoryRoutes extends RoutesConstants {
   final createCategory = root;
   String updateCategoryById({required String id}) => '$root/$id';
   String deleteCategoryById({required String id}) => '$root/$id';
-  final getTopLevelCategories = '$root/topLevel';
-  String getChildCategoriesByParentId({required String parentId}) =>
-      '$root/$parentId/children';
+  final getCategories = root;
   String getCategoryById({required String id}) => '$root/$id';
 }
 

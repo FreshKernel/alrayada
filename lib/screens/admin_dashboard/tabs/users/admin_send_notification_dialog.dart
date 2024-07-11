@@ -49,7 +49,7 @@ class _AdminSendNotificationToUserDialogState
   Widget build(BuildContext context) {
     return BlocListener<AdminUserCubit, AdminUserState>(
       listener: (context, state) {
-        if (state is AdminUserActionSuccess) {
+        if (state.status is AdminUserActionSuccess) {
           ScaffoldMessenger.of(context).showSnackBarText(
             context.loc.notificationHasBeenSuccessfullySent,
           );
@@ -58,9 +58,9 @@ class _AdminSendNotificationToUserDialogState
       },
       child: AlertDialog(
         title: Text(context.loc.sendNotification),
-        icon: Icon(isCupertino(context)
-            ? CupertinoIcons.bell
-            : Icons.notification_add),
+        icon: Icon(
+          isCupertino(context) ? CupertinoIcons.bell : Icons.notification_add,
+        ),
         content: Form(
           key: _formKey,
           autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -98,8 +98,9 @@ class _AdminSendNotificationToUserDialogState
           BlocBuilder<AdminUserCubit, AdminUserState>(
             builder: (context, state) {
               return TextButton(
-                onPressed:
-                    state is AdminUserActionInProgress ? null : _onSubmit,
+                onPressed: state.status is AdminUserActionInProgress
+                    ? null
+                    : _onSubmit,
                 child: Text(context.loc.submit),
               );
             },

@@ -29,24 +29,24 @@ class AdminCategoryDetailsScreen extends StatelessWidget {
       ),
       body: BlocBuilder<ProductCategoryCubit, ProductCategoryState>(
         builder: (context, state) {
-          if (state is ProductCategoryChildLoadInProgress) {
+          if (state is ProductCategoryLoadChildInProgress) {
             return const Center(
               child: CircularProgressIndicator.adaptive(),
             );
           }
-          if (state is ProductCategoryChildLoadFailure) {
+          if (state is ProductCategoryLoadChildFailure) {
             return UnknownError(
               onTryAgain: () => context
                   .read<ProductCategoryCubit>()
-                  .loadSubCategories(parentId: category.id),
+                  .loadChildCategories(parentId: category.id),
             );
           }
-          final subCategories = state
+          final childCategories = state
               .getChildCategoriesStateOrThrow(
                 parentId: category.id,
               )
               .categories;
-          if (subCategories.isEmpty) {
+          if (childCategories.isEmpty) {
             return NoDataFound(
               onRefresh: () =>
                   context.read<ProductCategoryCubit>().loadTopLevelCategories(),
@@ -56,12 +56,12 @@ class AdminCategoryDetailsScreen extends StatelessWidget {
             onRefresh: () async {
               await context
                   .read<ProductCategoryCubit>()
-                  .loadSubCategories(parentId: category.id);
+                  .loadChildCategories(parentId: category.id);
             },
             child: ScrollEdgeDetector(
               onBottom: () => context
                   .read<ProductCategoryCubit>()
-                  .loadMoreSubCategories(parentId: category.id),
+                  .loadMoreChildCategories(parentId: category.id),
               child: GridView.builder(
                 physics: const BouncingScrollPhysics(
                   parent: AlwaysScrollableScrollPhysics(),
@@ -72,17 +72,17 @@ class AdminCategoryDetailsScreen extends StatelessWidget {
                   crossAxisSpacing: 20,
                 ),
                 padding: const EdgeInsets.all(12),
-                itemCount: state is ProductCategoryChildLoadMoreInProgress
-                    ? subCategories.length + 1
-                    : subCategories.length,
+                itemCount: state is ProductCategoryLoadChildMoreInProgress
+                    ? childCategories.length + 1
+                    : childCategories.length,
                 itemBuilder: (context, index) {
-                  if (index == subCategories.length) {
+                  if (index == childCategories.length) {
                     // Loading indicator when loading more items
                     return const Center(
                       child: CircularProgressIndicator.adaptive(),
                     );
                   }
-                  final childCategory = subCategories[index];
+                  final childCategory = childCategories[index];
                   return AdminCategoryTile(
                     category: childCategory,
                     parentId: category.id,
