@@ -1,5 +1,5 @@
-import 'package:alrayada/data/user/user_api.dart';
-import 'package:alrayada/logic/user/user_cubit.dart';
+import 'package:alrayada/auth/data/user_api.dart';
+import 'package:alrayada/auth/logic/user_cubit.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'mock_user_api.dart';

@@ -121,7 +121,7 @@ flutter:
 
 
 flutter_gen:
-  output: lib/gen/
+  output: lib/common/gen/
 
   integrations:
     flutter_svg: true
@@ -158,6 +158,6 @@ flutter_native_splash:
 pubspec_extract:
   class_name: Pubspec
   source: pubspec.yaml
-  destination: lib/gen/pubspec.g.dart
+  destination: lib/common/gen/pubspec.g.dart
   format: true
   map_list: false

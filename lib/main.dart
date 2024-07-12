@@ -15,26 +15,26 @@ import 'package:image_picker_platform_interface/image_picker_platform_interface.
 import 'package:path_provider/path_provider.dart'
     show getApplicationDocumentsDirectory;
 
-import 'data/live_chat/admin/remote_admin_live_chat_api.dart';
-import 'data/live_chat/remote_live_chat_api.dart';
-import 'data/product/category/remote_product_category_api.dart';
-import 'data/user/admin/remote_admin_user_api.dart';
-import 'data/user/remote_user_api.dart';
+import 'admin/live_chat/data/remote_admin_live_chat_api.dart';
+import 'admin/live_chat/logic/admin_live_chat_cubit.dart';
+import 'admin/user/data/remote_admin_user_api.dart';
+import 'admin/user/logic/admin_user_cubit.dart';
+import 'auth/data/remote_user_api.dart';
+import 'auth/logic/user_cubit.dart';
+import 'common/app_logger.dart';
+import 'common/environment_variables.dart';
+import 'common/localizations/app_localization_extension.dart';
+import 'common/logic/connectivity/connectivity_cubit.dart';
+import 'common/presentation/app_router.dart';
+import 'common/presentation/widgets/my_dynamic_color_builder.dart';
+import 'common/server.dart';
 import 'firebase_options.dart';
-import 'l10n/app_localizations.dart';
-import 'logic/connectivity/connectivity_cubit.dart';
-import 'logic/live_chat/admin/admin_live_chat_cubit.dart';
-import 'logic/live_chat/live_chat_cubit.dart';
-import 'logic/products/category/product_category_cubit.dart';
-import 'logic/settings/settings_cubit.dart';
-import 'logic/settings/settings_data.dart';
-import 'logic/user/admin/admin_user_cubit.dart';
-import 'logic/user/user_cubit.dart';
-import 'screens/app_router.dart';
-import 'utils/app_logger.dart';
-import 'utils/environment_variables.dart';
-import 'utils/server.dart';
-import 'widgets/my_dynamic_color_builder.dart';
+import 'live_chat/data/remote_live_chat_api.dart';
+import 'live_chat/logic/live_chat_cubit.dart';
+import 'products/data/category/remote_product_category_api.dart';
+import 'products/logic/category/product_category_cubit.dart';
+import 'settings/data/settings_data.dart';
+import 'settings/logic/settings_cubit.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -175,7 +175,7 @@ class MyApp extends StatelessWidget {
               themeMode: state.themeMode.toMaterialThemeMode(
                 darkDuringDayInAutoMode: state.darkDuringDayInAutoMode,
               ),
-              locale: state.appLanguague == AppLanguague.system
+              locale: state.appLanguague == AppLocalization.system
                   ? null
                   : Locale(state.appLanguague.name),
             ),

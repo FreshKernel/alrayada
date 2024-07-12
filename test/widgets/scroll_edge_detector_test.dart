@@ -1,4 +1,4 @@
-import 'package:alrayada/widgets/scroll_edge_detector.dart';
+import 'package:alrayada/common/presentation/widgets/scroll_edge_detector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 

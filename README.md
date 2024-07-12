@@ -17,7 +17,7 @@ An ecommerce application developed by Fresh Platform for Alrayada company.
 2. Create a file called `.env` and copy the content of `fallback.env` into this newly created file
 3. Provide the values, if you can't understand some of the variables, go to
    this [File](./lib/utils/env.dart)
-4. Change the values in the [Constants](./lib/constants.dart) file
+4. Change the values in the [Constants](./lib/common/constants/constants.dart) file
 5. Setup App Signing for both Android and iOS
 6. Setup Firebase using [Firebase Flutter CLI](https://firebase.google.com/docs/flutter/setup)
 7. Setup the [Apis](#third-party-apis)

@@ -1,0 +1,407 @@
+{
+    "@@locale": "zh",
+    "appName": "Alrayada",
+    "categories": "分类",
+    "shoppingCart": "购物车",
+    "home": "首页",
+    "account": "账户",
+    "noData": "没有数据。",
+    "addToCart": "加入购物车",
+    "addToWishlist": "愿望清单",
+    "description": "描述",
+    "shortDescription": "简短描述",
+    "edit": "编辑",
+    "update": "更新",
+    "cancel": "取消",
+    "delete": "删除",
+    "checkout": "结账",
+    "confirm": "确认",
+    "youNeedToLoginFirst": "您需要先登录。",
+    "notAuthenticated": "未认证",
+    "ok": "好的",
+    "notActivated": "未激活！",
+    "yourAccountNeedToBeActivated": "您的账户需要被激活",
+    "orderNotes": "订单备注",
+    "youAreAboutToCreateOrder": "您即将创建订单！",
+    "orderTotal": "总计",
+    "signIn": "登录",
+    "signUp": "注册",
+    "logout": "登出",
+    "authentication": "身份验证",
+    "welcomeAgain": "欢迎再次光临！",
+    "registerAccount": "注册账户",
+    "enterTheAccountCredentialsToContinue": "输入账户凭证以继续",
+    "emailAddress": "电子邮件地址",
+    "password": "密码",
+    "confirmPassword": "确认密码",
+    "labPhoneNumber": "实验室电话",
+    "labOwnerPhoneNumber": "所有者电话",
+    "labName": "实验室名称",
+    "labOwnerName": "实验室所有者名称",
+    "city": "城市",
+    "selectedCity": "选择的城市 {city}",
+    "@selectedCity": {
+        "description": "包含一个参数的消息",
+        "placeholders": {
+            "city": {
+                "type": "String",
+                "example": "巴格达"
+            }
+        }
+    },
+    "forgotPasswordWithQuestionMark": "忘记密码？",
+    "forgotPassword": "忘记密码",
+    "forgotPasswordDesc": "没关系 - 这种事情时有发生！输入您的电子邮件以重置密码并快速恢复访问。我们在这里帮助您迅速恢复账户控制！",
+    "resetPassword": "重置密码",
+    "dontHaveAccountYet": "还没有账户？",
+    "alreadyHaveAccount": "已经有账户？",
+    "search": "搜索",
+    "submit": "提交",
+    "fieldShouldNotBeEmpty": "字段不能为空。",
+    "emailAddressIsEmpty": "电子邮件地址为空。",
+    "pleaseEnterValidEmailAddress": "请输入有效的电子邮件地址。",
+    "passwordShouldNotBeEmpty": "密码不能为空。",
+    "passwordShouldBeAtLeast8Chars": "密码至少应为8个字符。",
+    "passwordShouldBeLessThan255Chars": "密码应少于255个字符",
+    "passwordMustContainAtLeastOneUppercaseCharacter": "密码必须包含至少一个大写字母。",
+    "passwordMustContainAtLeastOneLowercaseCharacter": "密码必须包含至少一个小写字母。",
+    "passwordMustContainAtLeastOneDigit": "密码必须包含至少一个数字。",
+    "passwordMustContainAtLeastOneSpecialCharacter": "密码必须包含至少一个特殊字符（例如，！ @ # $ %）",
+    "passwordShouldBeStrong": "密码应强壮。",
+    "confirmPasswordDoesNotMatch": "确认密码不匹配",
+    "phoneNumberShouldNotBeEmpty": "电话号码是必需的",
+    "phoneNumberMustBeValid": "电话号码必须是11位数字（07*********）",
+    "updatePassword": "更新密码",
+    "currentPassword": "当前密码",
+    "newPassword": "新密码",
+    "accountData": "账户数据",
+    "profile": "个人资料",
+    "updateAllOfYourData": "更新您的所有数据",
+    "orders": "订单",
+    "viewAllOfYourOrders": "查看您的所有订单，您可以取消任何尚未批准或拒绝的订单",
+    "favorites": "收藏",
+    "viewAllOfYourWishlist": "查看您的愿望清单",
+    "privacyPolicy": "隐私政策",
+    "openPrivacyPolicyPage": "打开我们的隐私政策页面",
+    "socialMedia": "社交媒体",
+    "followUsOnSocialMedia": "在社交媒体上关注我们",
+    "settings": "设置",
+    "selectYourPreferences": "选择您的偏好",
+    "welcomeAgainWithLabName": "欢迎再次光临，{labName}",
+    "@welcomeAgainWithLabName": {
+        "description": "包含一个参数的消息",
+        "placeholders": {
+            "labName": {
+                "type": "String",
+                "example": "AlAula"
+            }
+        }
+    },
+    "joinedInWithDate": "加入于 {date}",
+    "@joinedInWithDate": {
+        "description": "包含一个参数的消息",
+        "placeholders": {
+            "date": {
+                "type": "String",
+                "example": "2020/9/25"
+            }
+        }
+    },
+    "success": "成功！",
+    "error": "错误！",
+    "dataHasBeenSuccessfullyUpdated": "数据已成功更新！",
+    "orderHasBeenCreated": "订单已创建。",
+    "openProductsListPage": "打开产品列表页面",
+    "support": "支持",
+    "guestUser": "访客用户",
+    "animations": "动画",
+    "animationsDesc": "如果您想要精美的动画，请启用它",
+    "confirmDeleteCartItem": "确认删除购物车商品",
+    "confirmDeleteCartItemSettingsDesc": "当您从购物车中删除产品时，我们是否应通过显示对话框确认删除过程？",
+    "clearCartAfterCheckout": "结账后清空购物车",
+    "clearCartAfterCheckoutSettingsDesc": "完成结账并成功创建订单后，购物车是否应被清空？",
+    "forceUseScrollableChart": "强制使用可滚动图表",
+    "forceUseScrollableChartSettingsDesc": "图表在小屏幕上默认可滚动，如果您希望它始终可滚动，请勾选此项",
+    "preferNumbersInChartMonths": "图表月份中优先使用数字",
+    "preferNumbersInChartMonthsSettingsDesc": "使用月份的数字，而不是月份的前三个字符",
+    "unFocusAfterSendMessage": "发送聊天消息后取消焦点",
+    "unFocusAfterSendMessageSettingsDesc": "在使用发送按钮发送消息后，是否应该隐藏键盘？",
+    "useClassicMessageBubble": "使用经典消息气泡",
+    "useClassicMessageBubbleSettingsDesc": "在支持中，应用程序是否应为每条消息项目使用经典消息气泡？",
+    "statistics": "统计",
+    "resetFavorites": "重置收藏",
+    "developedByWithDeveloperName": "开发者 {developerName}",
+    "@developedByWithDeveloperName": {
+        "description": "包含一个参数的消息",
+        "placeholders": {
+            "developerName": {
+                "type": "String",
+                "example": "Ahmed Hnewa"
+            }
+        }
+    },
+    "accountCreated": "账户已创建",
+    "accountCreatedBut": "账户已成功创建，我们需要审核您的信息，之后您可以在应用程序中购物，登录时，您需要通过我们发送给您的链接验证您的电子邮件地址",
+    "unknownError": "未知错误",
+    "unknownErrorWithMsg": "未知错误：{error}",
+    "@unknownErrorWithMsg": {
+        "description": "包含一个参数的消息",
+        "placeholders": {
+            "error": {
+                "type": "String",
+                "example": "未处理的错误"
+            }
+        }
+    },
+    "authTooManyFailedAttempts": "尝试次数过多，请稍后再试。",
+    "authIncorrectPassword": "密码错误。",
+    "authIncorrectEmailOrPassword": "无效的电子邮件或密码。",
+    "authEmailNotFound": "未找到电子邮件。请检查您的电子邮件地址并重试。",
+    "authEmailAlreadyInUse": "电子邮件已被使用。请使用其他电子邮件或尝试登录。",
+    "createNewAccount": "创建新账户",
+    "authAreYouSureWantToContinueCreateAccount": "您确定要继续吗？您需要确认您的电子邮件地址才能登录，并在您的账户被批准之前无法在应用程序中购物",
+    "authEmailVerificationHasNotSentError": "发送电子邮件验证链接时出错，请尝试重新登录或与我们联系",
+    "verificationLinkIsAlreadySentWithMinutesToExpire": "验证链接已发送，将在 {number} 分钟后过期。",
+    "@verificationLinkIsAlreadySentWithMinutesToExpire": {
+        "description": "包含一个参数的消息",
+        "placeholders": {
+            "number": {
+                "type": "String",
+                "example": "25"
+            }
+        }
+    },
+    "orSignInUsingSocialMediaAccount": "或使用社交媒体账户登录",
+    "deleteAccount": "删除账户",
+    "confirmDeleteAccount": "确认删除账户",
+    "authAccountDeleteConfirmation":"要确认删除您的账户，请在文本输入框中输入\"删除\"（不含引号）以确认删除过程",
+    "refresh":"刷新",
+    "tryAgain":"再试一次",
+    "common":"常见",
+    "general":"常规",
+    "themeMode":"主题模式",
+    "themeModeSettingsDesc":"选择您希望使用深色或浅色主题，或使用默认系统模式",
+    "dark": "深色",
+    "light": "浅色",
+    "system": "系统",
+    "random": "随机",
+    "themeModeDarkDesc": "启用深色模式以获得一致的深色外观。",
+    "themeModeLightDesc": "启用浅色模式以获得一致的亮色外观。",
+    "themeModeSystemDesc": "与系统设置同步，以获得无缝体验。",
+    "themeModeAutoDesc": "根据您的本地时间自动调整以获得最佳可见性。",
+    "themeModeRandomDesc": "每次应用启动时体验随机主题，以获得新鲜感。",
+    "darkModeDuringDay": "白天深色模式",
+    "darkModeDuringDayDesc": "根据您的偏好，白天自动切换到深色模式或相反。",
+    "auto": "自动",
+    "clear":"清除",
+    "clearPreferences":"清除偏好设置",
+    "underDevelopment":"开发中",
+    "offersOfTheMonth":"本月优惠",
+    "offersPictures":"本月优惠的图片",
+    "next":"下一步",
+    "skip":"跳过",
+    "getStarted":"开始",
+    "onlineShoppingMadeEasyFeature":"轻松在线购物",
+    "onlineShoppingMadeEasyFeatureDesc":"在家中轻松购物，只需轻点几下",
+    "secureShoppingExperienceFeature":"安全购物体验",
+    "secureShoppingExperienceFeatureDesc":"放心购物，您的个人信息安全可靠",
+    "favoritesWishlistFeature":"收藏愿望清单",
+    "favoritesWishlistFeatureDesc":"保存您喜欢的商品以供后用，每次都能快速访问",
+    "easyFilteringAndSearchingFeature":"简单的筛选和搜索",
+    "easyFilteringAndSearchingFeatureDesc":"通过我们易于使用的筛选和搜索功能，准确找到您想要的商品",
+    "socialAuthenticationFeature":"社交认证",
+    "socialAuthenticationFeatureDesc":"使用您喜欢的社交媒体平台注册或登录，以获得无缝购物体验",
+    "fastShippingFeature":"快速发货",
+    "fastShippingFeatureDesc":"快速可靠地将您的商品送到实验室",
+    "inAppSupportChatFeature":"应用内支持聊天",
+    "inAppSupportChatFeatureDesc":"在应用内获得友好的客户服务团队的帮助和支持",
+    "underDevelopmentFeature":"开发中",
+    "underDevelopmentFeatureDesc":"感谢您使用我们的应用！请注意，我们仍在努力改善您的体验",
+    "no":"否",
+    "yes":"是",
+    "closeTheApp":"关闭应用",
+    "closeTheAppMsg":"您确定要退出应用吗？",
+    "notifications":"通知",
+    "notificationsPermissionTitle":"允许通知",
+    "notificationsPermissionMessage":"我们希望向您发送重要更新和提醒。要接收通知，请在设备设置中启用此应用的通知权限。谢谢！",
+    "orderWithOtherNumber":"订单 #{orderNumber}",
+    "@orderWithOtherNumber":{
+       "description":"包含单一参数的消息",
+       "placeholders":{
+          "orderNumber":{
+             "type":"String",
+             "example":"53232"
+          }
+       }
+    },
+    "cancelOrderWithOrderNumber":"订单 #{orderNumber}",
+    "@cancelOrderWithOrderNumber":{
+       "description":"包含单一参数的消息",
+       "placeholders":{
+          "orderNumber":{
+             "type":"String",
+             "example":"53232"
+          }
+       }
+    },
+    "areYouSureWantToCancelOrder":"您确定要取消该订单吗？",
+    "orderItems":"订单商品",
+    "lastUpdateInWithDate":"最后更新于 {formattedDate}",
+    "@lastUpdateInWithDate":{
+       "description":"包含单一参数的消息",
+       "placeholders":{
+          "formattedDate":{
+             "type":"String",
+             "example":"2023年4月12日 9:32 PM"
+          }
+       }
+    },
+    "adminNotes":"管理员备注",
+    "notes":"备注",
+    "quantity":"数量",
+    "price":"价格",
+    "name":"名称",
+    "yourOrderWillBeDeliveredOnWithDeliveryDate":"您的订单将于 {deliveryDate} 送达",
+    "@yourOrderWillBeDeliveredOnWithDeliveryDate":{
+       "description":"包含单一参数的消息",
+       "placeholders":{
+          "deliveryDate":{
+             "type":"String",
+             "example":"2023年4月7日 AM 12:04"
+          }
+       }
+    },
+    "orderTotalWithPrice":"订单总计：{orderTotalPrice}",
+    "@orderTotalWithPrice":{
+       "description":"包含单一参数的消息",
+       "placeholders":{
+          "orderTotalPrice":{
+             "type":"String",
+             "example":"500.00$"
+          }
+       }
+    },
+    "orderTotalBeforeDiscountsWithPrice":"折扣前订单总计：{orderTotalPrice}",
+    "@orderTotalBeforeDiscountsWithPrice":{
+       "description":"包含单一参数的消息",
+       "placeholders":{
+          "orderTotalPrice":{
+             "type":"String",
+             "example":"600.00$"
+          }
+       }
+    },
+    "bestSellingProducts":"畅销产品",
+    "newestProducts":"最新产品",
+    "showMore":"显示更多",
+    "message":"消息",
+    "enterYourMessageHere":"在此输入您的消息",
+    "close":"关闭",
+    "areYouSureYouWantToRemoveCartItem":"您确定要移除购物车商品吗？",
+    "removeCartItem":"移除购物车商品",
+    "pleaseCheckYourInternetConnectionMsg":"请检查您的互联网连接并重试。",
+    "serverLimitErrorMsg":"抱歉，但服务器在连接时有上限",
+    "serverLimitErrorTitle":"请求过多",
+    "paymentMethod":"支付方式",
+    "payOrderMsg":"支付",
+    "orderHasPaidMsg":"感谢您的付款！您的订单状态已更改为处理中。",
+    "productImages":"产品图片",
+    "product":"产品",
+    "categoryImages":"类别图片",
+    "category":"类别",
+    "aboutApp":"关于应用",
+    "data":"数据",
+    "authScreen":"身份验证屏幕",
+    "authScreenFormInputs":"身份验证屏幕表单输入",
+    "googleIcon":"谷歌图标",
+    "facebookIcon":"脸书图标",
+    "loginWithGoogle":"使用谷歌登录",
+    "loginWithFacebook":"使用脸书登录",
+    "loginWithApple":"使用苹果登录",
+    "item":"商品",
+    "welcomeScreen":"欢迎屏幕",
+    "transactionOfOrderNotPaidMsg":"此订单的交易尚未付款。",
+    "congratulationsYouHaveSavedWithPrice":"恭喜！您已节省 {savedMoney} 美元",
+    "@congratulationsYouHaveSavedWithPrice":{
+       "description":"包含单一参数的消息",
+       "placeholders":{
+          "savedMoney":{
+             "type":"String",
+             "example":"600.00$"
+          }
+       }
+    },
+    "zainCash":"Zain现金",
+    "creditCard":"信用卡",
+    "cash":"现金",
+    "unknown":"未知",
+    "pageNotFound":"页面未找到",
+    "thisPageCantBeFoundMsg":"此页面无法找到，如果您认为这是个错误，请与我们联系。",
+    "baghdad":"巴格达",
+    "basra":"巴士拉",
+    "maysan":"迈桑",
+    "dhiQar":"迪卡尔",
+    "diyala":"迪亚拉",
+    "karbala":"卡尔巴拉",
+    "kirkuk":"基尔库克",
+    "najaf":"纳杰夫",
+    "nineveh":"尼尼微",
+    "wasit":"瓦西特",
+    "anbar":"安巴尔",
+    "salahAlDin":"萨拉赫丁",
+    "babil":"巴比伦",
+    "babylon":"巴比伦",
+    "alMuthanna":"穆萨纳",
+    "alQadisiyyah":"卡迪西亚",
+    "thiQar":"提卡尔",
+    "showOrderItemNotes":"显示订单商品备注",
+    "showOrderItemNotesSettingsDesc":"查看订单商品描述时，应用是否应该显示每个商品在表中的备注？",
+    "empty":"空",
+    "sorryThisFeatureIsNotAvailableAtTheMoment":"抱歉，此功能暂时不可用",
+    "autoDetect":"自动检测",
+    "version":"版本",
+    "pleaseEnterTheLabName": "请输入实验室名称",
+    "pleaseEnterTheLabOwnerName": "请输入实验室所有者名称",
+    "chooseTheLabCity": "选择实验室城市",
+    "appLanguage": "应用语言",
+    "appLanguageDesc": "选择您的首选语言",
+    "iAgreeTo": "我同意",
+    "pleaseAgreeToPrivacyPolicyFirst": "请先同意隐私政策",
+    "verifyYourEmail": "验证您的电子邮件",
+    "verifyYourEmailDesc": "激动人心的消息！您的账户即将准备好进行精彩的购物旅程。现在验证您的电子邮件以获取独家访问权限和无缝体验！",
+   "continueText": "继续",
+   "resendEmail": "重新发送电子邮件",
+   "yourAccountHasBeenSuccessfullyCreated": "您的账户已成功创建",
+   "report": "报告",
+   "authUserDisabledErrorMessage": "您的账户已被禁用。请联系支持以获取更多信息。",
+   "authProviderIsDisabledMessage": "此认证提供程序已被禁用，请联系我们获取更多信息。",
+   "emailIsStillNotVerified": "电子邮件仍未验证。",
+   "authEmailVerificationLinkSent": "验证电子邮件已发送！请检查您的收件箱。",
+   "useClassicMaterial": "经典材料设计",
+   "useClassicMaterialDesc": "使用经典材料设计主题",
+   "layoutMode": "布局模式",
+   "layoutModeDesc": "选择您首选的布局（默认基于您的设备）",
+   "large": "大",
+   "small": "小",
+   "signInWithAppleIsNotSupportedOnYourDevice": "您的设备不支持使用Apple登录。",
+   "tooManyRequestsPleaseTryAgainLater": "请求过多，请稍后再试",
+   "yourEmailIsNotVerified": "您的电子邮件未被验证。",
+   "enterSignUpDataDesc": "开启无限可能的门！请提供您的详细信息，以便与我们一起开始您的旅程。",
+   "adminDashboard": "管理员仪表盘",
+   "manageEverythingInOnePlace": "在一个地方管理所有事务",
+   "users": "用户",
+   "activate": "激活",
+   "deactivate": "停用",
+   "sendNotification": "发送通知",
+   "chat": "聊天",
+   "title": "标题",
+   "thisFieldCantBeEmpty": "此字段不能为空",
+   "notificationHasBeenSuccessfullySent": "通知已成功发送",
+   "admin": "管理员",
+   "dynamicColors": "动态颜色",
+   "automaticallyAdaptToSystemColors": "自动适应系统颜色",
+   "productHub": "产品中心",
+   "products": "产品",
+   "deleteCategoryConfirmation": "删除此类别将同时删除其所有子类别和产品。",
+   "add": "添加"
+} 

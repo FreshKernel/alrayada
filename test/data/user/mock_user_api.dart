@@ -1,7 +1,7 @@
-import 'package:alrayada/data/user/models/auth_credential.dart';
-import 'package:alrayada/data/user/models/user.dart';
-import 'package:alrayada/data/user/user_api.dart';
-import 'package:alrayada/data/user/user_social_login.dart';
+import 'package:alrayada/auth/data/models/auth_credential.dart';
+import 'package:alrayada/auth/data/models/user.dart';
+import 'package:alrayada/auth/data/user_api.dart';
+import 'package:alrayada/auth/data/user_social_login.dart';
 
 final mockUserCredential = UserCredential(
   accessToken: 'accessToken',
