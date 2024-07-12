@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "net.freshplatform"
-version = "0.0.1"
+version = "0.0.1-experimental"
 
 application {
     mainClass.set("net.freshplatform.ApplicationKt")
@@ -72,11 +72,6 @@ dependencies {
     implementation("io.github.smiley4:ktor-swagger-ui:2.7.4")
     // Around 2MB
     implementation(libs.scrimage.core)
-    // This library size is quite big (around 8MB) just keep that in mind
+    // This library size is quite big (around 8MB)
     implementation(libs.scrimage.webp)
-}
-
-// For Heroku deployment
-tasks {
-    create("stage").dependsOn("installDist")
 }

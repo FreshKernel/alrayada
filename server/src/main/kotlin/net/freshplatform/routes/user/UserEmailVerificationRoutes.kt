@@ -7,14 +7,26 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
-import kotlinx.html.*
+import kotlinx.html.ButtonType
+import kotlinx.html.body
+import kotlinx.html.button
+import kotlinx.html.div
+import kotlinx.html.form
+import kotlinx.html.h1
+import kotlinx.html.head
+import kotlinx.html.meta
+import kotlinx.html.p
+import kotlinx.html.script
+import kotlinx.html.style
+import kotlinx.html.title
+import kotlinx.html.unsafe
 import net.freshplatform.data.user.UserDataSource
 import net.freshplatform.services.email_sender.EmailMessage
 import net.freshplatform.services.email_sender.EmailSenderService
 import net.freshplatform.services.security.token_verification.TokenVerificationService
-import net.freshplatform.utils.response.ErrorResponseException
 import net.freshplatform.utils.extensions.baseUrl
 import net.freshplatform.utils.extensions.requireCurrentUser
+import net.freshplatform.utils.response.ErrorResponseException
 import org.koin.ktor.ext.inject
 
 fun Route.sendEmailVerificationLink() {
@@ -117,6 +129,8 @@ fun Route.verifyEmail() {
             "EMAIL_ALREADY_VERIFIED",
         )
 
+        // TODO: Might need more clean way to handle this, if emailVerification is null then the email should
+        //  be always verified instead of storing isEmailVerified
         // The emailVerification will be null once we verify the email
         val emailVerification = user.emailVerification ?: throw ErrorResponseException(
             HttpStatusCode.InternalServerError,

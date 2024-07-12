@@ -5,6 +5,8 @@ import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 import 'server.dart';
 
+// TODO: Create tests for this
+
 class DioService {
   DioService._();
 
@@ -13,7 +15,7 @@ class DioService {
   Dio? _dio;
   Dio get dio {
     _dio ??= _createDio();
-    return _dio ?? (throw Exception('You forgot to create instance for dio'));
+    return _dio ?? (throw StateError('The Http Client instance is null.'));
   }
 
   Dio _createDio() {

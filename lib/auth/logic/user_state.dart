@@ -16,6 +16,8 @@ sealed class UserState extends Equatable {
   List<Object?> get props => [userCredential];
 }
 
+// This might be unnecessary if we have UserLoggedOut
+
 final class UserInitial extends UserState {
   const UserInitial() : super(userCredential: null);
 }

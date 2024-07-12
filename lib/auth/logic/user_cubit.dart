@@ -54,6 +54,7 @@ class UserCubit extends Cubit<UserState> {
     }
   }
 
+  // TODO: Improve this workaround, see usages
   static const String socialLoginDisplayNamePrefKey = 'socialLoginDisplayName';
 
   Future<void> loginWithGoogle() async {
