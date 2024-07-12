@@ -6,10 +6,10 @@ import '../../auth/presentation/auth_forgot_password.dart';
 import '../../auth/presentation/auth_screen.dart';
 import '../../auth/presentation/auth_social_login_sign_up.dart';
 import '../../dashboard/dashboard_screen.dart';
-import '../../products/presentation/category_details_screen.dart';
 import '../../live_chat/presentation/live_chat_screen.dart';
 import '../../notifications/notifications_screen.dart';
 import '../../products/data/category/product_category.dart';
+import '../../products/presentation/category_details_screen.dart';
 import '../../profile/profile_screen.dart';
 import '../../settings/presentation/settings_screen.dart';
 

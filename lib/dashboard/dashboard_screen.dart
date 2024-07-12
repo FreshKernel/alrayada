@@ -11,12 +11,12 @@ import '../common/presentation/widgets/responsive_navbar.dart';
 import '../live_chat/data/live_chat_api.dart';
 import '../live_chat/presentation/live_chat_screen.dart';
 import '../onboarding/presentation/onboarding_screen.dart';
+import '../products/presentation/categories_tab.dart';
 import '../settings/logic/settings_cubit.dart';
 import 'dashboard_drawer.dart';
 import 'tab_item.dart';
 import 'tabs/account_tab.dart';
 import 'tabs/cart_tab.dart';
-import '../products/presentation/categories_tab.dart';
 import 'tabs/home/home_tab.dart';
 import 'tabs/orders_tab.dart';
 

@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../common/presentation/widgets/errors/unknown_error.dart';
 import '../../common/presentation/widgets/no_data_found.dart';
 import '../../common/presentation/widgets/scroll_edge_detector.dart';
-import '../logic/category/product_category_cubit.dart';
 import '../../dashboard/tabs/category_tile.dart';
+import '../logic/category/product_category_cubit.dart';
 
 class CategoriesTab extends StatelessWidget {
   const CategoriesTab({super.key});
